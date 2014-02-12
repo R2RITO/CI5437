@@ -7,10 +7,6 @@
 * Especificacion e implementacion del Tipo abstracto de datos Arco.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 #include "Nodo.h"
 #include "Arco.h"
 
@@ -39,15 +35,16 @@ arco newArco(nodo fuente, nodo destino) {
 * fuente y el mismo nodo destino 
 * @param x es el arco a ser comparado con el arco y
 * @param y es el arco a ser comparado con el arco x
+* @param comparador es la funcion de comparacion entre los arcos x y
 * @return 1, si los arcos son identicos, 0 en caso contrario
 */
-int arcoEquals(arco x, arco y) {
+int arcoEquals(arco x, arco y,int (*comparador) (void *,void *)) {
     nodo srcx = x -> src;
     nodo dstx = x -> dst;
     nodo srcy = y -> src;
     nodo dsty = y -> dst;
-    return (nodoEquals(srcx, srcy)) &&
-           (nodoEquals(dstx, dsty)); 
+    return (nodoEquals(srcx, srcy,comparador)) &&
+           (nodoEquals(dstx, dsty,comparador)); 
 }
 
 /**
@@ -55,12 +52,13 @@ int arcoEquals(arco x, arco y) {
 * de caracteres y la imprime en pantalla. Se vale de la funcion de impresion
 * asociada a la estructura de tipo nodo  
 * @param x es el arco a ser representado e impreso en pantalla
+* @param impresor es la funcion de impresion empleada por los nodos del arco
 */
-void printArco(arco x) {
+void printArco(arco x,void *(*impresor) (void *)) {
     printf("(");
-    nodoPrint(x -> src);
+    nodoPrint(x -> src,impresor);
     printf(" , ");
-    nodoPrint(x -> dst);
+    nodoPrint(x -> dst,impresor);
     printf(")\n");
 }
 
@@ -91,7 +89,7 @@ unsigned long sdbm(char *str) {
 
 /**
 * Main de pruebas
-*/
+*
 main() {
 
     nodo nodo1 = newNodo(0);
@@ -126,4 +124,4 @@ main() {
     printf("PRUEBALO Y VELO: %d \n", sdbm(cosa));
     printf("LA COSA ES: %s\n", cosa);
        
-}
+}*/
