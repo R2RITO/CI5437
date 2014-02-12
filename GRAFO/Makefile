@@ -11,3 +11,4 @@ Arco.o: Arco.c
 
 clean:
 		rm -f *.o main
+

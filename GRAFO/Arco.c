@@ -1,3 +1,12 @@
+/**
+* @file
+* @author  Arturo Voltattorni, Fernando D'agostino & Oswaldo Jimenez 
+*
+* @section Descripcion
+*
+* Especificacion e implementacion del Tipo abstracto de datos Arco.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,13 +14,33 @@
 #include "Nodo.h"
 #include "Arco.h"
 
-arco newArco(nodo a, nodo b) {
+/******************************************************************************/
+/*********************** MANAGER DEL TAD ARCO *********************************/
+/******************************************************************************/
+
+/**
+* Creacion de un arco. Se hace reserva de la memoria de la estructura arco y
+* se inicializan los valores correspondientes a los nodos fuente (src) y
+* destino (dst) que lo componen.
+* @param fuente es el nodo fuente del arco creado
+* @param destino es el nodo de destino del arco creado
+* @return res, estructura de datos del tipo arco creado
+*/
+arco newArco(nodo fuente, nodo destino) {
     arco res = malloc(sizeof(struct _arco));
-    res -> src = a;
-    res -> dst = b;
+    res -> src = fuente;
+    res -> dst = destino;
     return res;
 }
 
+/**
+* Funcion de comparacion entre dos estructuras de tipo arco.
+* Retorna 1 si y solo si ambos arcos comparten exactamente el mismo nodo
+* fuente y el mismo nodo destino 
+* @param x es el arco a ser comparado con el arco y
+* @param y es el arco a ser comparado con el arco x
+* @return 1, si los arcos son identicos, 0 en caso contrario
+*/
 int arcoEquals(arco x, arco y) {
     nodo srcx = x -> src;
     nodo dstx = x -> dst;
@@ -21,6 +50,12 @@ int arcoEquals(arco x, arco y) {
            (nodoEquals(dstx, dsty)); 
 }
 
+/**
+* Representa una estructura de tipo arco en forma de cadena
+* de caracteres y la imprime en pantalla. Se vale de la funcion de impresion
+* asociada a la estructura de tipo nodo  
+* @param x es el arco a ser representado e impreso en pantalla
+*/
 void printArco(arco x) {
     printf("(");
     nodoPrint(x -> src);
@@ -29,11 +64,20 @@ void printArco(arco x) {
     printf(")\n");
 }
 
+/**
+* Destruccion de una estructura de tipo arco. Se libera la memoria
+* ocupada por dicha estructura
+* @param x es el arco a ser liberado
+*/
 void freeArco(arco x) {
     free(x);
 }
 
-
+/**
+* null
+* @param str null
+* @return unknown
+*/
 unsigned long sdbm(char *str) {
     
     unsigned long hash = 0;
@@ -45,6 +89,9 @@ unsigned long sdbm(char *str) {
     return hash;
 }
 
+/**
+* Main de pruebas
+*/
 main() {
 
     nodo nodo1 = newNodo(0);
