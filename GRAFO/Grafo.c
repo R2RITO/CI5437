@@ -7,8 +7,6 @@
 * Especificacion e implementacion del Tipo abstracto de datos Nodo.
 */
 
-#include "Nodo.h"
-#include "Arco.h"
 #include "Grafo.h"
 
 /******************************************************************************/
@@ -109,65 +107,4 @@ int compare_prueba(void *p1,void*p2){
     pruebas_equivalentes = strcmp(prueba1->mi_mensaje,prueba2->mi_mensaje);
     
     return pruebas_equivalentes==0;
-}
-
-/**
-* Main de pruebas
-*/
-main() {
-   printf("Creando Grafo cuyos elementos son del tipo PRUEBA...\n");
-   grafo mi_grafo = newGrafo(newPrueba,freePrueba,print_prueba,compare_prueba);
-   
-   printf("\nCreando elementos tipo PRUEBA...\n");
-   PRUEBA* prueba1 = newPrueba("Madona");
-   print_prueba(prueba1);
-   
-   PRUEBA* prueba2 = newPrueba("Ariel");
-   print_prueba(prueba2);
-   
-   PRUEBA* prueba3 = newPrueba("Cenicienta");
-   print_prueba(prueba3);
-   
-   PRUEBA* prueba4 = newPrueba("LaNegra");
-   print_prueba(prueba4);
- 
- 
-   printf("\nCreando nodos del grafo para cada elemento...\n");  
-   nodo nodo1 = newNodo(prueba1);
-   nodoPrint(nodo1,print_prueba);
-   
-   nodo nodo2 = newNodo(prueba2);
-   nodoPrint(nodo2,print_prueba);
-   
-   nodo nodo3 = newNodo(prueba3);
-   nodoPrint(nodo3,print_prueba);
-   
-   nodo nodo4 = newNodo(prueba4);
-   nodoPrint(nodo4,print_prueba);
-   
-   
-   printf("\nCreando arcos...\n");  
-    
-   arco arquito    = newArco(nodo1,nodo2);
-   arco arquitoInv = newArco(nodo2,nodo1);
-   arco arc        = newArco(nodo1,nodo3);
-   
-   printArco(arquito,print_prueba);
-   printf("\n Salto de linea \n");
-   printArco(arquitoInv,print_prueba);
-   printArco(arc,print_prueba);
-   printf("\n Salto de linea \n");
-
-   printf("Comparacion 1: (ESPERADO [1]) %d \nComparacion 2: (ESPERADO [0]) %d \n",
-           arcoEquals(arc,arc,compare_prueba),arcoEquals(arquito,arc,compare_prueba));
- 
-   freeNodo(nodo1,freePrueba);
-   freeNodo(nodo2,freePrueba);
-   freeNodo(nodo3,freePrueba);
-   freeNodo(nodo4,freePrueba);
-   freeArco(arquito);
-   freeArco(arquitoInv);
-   freeArco(arc);  
-   freeGrafo(mi_grafo);
-   
 }

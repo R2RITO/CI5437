@@ -10,6 +10,9 @@
 #ifndef FILE_GRAFO
 #define FILE_GRAFO
 
+#include "Nodo.h"
+#include "Arco.h"
+
 
 /** 
 * Estructura de un Grafo, compuesto por numero de vertices, arcos
