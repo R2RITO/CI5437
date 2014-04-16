@@ -252,6 +252,50 @@ successors get_succ(state s) {
     return res;
 }
 
+/* FUNCION: init
+ * DESC   : Funcion para la inicializacion y creacion del estado raiz
+ * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
+ */
+state init(){
+    /*Inicializacion de las mascaras usadas para computar la representacion
+     * de la cuadricula*/
+    initializeMasks();
+    initializeCompMasks();
+    char* prueba = "14 7 1 9 12 3 6 15 8 11 2 5 10 0 4 13";
+    
+    int k[16];
+    sscanf(prueba,"%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+                   &k[0],&k[1],&k[2],&k[3],&k[4],&k[5],&k[6],&k[7],
+                   &k[8],&k[9],&k[10],&k[11],&k[12],&k[13],&k[14],&k[15]);            
+    
+    int quad_index;
+    int quad_1 = 0; /*almacenamiento de la primera mitad de la cuadricula*/
+    int quad_2 = 0; /*almacenamiento de la segunda mitad de la cuadricula*/
+    int pos_zero = 0; /*posicion del 0 en la cuadricula*/
+    for (quad_index=0; quad_index < 8; quad_index++){
+       int quad_2_index = quad_index+8;
+       
+       /*se recuerda la posicion del 0 en la cuadricula*/
+       if (k[quad_index]==0) {
+            pos_zero = quad_index;
+       }
+       if (k[quad_2_index]==0) {
+            pos_zero = quad_2_index;
+       }
+       /*desplazamiento de los digitos significados, permiten alojar el nuevo
+        *numero entrante de 4 bits*/
+       quad_1 = quad_1 << 4;
+       quad_2 = quad_2 << 4;
+       
+       /*se conservan los bits encendidos de la cuadricula, agregando
+        *la representacion binaria del numero entrante en los ultimos 4 bits*/
+       quad_1 = quad_1 | k[quad_index];
+       quad_2 = quad_2 | k[quad_2_index];
+    }
+   
+    return make_state(quad_1,quad_2,pos_zero);
+}
+
 /* FUNCION: print_state
  * DESC   : Imprime en pantalla la representacion de un estado
  * s      : Estado que se va a imprimir
@@ -290,5 +334,10 @@ void print_state(state s) {
         d = d-4;
     }
     printf("\n");
+}
+
+int main(){
+    state n = init();
+    print_state(n);
 }
 
