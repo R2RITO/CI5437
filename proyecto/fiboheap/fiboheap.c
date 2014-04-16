@@ -5,6 +5,11 @@
 #include <math.h>
 #include "fiboheap.h"
 
+/* FUNCION: make_fib_heap
+ * DESC   : Crea un heap de fibonacci vacio
+ * c      : Funcion de comparacion para comparar los elementos del heap
+ * RETORNA: Un apuntador al nuevo heap de fibonacci
+ */
 fiboheap make_fib_heap(int (*c)(void *a, void *b)) {
     // Reservamos espacio para el fiboheap
     fiboheap fibo = malloc(sizeof(struct _fiboheap));
@@ -16,6 +21,11 @@ fiboheap make_fib_heap(int (*c)(void *a, void *b)) {
 }
 
 
+/* FUNCION: fib_heap_insert
+ * DESC   : Inserta un elemento en el heap de fibonacci
+ * f      : Es el heap en donde se insertara el elemento
+ * val    : Es el apuntador al objeto a insertar en el heap
+ */
 void fib_heap_insert(fiboheap f, void *val) {
 
     node x = make_node(val);
@@ -46,7 +56,11 @@ void fib_heap_insert(fiboheap f, void *val) {
     f->size = (f->size) + 1;
 }
 
-
+/* FUNCION: concatenate
+ * DESC   : Concatena dos listas circulares
+ * a      : Nodo perteneciente a la primera lista circular
+ * b      : Nodo perteneciente a la segunda lista circular
+ */
 void concatenate(node a, node b) {
 
     // En caso de que alguno sea null, retornar
@@ -66,6 +80,12 @@ void concatenate(node a, node b) {
     leftMinB->right  = rightMinA;
 }
 
+/* FUNCION: fib_heap_union
+ * DESC   : Crea un nuevo heap de fibonacci resultado de unir dos
+            heaps de fibonacci
+ * a y b  : heaps de fibonacci, operandos de la union
+ * RETORNA: Un nuevo heap de fibonacci que es la union de a y b
+ */
 fiboheap fib_heap_union(fiboheap a, fiboheap b) {
 
     fiboheap h = make_fib_heap(a->compare);
@@ -98,15 +118,25 @@ fiboheap fib_heap_union(fiboheap a, fiboheap b) {
     return h;
 }
 
-
+/* FUNCION: redondear
+ * DESC   : Funcion que redondea un real a la parte entera por abajo
+ * f      : Real a redondear
+ * RETORNA: La parte entera (por abajo) del numero real
+ */
 int redondear(double f) {
     double res;
     modf(f,&res);
     return (int) res; 
 }
 
-
-void fib_heap_link(fiboheap f, node y, node x) {
+/* FUNCION: fib_heap_link
+ * DESC   : Funcion que hace que un nodo sea padre de otro
+ *          Esta funcion mantiene la relacion de hermanos entre nodos
+            Excepto en la lista de raices (Pues se quita y de alli)
+ * y      : Nodo que sera hijo de x
+ * x      : Nodo que sera padre de y
+ */
+void fib_heap_link(node y, node x) {
 
     // Quitamos al nodo y de la lista de raices
     node prev = y->left;
@@ -132,6 +162,11 @@ void fib_heap_link(fiboheap f, node y, node x) {
     y->mark = 0;
 }
 
+/* FUNCION: contarRaices
+ * DESC   : Cuenta el numero de raices que hay actualmente
+ * f      : Es el heap a contar
+ * RETORNA: El numero de raices en el heap
+ */
 int contarRaices(fiboheap f) {
     int res = 0;
     node actual = f->min;
@@ -146,6 +181,11 @@ int contarRaices(fiboheap f) {
     return res;
 }
 
+/* FUNCION: consolidate
+ * DESC   : La funcion mas importante de todas. 
+ *          Reordena el heap y actualiza el minimo
+ * f      : Es el heap de fibonacci que se desea consolidar
+ */
 void consolidate(fiboheap f) {
     
     // Calculamos el tamano del arreglo auxiliar
@@ -200,7 +240,7 @@ void consolidate(fiboheap f) {
                 x = y;
                 y = aux;
             }
-            fib_heap_link(f,y,x); // AQUI VA FIB_HEAP_LINK(A,y,x)
+            fib_heap_link(y,x); // AQUI VA FIB_HEAP_LINK(A,y,x)
             A[degree] = NULL;
             degree++;
         }
@@ -237,7 +277,11 @@ void consolidate(fiboheap f) {
     }
 }
 
-
+/* FUNCION: fib_heap_extract_min
+ * DESC   : Funcion que extrae el minimo del heap de fibonacci
+ * f      : Heap del cual se va a extraer
+ * RETORNA: El nodo que contiene el minimo elemento del heap
+ */
 node fib_heap_extract_min(fiboheap f) {
 
     node z = f->min;
@@ -277,3 +321,14 @@ node fib_heap_extract_min(fiboheap f) {
     }
     return z;
 }
+
+/* FUNCION: fib_heap_free
+ * DESC   : Funcion que destruye un heap de fibonacci
+ * f      : Heap a destruir
+ */
+void fib_heap_free(fiboheap f) {
+    // FALTA DESTRUIR LOS OBJETOS COMO TAL (LOS VALORES)!!
+    free_node_cascade(f->min);
+    free(f);
+}
+
