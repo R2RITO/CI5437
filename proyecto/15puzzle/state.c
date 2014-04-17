@@ -3,12 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "state.h"
-
-
-/* Estructura para almacenar enteros en 32bits */
-typedef struct _int32 {
-    int val : 32;
-} int32;
+#include "manhattan.h"
 
 /* Arreglo con patrones de cuatro unos consecutivos */
 int32 masks[8];
@@ -52,6 +47,8 @@ state make_state(int q1, int q2, int z) {
     newState -> quad_1 = q1;
     newState -> quad_2 = q2;
     newState -> zero   = z;
+    newState -> dist   = 0;
+    newState -> closed = 0;
     return newState;
 }
 
@@ -238,20 +235,6 @@ state transition(state s, char a) {
     return nState;
 }
 
-/* FUNCION: get_succ
- * DESC   : Funcion que obtiene todos los sucesores de un estado
- * s      : Estado del cual extraer los sucesores
- * RETORNA: Un arreglo con los sucesores del estado s
- */
-successors get_succ(state s) {
-    successors res = malloc(sizeof(struct _successors));
-    res->succ[0] = transition(s,'l');
-    res->succ[1] = transition(s,'r');
-    res->succ[2] = transition(s,'u');
-    res->succ[3] = transition(s,'d');
-    return res;
-}
-
 /* FUNCION: init
  * DESC   : Funcion para la inicializacion y creacion del estado raiz
  * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
@@ -296,6 +279,20 @@ state init(){
     return make_state(quad_1,quad_2,pos_zero);
 }
 
+/* FUNCION: get_succ
+ * DESC   : Funcion que obtiene todos los sucesores de un estado
+ * s      : Estado del cual extraer los sucesores
+ * RETORNA: Un arreglo con los sucesores del estado s
+ */
+successors get_succ(state s) {
+    successors res = malloc(sizeof(struct _successors));
+    res->succ[0] = transition(s,'l');
+    res->succ[1] = transition(s,'r');
+    res->succ[2] = transition(s,'u');
+    res->succ[3] = transition(s,'d');
+    return res;
+}
+
 /* FUNCION: print_state
  * DESC   : Imprime en pantalla la representacion de un estado
  * s      : Estado que se va a imprimir
@@ -336,8 +333,4 @@ void print_state(state s) {
     printf("\n");
 }
 
-int main(){
-    state n = init();
-    print_state(n);
-}
 
