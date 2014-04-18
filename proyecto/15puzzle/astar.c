@@ -8,6 +8,7 @@
 #include "nodos.h"
 #include "lista.h"
 #include "caja.h"
+#include "uthash.h"
 
 /*
 0 2 6 3
@@ -17,22 +18,46 @@
 
 */
 
+
+
 list astar() {
 
     fiboheap q = make_fib_heap(compare_nodo);
-    fib_heap_insert(q,make_root_node(make_state(0x026315A7, 0x49EB8CDF, 0)));
+    fib_heap_insert(q,make_root_node(make_state(0x41238567, 0xC9AB0DEF, 12)));
 
     nodo n;
+    
+    hashval *closed = NULL;
+    hashval *look_up = NULL;
+    hashkey *lookup_key = malloc(sizeof(struct _hashkey));
 
     successors suc;
 
+    unsigned keylen = 64;
+    
+
     while (q->min != NULL) {
         n = fib_heap_extract_min(q);
-        if (((n->estado)->closed != 1) || ((n->g) < ((n->estado)->dist))) {
+        
+        lookup_key -> q1 = (n->estado)->quad_1;
+        lookup_key -> q2 = (n->estado)->quad_2;
 
-            (n->estado)->closed = 1;
-            (n->estado)->dist = (n->g);
+        HASH_FIND(hh, closed, &lookup_key->q1, 64, look_up );
+        printf("Busque: %d ", look_up);
 
+        if ((!look_up) || ((n->g) < (look_up->dist))) {
+
+            if (!look_up) {
+                printf("Cree uno nuevo\n");
+                look_up = malloc(sizeof(struct _hashval));
+                look_up -> q1 = lookup_key->q1;
+                look_up -> q2 = lookup_key->q2;
+                HASH_ADD(hh, closed, q1, keylen, look_up);
+            } else {
+                printf("Reabri un nodo\n");
+            }
+
+            look_up->dist = (n->g);
             if (is_goal(n->estado)) {
                 print_state(n->estado);
                 return extract_solution(n);
