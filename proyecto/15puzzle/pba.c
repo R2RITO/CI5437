@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -32,8 +32,8 @@ main () {
     hashkey *lookup_key = malloc(sizeof(struct _hashkey));
 
     keylen =   offsetof(hashval, q2)       /* offset of last key field */
-             + sizeof(int) - offsetof(hashval,q1);             /* size of last key field */
-
+   /*          + sizeof(int) - offsetof(hashval,q1);             /* size of last key field */
+/*
     printf("Keylen : %u\n", keylen);
 
     lookup_key -> q1 = 1;
@@ -55,4 +55,4 @@ main () {
 
     printf("Valor de look_up: %d\n", look_up);
 
-}
+}*/
