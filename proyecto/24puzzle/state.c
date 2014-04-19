@@ -87,8 +87,8 @@ state make_state(long long q1, long long q2, int z) {
 int is_goal(state s) {
     int64 q1;
     int64 q2;
-    q1.val = 0x00443414;
-    q2.val = 0x31D0952C;
+    q1.val = 0x00443414C74254BC;
+    q2.val = 0x635CF84553A56D70;
     return (q1.val==s->quad_1)&&(q2.val==s->quad_2);
 }
 
@@ -295,7 +295,7 @@ void print_state(state s) {
         if (i%5 == 0) {
             printf("\n");
         }
-        // Imprimimos el valor haciendo los shift correspondientes
+        // Imprimimos el valor haciendo los shift correspondientes 
         printf("%2lld  ", (((s->quad_1)&masks[i].val)>>d)&0x000000000000001F);
         // Se decrementa la cantidad de bits a mover en la siguiente iteracion
         d = d-5;
@@ -304,13 +304,13 @@ void print_state(state s) {
     d = 59;
 
     // Imprimimos el segundo cuadrante
-    for (i=0; i<12; i++) {
+    for (i=12; i<24; i++) {
         // Salto de linea cada vez que se termina de imprimir una linea
         if (i%5 == 0) {
             printf("\n");
         }
         // Imprimimos el valor haciendo los shift correspondientes
-        printf("%2lld  ", (((s->quad_2)&masks[i].val)>>d)&0x000000000000001F);
+        printf("%2lld  ", (((s->quad_2)&masks[i%12].val)>>d)&0x000000000000001F);
         // Se decrementa la cantidad de bits a mover en la siguiente iteracion
         d = d-5;
     }
@@ -329,11 +329,18 @@ void print_state(state s) {
 main() {
     printf("Hola\n");
 
+    initializeMasks();
+    initializeCompMasks();
+
     state s;
     int64 q1;
     int64 q2;
 
-    q1.val = 0x    
+    q1.val = 0x00443414C74254BC;
+    q2.val = 0x635CF84553A56D70;
+
+    s = make_state(q1.val,q2.val,0);
+    print_state(s);
 
 
 }
