@@ -2,13 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 #include "state.h"
-
-
-/* Estructura para almacenar enteros en 32bits */
-typedef struct _int32 {
-    int val : 32;
-} int32;
+#include "manhattan.h"
 
 /* Arreglo con patrones de cuatro unos consecutivos */
 int32 masks[8];
@@ -186,6 +182,7 @@ state moveUD(state s, int d) {
             // Estamos en la cuarta linea del puzzle
             save = (s->quad_2)&masks[(zero+d)%8].val;
             save = save >> 16;
+            save = save&(0x0000FFFF);
             newq1 = (s->quad_2)&cMasks[(zero+d)%8].val;
             newq1 = newq1 | save;
             nState = make_state(s->quad_1,newq1,zero+d);
@@ -238,20 +235,6 @@ state transition(state s, char a) {
     return nState;
 }
 
-/* FUNCION: get_succ
- * DESC   : Funcion que obtiene todos los sucesores de un estado
- * s      : Estado del cual extraer los sucesores
- * RETORNA: Un arreglo con los sucesores del estado s
- */
-successors get_succ(state s) {
-    successors res = malloc(sizeof(struct _successors));
-    res->succ[0] = transition(s,'l');
-    res->succ[1] = transition(s,'r');
-    res->succ[2] = transition(s,'u');
-    res->succ[3] = transition(s,'d');
-    return res;
-}
-
 /* FUNCION: init
  * DESC   : Funcion para la inicializacion y creacion del estado raiz
  * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
@@ -296,6 +279,20 @@ state init(){
     return make_state(quad_1,quad_2,pos_zero);
 }
 
+/* FUNCION: get_succ
+ * DESC   : Funcion que obtiene todos los sucesores de un estado
+ * s      : Estado del cual extraer los sucesores
+ * RETORNA: Un arreglo con los sucesores del estado s
+ */
+successors get_succ(state s) {
+    successors res = malloc(sizeof(struct _successors));
+    res->succ[0] = transition(s,'l');
+    res->succ[1] = transition(s,'r');
+    res->succ[2] = transition(s,'u');
+    res->succ[3] = transition(s,'d');
+    return res;
+}
+
 /* FUNCION: print_state
  * DESC   : Imprime en pantalla la representacion de un estado
  * s      : Estado que se va a imprimir
@@ -335,9 +332,37 @@ void print_state(state s) {
     }
     printf("\n");
 }
+/*
 
-int main(){
-    state n = init();
-    print_state(n);
+main() {
+
+    initializeMasks();
+    initializeCompMasks();
+
+    srand(time(NULL));
+    int r = rand();
+    char acciones[4] = {'l','r','u','d'};
+
+    state nuevo = make_state(0x41238567, 0xC9AB0DEF, 12);
+
+    int i;
+
+    state next;
+
+    print_state(nuevo);
+
+    print_state(transition(nuevo,'u'));
+    print_state(transition(nuevo,'r'));
+
+    for (i=0; i<10000; i++) {
+        next = transition(nuevo,acciones[rand()%4]);
+        if (next) {
+            
+            print_state(next);
+            nuevo = next;
+        }
+    }
+
+
 }
-
+*/

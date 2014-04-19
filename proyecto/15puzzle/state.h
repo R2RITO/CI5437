@@ -13,6 +13,11 @@ typedef struct _successors {
     state succ[4];
 } *successors;
 
+/* Estructura para almacenar enteros en 32bits */
+typedef struct _int32 {
+    int val : 32;
+} int32;
+
 /* FUNCION: make_state
  * DESC   : Funcion para la creacion de un nuevo estado 
  * q1     : Representacion en entero de las primeras 8 casillas 
