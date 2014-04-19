@@ -183,6 +183,7 @@ state moveLR(state s, int d) {
         
         } else if ((zero == 23) && (d > 0)) {
 
+
             // Tomar los ultimos 4 bits del primer cuadrante (casilla 24)
             save.val = (s -> quad_1) & masks[12].val;
 
@@ -196,7 +197,7 @@ state moveLR(state s, int d) {
             /* En "save" esta el valor de la casilla 24, ahora hay que mover
                el cero y copiar el valor en la casilla 23 */
             
-            newq2.val = (s -> quad_2) | (save.val);
+            newq2.val = (s -> quad_2) | ((save.val) << 4);
 
             /* Mover el cero */
 
@@ -333,18 +334,19 @@ main() {
     initializeCompMasks();
 
     state s;
+    state news;
     int64 q1;
     int64 q2;
-
+/*
     q1.val = 0x00443214C74254BC;
     q2.val = 0x635CF84553A56D70;
 
     s = make_state(q1.val,q2.val,0);
     print_state(s);
 
-    state news = transition(s,'r');
+    news = transition(s,'r');
     print_state(news);
-
+*/
     /*
     int i = 0;
     for (i=0; i<7; i++) {
@@ -352,11 +354,32 @@ main() {
         print_state(news);
     }*/
 
-
+/*
     q1.val = 0x58443214C742540C;
     q2.val = 0x635CF84553A56D70;
 
-    s = make_state(q1.val,q2.val,0);
+    s = make_state(q1.val,q2.val,11);
     print_state(s);
+
+    news = transition(s,'r');
+    print_state(news);
+
+    news = transition(news,'l');
+    print_state(news);*/
+
+    printf("Prueba del 24 \n");
+
+    q1.val = 0xC0443214C74254B0;
+    q2.val = 0x635CF84553A56D70;
+
+    s = make_state(q1.val,q2.val,24);
+    print_state(s);
+
+    news = transition(s,'l');
+    print_state(news);
+
+    news = transition(news,'r');
+    print_state(news);
+
 
 }

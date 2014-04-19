@@ -5,7 +5,7 @@
 typedef struct _state {
     unsigned long long quad_1 : 64; /* Representa el primer cuadrante   */
     unsigned long long quad_2 : 64; /* Representa el segundo cuadrante  */
-    unsigned int zero   :  4; /* Representa la posicion del cero  */
+    unsigned int zero   :  5; /* Representa la posicion del cero  */
 } *state;
 
 /* Arreglos de sucesores */
