@@ -45,14 +45,22 @@ void initializeMasks() {
 
 /* Metodo para inicializar el arreglo de complementos */
 void initializeCompMasks() {
-    /*
-    cMasks_q1[0].val = 0x07FFFFFF;
-    cMasks_q1[1].val = 0xF83FFFFF;
-    cMasks_q1[2].val = 0xFFC1FFFF;
-    cMasks_q1[3].val = 0xFFFE0FFF;
-    cMasks_q1[4].val = 0xFFFFF07F;
-    cMasks_q1[5].val = 0xFFFFF083;
-    */
+    
+    cMasks[0].val  = 0x07FFFFFFFFFFFFFF;
+    cMasks[1].val  = 0xF83FFFFFFFFFFFFF;
+    cMasks[2].val  = 0xFFC1FFFFFFFFFFFF;
+    cMasks[3].val  = 0xFFFE0FFFFFFFFFFF;
+    cMasks[4].val  = 0xFFFFF07FFFFFFFFF;
+    cMasks[5].val  = 0xFFFFFF83FFFFFFFF;
+    cMasks[6].val  = 0xFFFFFFFC1FFFFFFF;
+    cMasks[7].val  = 0xFFFFFFFFE0FFFFFF;
+    cMasks[8].val  = 0xFFFFFFFFFF07FFFF;
+    cMasks[9].val  = 0xFFFFFFFFFFF83FFF;
+    cMasks[10].val = 0xFFFFFFFFFFFFC1FF;
+    cMasks[11].val = 0xFFFFFFFFFFFFFE0F;
+    cMasks[12].val = 0xFFFFFFFFFFFFFFF0;
+    cMasks[13].val = 0xFFFFFFFFFFFFFFFE;
+    
 }
 
 /* FUNCION: make_state
@@ -221,8 +229,111 @@ state moveLR(state s, int d) {
     return nState;
 }
 
+
+/* FUNCION: transition
+ * DESC   : Funcion para calcular la transicion de un estado a otro
+ * s      : Estado a partir del cual hacer transicion
+ * a      : Accion a realizar: 'l', 'r', 'd', 'u' (En ingles)
+ * RETORNA: Un nuevo estado resultado de aplicar el movimiento a en s\
+ */
+state transition(state s, char a) {
+
+    int64 save;
+    int64 newq;
+    int zero = s->zero;
+    state nState = NULL;
+    save.val = 0;
+    newq.val = 0;
+
+    // Siempre estamos moviendo el cero
+    switch (a) {
+        case 'l':
+                // Movimiento hacia la izquierda
+                if (zero%5 != 0) {
+                    nState = moveLR(s,-1);
+                }
+                break;
+        case 'r':
+                // Movimiento hacia la derecha
+                if ((zero+1)%5 != 0) {
+                    nState = moveLR(s,1);
+                }
+                break;
+/*
+        case 'd':
+                // Movimiento hacia abajo
+                if (zero+4 < 16) {
+                    nState = moveUD(s,4);
+                }
+                break;
+        case 'u':
+                // Movimiento hacia arriba
+                if (zero-4 >= 0) {
+                    nState = moveUD(s,-4);
+                }
+                break;
+*/
+    }
+    return nState;
+}
+
+/* FUNCION: print_state
+ * DESC   : Imprime en pantalla la representacion de un estado
+ * s      : Estado que se va a imprimir
+ */
+void print_state(state s) {
+    // Si el estado es null, retornar
+    if (s==NULL) return;
+
+    int i;
+    // Declaramos un d entero para hacer los shift necesarios
+    int d = 59;
+
+    // Imprimimos el primer cuadrante
+    for (i=0; i<12; i++) {
+        // Salto de linea cada vez que se termina de imprimir una linea
+        if (i%5 == 0) {
+            printf("\n");
+        }
+        // Imprimimos el valor haciendo los shift correspondientes
+        printf("%2lld  ", (((s->quad_1)&masks[i].val)>>d)&0x000000000000001F);
+        // Se decrementa la cantidad de bits a mover en la siguiente iteracion
+        d = d-5;
+    }
+    // Reinicializamos el numero de bits a mover
+    d = 59;
+
+    // Imprimimos el segundo cuadrante
+    for (i=0; i<12; i++) {
+        // Salto de linea cada vez que se termina de imprimir una linea
+        if (i%5 == 0) {
+            printf("\n");
+        }
+        // Imprimimos el valor haciendo los shift correspondientes
+        printf("%2lld  ", (((s->quad_2)&masks[i].val)>>d)&0x000000000000001F);
+        // Se decrementa la cantidad de bits a mover en la siguiente iteracion
+        d = d-5;
+    }
+
+    // Imprimir la casilla 24
+    int64 aux;
+    aux.val = ((s -> quad_1) & masks[12].val) << 1;
+    aux.val = aux.val | ((s -> quad_2) & masks[13].val);
+
+    printf("%2lld  ", aux.val);
+
+    printf("\n");
+}
+
+
 main() {
-    printf("Hola\n");    
+    printf("Hola\n");
+
+    state s;
+    int64 q1;
+    int64 q2;
+
+    q1.val = 0x    
 
 
 }
