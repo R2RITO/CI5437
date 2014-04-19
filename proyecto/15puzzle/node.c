@@ -23,30 +23,32 @@ node make_fib_node(void *val) {
 }
 
 
-/* FUNCION: free_node
+/* FUNCION: free_fib_node
  * DESC   : Destruye un nodo
  * n      : Nodo a desturir
  */
-void free_node(node n) {
+void free_fib_node(node n, void (*f)(void *a)) {
+    f(n->key);
     free(n);
 }
 
-/* FUNCION: free_node_cascade
+/* FUNCION: free_fib_node_cascade
  * DESC   : Destruye un nodo y sus familiares
  * n      : Nodo a destruir
  */
-void free_node_cascade(node n) {
+void free_fib_node_cascade(node n, void (*f)(void *a)) {
     // Recursivamente vamos a los hijos
     if (n->child != NULL) {
-        free_node_cascade(n->child);
+        free_fib_node_cascade(n->child, f);
     }
     // Hacemos que el ultimo apunte a nulo
     (n->left)->right = NULL;
     // Vamos a eliminar a sus hermanos
     if (n->right != NULL) {
-        free_node_cascade(n->right);
+        free_fib_node_cascade(n->right, f);
     }
     // Si ya no tiene ni hijos, ni mas hermanos, liberamos
+    f(n->key);
     free(n);
 }
 

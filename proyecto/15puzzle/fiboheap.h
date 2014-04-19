@@ -10,11 +10,14 @@
  */
 typedef int (*funCompare)(void *a, void *b);
 
+typedef void (*freeFunction)(void *a);
+
 /* Estructura para un heap de fibonacci */
 typedef struct _fiboheap {
-    int  size;          // Numero de nodos en el heap
-    node min;           // Apuntador al minimo de los elementos del heap
-    funCompare compare; // Funcion para comparar entre elementos del heap
+    int  size;           // Numero de nodos en el heap
+    node min;            // Apuntador al minimo de los elementos del heap
+    funCompare compare;  // Funcion para comparar entre elementos del heap
+    freeFunction freeFun;// Funcion para liberar los elementos en los nodos
 } *fiboheap;
 
 /* FUNCION: make_fib_heap
@@ -22,7 +25,7 @@ typedef struct _fiboheap {
  * c      : Funcion de comparacion para comparar los elementos del heap
  * RETORNA: Un apuntador al nuevo heap de fibonacci
  */
-fiboheap make_fib_heap(int (*c)(void *a, void *b));
+fiboheap make_fib_heap(int (*c)(void *a, void *b), void (*f)(void *a));
 
 /* FUNCION: fib_heap_insert
  * DESC   : Inserta un elemento en el heap de fibonacci
@@ -51,4 +54,5 @@ void* fib_heap_extract_min(fiboheap f);
  * f      : Heap a destruir
  */
 void fib_heap_free(fiboheap f);
+
 #endif

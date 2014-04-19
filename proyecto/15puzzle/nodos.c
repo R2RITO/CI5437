@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include "lista.h"
 #include "state.h"
 #include "manhattan.h"
@@ -9,13 +11,10 @@
    el nodo n */
 
 int cost(state s, action a) {
-
     /* Esta funcion debe retornar el costo de utilizar
        la accion a desde el estado s, para el 15-puzzle
        es constante */
-
     return 1;
-
 }
 
 
@@ -27,7 +26,6 @@ nodo make_root_node(state s) {
     (*n).parent = NULL;
     (*n).a      = 0;
     (*n).g      = 0;
-
     return n;
 }
 
@@ -39,7 +37,6 @@ nodo make_node(nodo n, action a, state s) {
     (*nuevo_n).parent  = n;
     (*nuevo_n).a       = a;
     (*nuevo_n).g       = (*n).g + cost((*n).estado,a);
-
     return nuevo_n;
 
 }
@@ -53,12 +50,23 @@ list extract_solution(nodo n) {
         addListElem(q,&((*n).a));
         n = (*n).parent;
     }
-
     return q;
 }
 
+/* FUNCION: Funcion que libera un nodo
+ * n      : Nodo a ser liberado
+ * f      : Funcion para liberar el estado en el nodo
+ */ 
+void free_nodo(nodo n, void (*f)(void *a)) {
+    f(n->estado);
+    free(n);
+}
 
-
+/* FUNCION: compare_nodo
+ * nx     : Primero nodo a comparar
+ * ny     : Segundo nodo a comparar
+ * RETORNA: Negativo si nx < ny, Cero si nx = ny, Positivo si nx > ny
+ */
 int compare_nodo(void *nx, void *ny) {
     nodo x = (nodo) nx;
     nodo y = (nodo) ny;

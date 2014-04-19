@@ -9,20 +9,9 @@
 #include "nodos.h"
 #include "lista.h"
 #include "caja.h"
-#include "uthash.h"
+#include "hash.h"
 
-#define INFINITO 51
-
-typedef struct {
-  int q1 : 32;
-  int q2 : 32;
-} hashkey;
-
-typedef struct {
-    hashkey key;
-    int dist;
-    UT_hash_handle hh;
-} hashval;
+#define INFINITO 100
 
 typedef struct {
     list sol;
@@ -77,6 +66,11 @@ plan DFS_acotado(nodo n, int t) {
 list idastar() {
     // 079 : 0 1 9 7 11 13 5 3 14 12 4 2 8 6 10 15 : 28 30 32 34 36 38 40 42 441778 42 0.01 44177800
     nodo n = make_root_node(make_state(0x0197BD53, 0xEC4286AF, 0));
+    // 001 : 53 0.65 EXPLOTO DURISIMO
+    //nodo n = make_root_node(make_state(0x7F82D63C, 0xB04A951E, 9));
+    // 005 : 56 5.24 
+    //nodo n = make_root_node(make_state(0x5CA7FBE0, 0x821D3496, 7));
+
     int t = manhattan(n->estado);
     plan actual;
     while (t < INFINITO) {
@@ -102,7 +96,7 @@ main () {
 
     printf("EMPIEZO A* \n");
     clock_t start2 = clock();
-    list res2 = astar();
+    list res2 = (list) astar();
     clock_t end2 = clock();
     printf("TERMINO A*\n");
 

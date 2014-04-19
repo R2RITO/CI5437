@@ -3,20 +3,15 @@
 
 /* Representacion de un estado de un 15-PUZZLE */
 typedef struct _state {
-    unsigned int quad_1 : 32; /* Representa el cuadrante superior */
-    unsigned int quad_2 : 32; /* Representa el cuadrante inferior */
-    unsigned int zero   :  4; /* Representa la posicion del cero  */
+    unsigned int quad_1; /* Representa el cuadrante superior */
+    unsigned int quad_2; /* Representa el cuadrante inferior */
+    unsigned int zero:4; /* Representa la posicion del cero  */
 } *state;
 
 /* Arreglos de sucesores */
 typedef struct _successors {
     state succ[4];
 } *successors;
-
-/* Estructura para almacenar enteros en 32bits */
-typedef struct _int32 {
-    int val : 32;
-} int32;
 
 /* FUNCION: make_state
  * DESC   : Funcion para la creacion de un nuevo estado 
@@ -54,5 +49,12 @@ successors get_succ(state s);
  * s      : Estado que se va a imprimir
  */
 void print_state(state s);
+
+
+/* FUNCION: free_state
+ * DESC   : Libera el espacio reservado por un estado
+ * sp     : Estado a ser liberado
+ */
+void free_state(void *sp);
 
 #endif

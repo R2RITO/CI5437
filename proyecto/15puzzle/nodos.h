@@ -35,6 +35,14 @@ nodo make_node(nodo n, action a, state s);
 /* Extraer el camino desde el nodo hasta la raiz */
 list extract_solution(nodo n);
 
+
+
+/* FUNCION: Funcion que libera un nodo
+ * n      : Nodo a ser liberado
+ * f      : Funcion para liberar el estado en el nodo
+ */ 
+void free_nodo(nodo n, void (*f)(void *a));
+
 int compare_nodo(void *x, void *y);
 
 
