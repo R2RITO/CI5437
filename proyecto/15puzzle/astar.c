@@ -10,6 +10,8 @@
 #include "caja.h"
 #include "uthash.h"
 
+#define INFINITO 51
+
 /*
 0 2 6 3
 1 5 A 7
@@ -31,16 +33,21 @@ typedef struct {
 
 list astar() {
     fiboheap q = make_fib_heap(compare_nodo);
-    fib_heap_insert(q,make_root_node(make_state(0x41238567, 0xC9AB0DEF, 12)));
+    fib_heap_insert(q,make_root_node(make_state(0x0197BD53, 0xEC4286AF, 0)));
+
+    //fib_heap_insert(q,make_root_node(make_state(0x09236817, 0x4DFBCE5A, 0)));
+
 
     hashval look_up_key,*look_up,*closed = NULL;
     unsigned int keylen = sizeof(hashkey);
     
+    int i = 0;   
+ 
     nodo n;
     successors suc;
     while (q->min) {
         n = fib_heap_extract_min(q);
-        memset(&look_up_key, 0, sizeof(hashval));
+        //memset(&look_up_key, 0, sizeof(hashval));
         look_up_key.key.q1 = (n->estado)->quad_1;
         look_up_key.key.q2 = (n->estado)->quad_2;
         /*state dummy = make_state(look_up_key.key.q1,look_up_key.key.q2,n->estado->zero);
@@ -48,19 +55,23 @@ list astar() {
         print_state(dummy);*/
 
         HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
-        /*if (look_up) {
+/*        if (look_up) {
            printf("esta config ya estaba\n");
-           sleep(7);
         } else {
            printf("look_up fue nulo\n");
-        } */       
-        
+        }       
+  */      
+/*        if (i%10000==0) {
+            printf("Nodos explorados: %d\n",i);
+        }
+        i++;
+*/
         if ((!look_up) || ((n->g) < (look_up->dist))) {
             //printf("entre\n");
             if (!look_up) {
                 //printf("Cree uno nuevo\n");
                 look_up = malloc(sizeof(hashval));
-                memset(look_up, 0, sizeof(hashval));
+                //memset(look_up, 0, sizeof(hashval));
                 look_up ->key.q1 = look_up_key.key.q1;
                 look_up ->key.q2 = look_up_key.key.q2;
                 HASH_ADD(hh, closed,key, keylen,look_up);
@@ -68,27 +79,26 @@ list astar() {
 
             look_up->dist = (n->g);
             if (is_goal(n->estado)) {
-                print_state(n->estado);
                 return extract_solution(n);
             }
             suc = get_succ(n->estado);
-            if ((suc->succ[0]) && (manhattan(suc->succ[0]) < 100)) {
+            if ((suc->succ[0]) && (manhattan(suc->succ[0]) < INFINITO)) {
                 fib_heap_insert(q,make_node(n,'l',suc->succ[0]));
             }
-            if ((suc->succ[1]) && (manhattan(suc->succ[1]) < 100)) {
+            if ((suc->succ[1]) && (manhattan(suc->succ[1]) < INFINITO)) {
                 fib_heap_insert(q,make_node(n,'r',suc->succ[1]));
             }
-            if ((suc->succ[2]) && (manhattan(suc->succ[2]) < 100)) {
+            if ((suc->succ[2]) && (manhattan(suc->succ[2]) < INFINITO)) {
                 fib_heap_insert(q,make_node(n,'u',suc->succ[2]));
             }
-            if ((suc->succ[3]) && (manhattan(suc->succ[3]) < 100)) {
+            if ((suc->succ[3]) && (manhattan(suc->succ[3]) < INFINITO)) {
                 fib_heap_insert(q,make_node(n,'d',suc->succ[3]));
             }
         }
     }
     return NULL;
 }    
-
+/*
 main () {
 
     initializeMasks();
@@ -106,4 +116,4 @@ main () {
         act = getNextBox(act);
     }
     printf("\n");
-}
+}*/

@@ -6,9 +6,6 @@ typedef struct _state {
     unsigned int quad_1 : 32; /* Representa el cuadrante superior */
     unsigned int quad_2 : 32; /* Representa el cuadrante inferior */
     unsigned int zero   :  4; /* Representa la posicion del cero  */
-    unsigned int dist       ; /* Representa la distancia */
-    unsigned int closed :  1; /* Determina si el estado esta cerrado */
-    
 } *state;
 
 /* Arreglos de sucesores */

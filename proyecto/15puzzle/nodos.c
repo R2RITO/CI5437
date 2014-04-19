@@ -50,11 +50,9 @@ list extract_solution(nodo n) {
     list q = newList();
     
     while ((*n).parent != NULL) {
-        print_state((*n).estado);
         addListElem(q,&((*n).a));
         n = (*n).parent;
     }
-    print_state((*n).estado);
 
     return q;
 }
