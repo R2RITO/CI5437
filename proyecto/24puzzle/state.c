@@ -241,7 +241,7 @@ state transition(state s, char a) {
     int64 save;
     int64 newq;
     int zero = s->zero;
-    state nState = NULL;
+    state nState = s;
     save.val = 0;
     newq.val = 0;
 
@@ -342,5 +342,19 @@ main() {
     s = make_state(q1.val,q2.val,0);
     print_state(s);
 
+    state news = transition(s,'r');
+    print_state(news);
+
+    int i = 0;
+    for (i=0; i<7; i++) {
+        news = transition(news,'r');
+        print_state(news);
+    }
+
+
+    q1.val = 0x00443414C74254BC;
+    q2.val = 0x635CF84553A56D70;
+
+    s = make_state(q1.val,q2.val,0);
 
 }
