@@ -87,7 +87,7 @@ state make_state(long long q1, long long q2, int z) {
 int is_goal(state s) {
     int64 q1;
     int64 q2;
-    q1.val = 0x00443414C74254BC;
+    q1.val = 0x00443214C74254BC;
     q2.val = 0x635CF84553A56D70;
     return (q1.val==s->quad_1)&&(q2.val==s->quad_2);
 }
@@ -336,7 +336,7 @@ main() {
     int64 q1;
     int64 q2;
 
-    q1.val = 0x00443414C74254BC;
+    q1.val = 0x00443214C74254BC;
     q2.val = 0x635CF84553A56D70;
 
     s = make_state(q1.val,q2.val,0);
@@ -345,16 +345,18 @@ main() {
     state news = transition(s,'r');
     print_state(news);
 
+    /*
     int i = 0;
     for (i=0; i<7; i++) {
         news = transition(news,'r');
         print_state(news);
-    }
+    }*/
 
 
-    q1.val = 0x00443414C74254BC;
+    q1.val = 0x58443214C742540C;
     q2.val = 0x635CF84553A56D70;
 
     s = make_state(q1.val,q2.val,0);
+    print_state(s);
 
 }
