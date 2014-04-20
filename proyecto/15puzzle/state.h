@@ -57,4 +57,10 @@ void print_state(state s);
  */
 void free_state(void *sp);
 
+/* FUNCION: init
+ * DESC   : Funcion para la inicializacion y creacion del estado raiz
+ * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
+ */
+state init(char* input);
+
 #endif

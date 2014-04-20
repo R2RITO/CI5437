@@ -239,15 +239,15 @@ state transition(state s, char a) {
  * DESC   : Funcion para la inicializacion y creacion del estado raiz
  * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
  */
-state init(){
+state init(char* input){
     /*Inicializacion de las mascaras usadas para computar la representacion
      * de la cuadricula*/
     initializeMasks();
     initializeCompMasks();
-    char* prueba = "14 7 1 9 12 3 6 15 8 11 2 5 10 0 4 13";
+    printf("lainstancia actual es %s",input);
     
     int k[16];
-    sscanf(prueba,"%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+    sscanf(input," %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d \n",
                    &k[0],&k[1],&k[2],&k[3],&k[4],&k[5],&k[6],&k[7],
                    &k[8],&k[9],&k[10],&k[11],&k[12],&k[13],&k[14],&k[15]);            
     

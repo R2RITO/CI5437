@@ -1,43 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include "fiboheap.h"
-#include "state.h"
-#include "nodos.h"
-#include "lista.h"
-#include "caja.h"
-#include "uthash.h"
-
-#define INFINITO 51
-
-/* Estructuras para la tabla de hash */
-
-/* Estructura para la clave de la tabla*/
-typedef struct {
-  int q1;
-  int q2;
-} hashkey;
-
-/* Estructura para los valores de la tabla */
-typedef struct {
-    hashkey key;
-    int dist;
-    UT_hash_handle hh;
-} hashval;
-
+#include "astar.h"
 
 /* FUNCION: astar
  * s      : Estado inicial s
  * DESC   : Implementacion del algoritmo A*
  * RETORNA: Una lista con el mejor camino del estado s al goal
  */
-list astar() {
+list astar(state initial_state) {
 
     /* Se crea la cola de prioridades */
     fiboheap q = make_fib_heap(compare_nodo, free_state); // LA FUNCION FREE_STATE NO SE LE DEBERIA PASAR, CAMBIAR ESTO
     /* Se inserta en el heap al estado inicial */
-    fib_heap_insert(q,make_root_node(make_state(0x0197BD53, 0xEC4286AF, 0)));
+    fib_heap_insert(q,make_root_node(initial_state));
 
     /* Se declaran variables para el conjunto de nodos cerrados */
     /* Closed es una tabla de hash donde estaran los nodos cerrados */

@@ -1,38 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
-
-#include "fiboheap.h"
-#include "state.h"
-#include "nodos.h"
-#include "lista.h"
-#include "caja.h"
-#include "uthash.h"
-
-#define INFINITO 100
-
-typedef struct {
-    list sol;
-    int tp;
-} plan;
-
-typedef struct {
-  int q1;
-  int q2;
-} hashkey;
-
-typedef struct {
-    hashkey key;
-    int dist;
-    nodo n;
-    UT_hash_handle hh;
-} hashval;
+#include "idastar.h"
 
 char actions[4] = {'l','r','u','d'};
 char cActions[4] = {'r','l','d','u'};
-
 hashval look_up_key,*look_up,*IDAHash = NULL;
 unsigned int keylen = sizeof(hashkey);
 
@@ -119,51 +88,4 @@ list idastar() {
         t = actual.tp;
     }
     return NULL;
-}
-
-
-
-main () {
-
-    initializeMasks();
-    initializeCompMasks();
-
-/*    printf("EMPIEZO IDA*!!\n");
-    clock_t start = clock(); 
-    list res = idastar();
-    clock_t end = clock();
-    printf("TERMINO IDA*!!\n");
-*/
-    printf("EMPIEZO A* \n");
-    clock_t start2 = clock();
-    list res2 = (list) astar();
-    clock_t end2 = clock();
-    printf("TERMINO A*\n");
-
- //   int tam = res -> size;
-    int i;
-
-    box act;
-
-  /*  printf("IDA* se tardo: %f\n", (float)(end-start)/CLOCKS_PER_SEC);
-    printf("Tiempo invertido en manhattan: %f\n", (float)mte/CLOCKS_PER_SEC);
-    printf("Tiempo invertido sacando sucesores: %f\n", (float)ste/CLOCKS_PER_SEC);
-    */printf("A* se tardo: %f\n", (float)(end2-start2)/CLOCKS_PER_SEC);
-//    printf("\nTam de la lista: %d %d\n", tam, res2->size);
-/*
-    printf("Lista 1: "); 
-    act = res -> first;
-    for (i=0; i<tam; i++) {
-        printf("%s ", getElemBox(act));
-        act = getNextBox(act);
-    }
-    printf("\n");
-*/
-    printf("Lista 2: ");
-    act = res2 -> first;
-    for (i=0; i<res2->size; i++) {
-        printf("%s ", getElemBox(act));
-        act = getNextBox(act);
-    }
-    printf("\n");
 }
