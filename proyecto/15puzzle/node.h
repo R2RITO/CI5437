@@ -25,14 +25,16 @@ node make_fib_node(void *val);
 
 /* FUNCION: free_node
  * DESC   : Destruye un nodo
+ * f      : Funcion para liberar el valor del nodo
  * n      : Nodo a desturir
  */
-void free_node(node n);
+void free_fib_node(node n, void (*f)(void *a));
 
 
-/* FUNCION: free_node_cascade
+/* FUNCION: free_fib_node_cascade
  * DESC   : Destruye un nodo y sus familiares
+ * f      : Funcion para liberar el valor del nodo
  * n      : Nodo a destruir
  */
-void free_node_cascade(node n);
+void free_fib_node_cascade(node n, void (*f)(void *a));
 #endif

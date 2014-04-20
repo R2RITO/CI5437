@@ -7,33 +7,33 @@
 #include "manhattan.h"
 
 /* Arreglo con patrones de cuatro unos consecutivos */
-int32 masks[8];
+int masks[8];
 
 /* Arreglo con el complemento de cada patron del arreglo anterior*/
-int32 cMasks[8];
+int cMasks[8];
 
 /* Metodo para inicializar el arreglo de mascaras */
 void initializeMasks() {
-    masks[0].val = 0xF0000000;
-    masks[1].val = 0x0F000000;
-    masks[2].val = 0x00F00000;
-    masks[3].val = 0x000F0000;
-    masks[4].val = 0x0000F000;
-    masks[5].val = 0x00000F00;
-    masks[6].val = 0x000000F0;
-    masks[7].val = 0x0000000F;
+    masks[0] = 0xF0000000;
+    masks[1] = 0x0F000000;
+    masks[2] = 0x00F00000;
+    masks[3] = 0x000F0000;
+    masks[4] = 0x0000F000;
+    masks[5] = 0x00000F00;
+    masks[6] = 0x000000F0;
+    masks[7] = 0x0000000F;
 }
 
 /* Metodo para inicializar el arreglo de complementos */
 void initializeCompMasks() {
-    cMasks[0].val = 0x0FFFFFFF;
-    cMasks[1].val = 0xF0FFFFFF;
-    cMasks[2].val = 0xFF0FFFFF;
-    cMasks[3].val = 0xFFF0FFFF;
-    cMasks[4].val = 0xFFFF0FFF;
-    cMasks[5].val = 0xFFFFF0FF;
-    cMasks[6].val = 0xFFFFFF0F;
-    cMasks[7].val = 0xFFFFFFF0;
+    cMasks[0] = 0x0FFFFFFF;
+    cMasks[1] = 0xF0FFFFFF;
+    cMasks[2] = 0xFF0FFFFF;
+    cMasks[3] = 0xFFF0FFFF;
+    cMasks[4] = 0xFFFF0FFF;
+    cMasks[5] = 0xFFFFF0FF;
+    cMasks[6] = 0xFFFFFF0F;
+    cMasks[7] = 0xFFFFFFF0;
 }
 
 /* FUNCION: make_state
@@ -57,11 +57,11 @@ state make_state(int q1, int q2, int z) {
  * RETORNA: Devuelve 1 si es goal. 0 En caso contrario
  */
 int is_goal(state s) {
-    int32 q1;
-    int32 q2;
-    q1.val = 0x01234567;
-    q2.val = 0x89ABCDEF;
-    return (q1.val==s->quad_1)&&(q2.val==s->quad_2);
+    int q1;
+    int q2;
+    q1 = 0x01234567;
+    q2 = 0x89ABCDEF;
+    return (q1==s->quad_1)&&(q2==s->quad_2);
 }
 
 /* FUNCION: moveLR
@@ -82,7 +82,7 @@ state moveLR(state s, int d) {
 
     if (zero < 8) {
         // Si estamos en el primer cuadrante
-        save = (s->quad_1)&masks[zero+d].val;
+        save = (s->quad_1)&masks[zero+d];
         if ( d < 0 ) {
             // Si el movimiento es a la izquierda
             save = save >> 4;
@@ -91,12 +91,12 @@ state moveLR(state s, int d) {
             // Si el movimiento es a la derecha
             save = save << 4;
         }
-        newq = (s->quad_1)&cMasks[zero+d].val;
+        newq = (s->quad_1)&cMasks[zero+d];
         newq = newq | save;
         nState = make_state(newq,s->quad_2, zero+d);
     } else {
         // Si estamos en el segundo cuadrante
-        save = (s->quad_2)&masks[(zero+d)%8].val;
+        save = (s->quad_2)&masks[(zero+d)%8];
         if ( d < 0 ) {
             // Si el movimiento es a la izquierda
             save = save >> 4;
@@ -105,7 +105,7 @@ state moveLR(state s, int d) {
             // Si el movimiento es a la derecha
             save = save << 4;
         }
-        newq = (s->quad_2)&cMasks[(zero+d)%8].val;
+        newq = (s->quad_2)&cMasks[(zero+d)%8];
         newq = newq | save;
         nState = make_state(s->quad_1, newq, zero+d);
     }                    
@@ -134,9 +134,9 @@ state moveUD(state s, int d) {
     switch (caso) {
         case 0:
             // Estamos en la primera linea del puzzle
-            save = (s->quad_1)&masks[zero+d].val;
+            save = (s->quad_1)&masks[zero+d];
             save = save << 16;
-            newq1 = (s->quad_1)&cMasks[zero+d].val;
+            newq1 = (s->quad_1)&cMasks[zero+d];
             newq1 = newq1 | save;
             nState = make_state(newq1,s->quad_2,zero+d);
             break;
@@ -144,19 +144,19 @@ state moveUD(state s, int d) {
             // Estamos en la segunda linea del puzzle
             if ( d < 0 ) {
                 // Si el movimiento es arriba
-                save = (s->quad_1)&masks[(zero+d)%8].val;
+                save = (s->quad_1)&masks[(zero+d)%8];
                 save = save >> 16;
                 save = save&(0x0000FFFF);
-                newq1 = (s->quad_1)&cMasks[(zero+d)%8].val;
+                newq1 = (s->quad_1)&cMasks[(zero+d)%8];
                 newq1 = newq1 | save;
                 nState = make_state(newq1, s->quad_2, zero+d);
             } else {
                 // Si el movimiento es hacia abajo
-                save = (s->quad_2)&masks[(zero+d)%8].val;
+                save = (s->quad_2)&masks[(zero+d)%8];
                 save = save >> 16;
                 save = save&(0x0000FFFF);
                 newq1 = (s->quad_1) | save;
-                newq2 = (s->quad_2)&cMasks[(zero+d)%8].val;
+                newq2 = (s->quad_2)&cMasks[(zero+d)%8];
                 nState = make_state(newq1,newq2,zero+d);
             }
             break;
@@ -164,26 +164,26 @@ state moveUD(state s, int d) {
             // Estamos en la tercera linea del puzzle
             if ( d < 0 ) {
                 // Si el movimiento es hacia arriba
-                save = (s->quad_1)&masks[(zero+d)%8].val;
+                save = (s->quad_1)&masks[(zero+d)%8];
                 save = save << 16;
-                newq1 = (s->quad_1)&cMasks[(zero+d)%8].val;
+                newq1 = (s->quad_1)&cMasks[(zero+d)%8];
                 newq2 = (s->quad_2) | save;
                 nState = make_state(newq1,newq2,zero+d);
             } else {
                 // Si el movimiento es hacia abajo
-                save = (s->quad_2)&masks[(zero+d)%8].val;
+                save = (s->quad_2)&masks[(zero+d)%8];
                 save = save << 16;
-                newq2 = (s->quad_2)&cMasks[(zero+d)%8].val;
+                newq2 = (s->quad_2)&cMasks[(zero+d)%8];
                 newq2 = newq2 | save;
                 nState = make_state(s->quad_1,newq2,zero+d);
             }
             break;
         case 3:
             // Estamos en la cuarta linea del puzzle
-            save = (s->quad_2)&masks[(zero+d)%8].val;
+            save = (s->quad_2)&masks[(zero+d)%8];
             save = save >> 16;
             save = save&(0x0000FFFF);
-            newq1 = (s->quad_2)&cMasks[(zero+d)%8].val;
+            newq1 = (s->quad_2)&cMasks[(zero+d)%8];
             newq1 = newq1 | save;
             nState = make_state(s->quad_1,newq1,zero+d);
             break;
@@ -239,15 +239,15 @@ state transition(state s, char a) {
  * DESC   : Funcion para la inicializacion y creacion del estado raiz
  * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
  */
-state init(){
+state init(char* input){
     /*Inicializacion de las mascaras usadas para computar la representacion
      * de la cuadricula*/
     initializeMasks();
     initializeCompMasks();
-    char* prueba = "14 7 1 9 12 3 6 15 8 11 2 5 10 0 4 13";
+    printf("lainstancia actual es %s",input);
     
     int k[16];
-    sscanf(prueba,"%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+    sscanf(input," %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d \n",
                    &k[0],&k[1],&k[2],&k[3],&k[4],&k[5],&k[6],&k[7],
                    &k[8],&k[9],&k[10],&k[11],&k[12],&k[13],&k[14],&k[15]);            
     
@@ -312,7 +312,7 @@ void print_state(state s) {
             printf("\n");
         }
         // Imprimimos el valor haciendo los shift correspondientes
-        printf("%2d  ", ((s->quad_1)&masks[i].val)>>d);
+        printf("%2d  ", ((s->quad_1)&masks[i])>>d);
         // Se decrementa la cantidad de bits a mover en la siguiente iteracion
         d = d-4;
     }
@@ -326,43 +326,18 @@ void print_state(state s) {
             printf("\n");
         }
         // Imprimimos el valor haciendo los shift correspondientes
-        printf("%2d  ", ((s->quad_2)&masks[i].val)>>d);
+        printf("%2d  ", ((s->quad_2)&masks[i])>>d);
         // Se decrementa la cantidad de bits a mover en la siguiente iteracion
         d = d-4;
     }
     printf("\n");
 }
-/*
 
-main() {
-
-    initializeMasks();
-    initializeCompMasks();
-
-    srand(time(NULL));
-    int r = rand();
-    char acciones[4] = {'l','r','u','d'};
-
-    state nuevo = make_state(0x41238567, 0xC9AB0DEF, 12);
-
-    int i;
-
-    state next;
-
-    print_state(nuevo);
-
-    print_state(transition(nuevo,'u'));
-    print_state(transition(nuevo,'r'));
-
-    for (i=0; i<10000; i++) {
-        next = transition(nuevo,acciones[rand()%4]);
-        if (next) {
-            
-            print_state(next);
-            nuevo = next;
-        }
-    }
-
-
+/* FUNCION: free_state
+ * DESC   : Libera el espacio reservado por un estado
+ * s      : Estado a ser liberado
+ */
+void free_state(void *sp) {
+    state s = (state) sp;
+    free(s);
 }
-*/

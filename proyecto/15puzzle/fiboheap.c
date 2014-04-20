@@ -10,13 +10,14 @@
  * c      : Funcion de comparacion para comparar los elementos del heap
  * RETORNA: Un apuntador al nuevo heap de fibonacci
  */
-fiboheap make_fib_heap(int (*c)(void *a, void *b)) {
+fiboheap make_fib_heap(int (*c)(void *a, void *b), void (*f)(void *a)) {
     // Reservamos espacio para el fiboheap
     fiboheap fibo = malloc(sizeof(struct _fiboheap));
     // Seteamos los valores
     fibo->size = 0;
     fibo->min  = NULL;
     fibo->compare = c;
+    fibo->freeFun = f;
     return fibo;
 }
 
@@ -88,7 +89,7 @@ void concatenate(node a, node b) {
  */
 fiboheap fib_heap_union(fiboheap a, fiboheap b) {
 
-    fiboheap h = make_fib_heap(a->compare);
+    fiboheap h = make_fib_heap(a->compare, a->freeFun);
 
     // Si el primer fiboheap esta vacio
     if (a->min == NULL) {
@@ -321,7 +322,9 @@ void* fib_heap_extract_min(fiboheap f) {
     }
     
     if (z != NULL) {
-        return z->key;
+        void *res = z->key;
+        free(z);
+        return res;
     }
 
     return NULL;
@@ -332,8 +335,7 @@ void* fib_heap_extract_min(fiboheap f) {
  * f      : Heap a destruir
  */
 void fib_heap_free(fiboheap f) {
-    // FALTA DESTRUIR LOS OBJETOS COMO TAL (LOS VALORES)!!
-    free_node_cascade(f->min);
+    free_fib_node_cascade(f->min, f->freeFun);
     free(f);
 }
 
