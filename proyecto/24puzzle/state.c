@@ -230,6 +230,100 @@ state moveLR(state s, int d) {
     return nState;
 }
 
+/* FUNCION: moveUD
+ * DESC   : Desplazamientos hacia arriba o abajo desde un estado s
+ * s      : Estado a partir del cual hacer el desplazamiento
+ * d      : Desplazamiento hacia arriba o hacia abajo a realizar
+ * RETORNA: Un nuevo estado resultado de aplicar el desplazamiento d desde s
+ */
+state moveUD(state s, int d) {
+
+    int64 save;
+    int64 newq1;
+    int64 newq2;
+    int zero = s->zero;
+    state nState = NULL;
+    save.val = 0;
+    newq1.val = 0;
+    newq2.val = 0;
+
+
+    
+    if (zero < 12) {
+        // Estamos en el primer cuadrante
+        
+        if ((zero > 6) && (d > 0)) {
+            // Hay cambio de cuadrante
+
+        } else {
+
+        }
+
+    } else {
+        // Estamos en el segundo cuadrante
+
+    }
+
+    switch (caso) {
+        case 0:
+            // Estamos en la primera linea del puzzle
+            save = (s->quad_1)&masks[zero+d].val;
+            save = save << 16;
+            newq1 = (s->quad_1)&cMasks[zero+d].val;
+            newq1 = newq1 | save;
+            nState = make_state(newq1,s->quad_2,zero+d);
+            break;
+        case 1:
+            // Estamos en la segunda linea del puzzle
+            if ( d < 0 ) {
+                // Si el movimiento es arriba
+                save = (s->quad_1)&masks[(zero+d)%8].val;
+                save = save >> 16;
+                save = save&(0x0000FFFF);
+                newq1 = (s->quad_1)&cMasks[(zero+d)%8].val;
+                newq1 = newq1 | save;
+                nState = make_state(newq1, s->quad_2, zero+d);
+            } else {
+                // Si el movimiento es hacia abajo
+                save = (s->quad_2)&masks[(zero+d)%8].val;
+                save = save >> 16;
+                save = save&(0x0000FFFF);
+                newq1 = (s->quad_1) | save;
+                newq2 = (s->quad_2)&cMasks[(zero+d)%8].val;
+                nState = make_state(newq1,newq2,zero+d);
+            }
+            break;
+        case 2:
+            // Estamos en la tercera linea del puzzle
+            if ( d < 0 ) {
+                // Si el movimiento es hacia arriba
+                save = (s->quad_1)&masks[(zero+d)%8].val;
+                save = save << 16;
+                newq1 = (s->quad_1)&cMasks[(zero+d)%8].val;
+                newq2 = (s->quad_2) | save;
+                nState = make_state(newq1,newq2,zero+d);
+            } else {
+                // Si el movimiento es hacia abajo
+                save = (s->quad_2)&masks[(zero+d)%8].val;
+                save = save << 16;
+                newq2 = (s->quad_2)&cMasks[(zero+d)%8].val;
+                newq2 = newq2 | save;
+                nState = make_state(s->quad_1,newq2,zero+d);
+            }
+            break;
+        case 3:
+            // Estamos en la cuarta linea del puzzle
+            save = (s->quad_2)&masks[(zero+d)%8].val;
+            save = save >> 16;
+            save = save&(0x0000FFFF);
+            newq1 = (s->quad_2)&cMasks[(zero+d)%8].val;
+            newq1 = newq1 | save;
+            nState = make_state(s->quad_1,newq1,zero+d);
+            break;
+    }
+}
+
+
 
 /* FUNCION: transition
  * DESC   : Funcion para calcular la transicion de un estado a otro
