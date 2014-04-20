@@ -53,7 +53,8 @@ list extract_solution(nodo n) {
     return q;
 }
 
-/* FUNCION: Funcion que libera un nodo
+/* FUNCION: free_nodo
+ * DESC   : Funcion que libera un nodo
  * n      : Nodo a ser liberado
  * f      : Funcion para liberar el estado en el nodo
  */ 
@@ -63,6 +64,7 @@ void free_nodo(nodo n, void (*f)(void *a)) {
 }
 
 /* FUNCION: compare_nodo
+ * DESC   : Compara dos nodos
  * nx     : Primero nodo a comparar
  * ny     : Segundo nodo a comparar
  * RETORNA: Negativo si nx < ny, Cero si nx = ny, Positivo si nx > ny

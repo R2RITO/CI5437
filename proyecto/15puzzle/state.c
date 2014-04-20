@@ -341,38 +341,3 @@ void free_state(void *sp) {
     state s = (state) sp;
     free(s);
 }
-
-
-/*
-main() {
-
-    initializeMasks();
-    initializeCompMasks();
-
-    srand(time(NULL));
-    int r = rand();
-    char acciones[4] = {'l','r','u','d'};
-
-    state nuevo = make_state(0x41238567, 0xC9AB0DEF, 12);
-
-    int i;
-
-    state next;
-
-    print_state(nuevo);
-
-    print_state(transition(nuevo,'u'));
-    print_state(transition(nuevo,'r'));
-
-    for (i=0; i<10000; i++) {
-        next = transition(nuevo,acciones[rand()%4]);
-        if (next) {
-            
-            print_state(next);
-            nuevo = next;
-        }
-    }
-
-
-}
-*/

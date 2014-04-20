@@ -2,25 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
 #include "state.h"
 
-typedef struct _pair {
-    int x;
-    int y;
-} pair;
-
-
-/*
-
-X X X X 
-X X X X
-X X X X
-X X X X
-
-
-*/
-
+/* Matriz de distancias precalculadas */
 int coords[16][16] = {
     {0,1,2,3,1,2,3,4,2,3,4,5,3,4,5,6},
     {1,0,1,2,2,1,2,3,3,2,3,4,4,3,4,5},
@@ -40,6 +24,11 @@ int coords[16][16] = {
     {6,5,4,3,5,4,3,2,4,3,2,1,3,2,1,0}
 };
 
+/* FUNCION: manhattan
+ * DESC   : Calcula la distancia manhattan para un estado
+ * s      : Estado al cual calcular la distancia
+ * Retorna: Distancia manhattan del estado s
+ */
 int manhattan(state s) {
 
     int quad_1 = s->quad_1;
@@ -60,17 +49,3 @@ int manhattan(state s) {
     return res;
 }
 
-
-/*
-Heap de Fibonacci
-Representacion de estados para el 15puzzle
-Representacion de los nodos de blai
-Funcion init para el 15puzzle (pasar de enteros a bits)
-
-
-Heuristica Manhattan para el 15puzzle
-Heuristica PDB para 15 y 25 puzzle
-Implementacion de A* e IDA*
-Representacion de estados para el 25puzzle
-Lista de nodos cerrados
-*/

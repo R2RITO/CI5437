@@ -1,7 +1,7 @@
 #ifndef FILE_HASH
 #define FILE_HASH
 #include "uthash.h"
-#include "state.h"
+#include "nodos.h"
 
 typedef struct {
   int q1;
@@ -11,7 +11,7 @@ typedef struct {
 typedef struct {
     hashkey key;
     int dist;
-    state s;
+    nodo n;
     UT_hash_handle hh;
 } hashval;
 #endif

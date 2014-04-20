@@ -322,7 +322,9 @@ void* fib_heap_extract_min(fiboheap f) {
     }
     
     if (z != NULL) {
-        return z->key;
+        void *res = z->key;
+        free(z);
+        return res;
     }
 
     return NULL;
