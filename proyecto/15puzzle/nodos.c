@@ -72,6 +72,11 @@ void free_nodo(nodo n, void (*f)(void *a)) {
 int compare_nodo(void *nx, void *ny) {
     nodo x = (nodo) nx;
     nodo y = (nodo) ny;
-    return ( (x->g) + manhattan(x->estado) ) - ( (y->g) + manhattan(y->estado) ); 
+    int res = ((x->g) + manhattan(x->estado)) - ((y->g) + manhattan(y->estado)); 
+    if (res) {
+        return res;
+    } else {
+        return ((x->g)-(y->g));
+    }
 }
 
