@@ -8,18 +8,15 @@ typedef char action;
 typedef struct nodo_struct *nodo;
 
 typedef struct nodo_struct {
-
-    /* Estado representado por el nodo */
-    state estado;
-    /* Accion utilizada para llegar al nodo */
-    action a;
-    /* Costo para llegar de la raiz al nodo */
-    int g;
     /* Padre del nodo */
     nodo parent;
-    /* Bit para indicar si esta cerrado. */
-    int cerrado;
-
+    /* Estado representado por el nodo */
+    state estado;
+    /* Costo para llegar de la raiz al nodo */
+    unsigned int g : 8;
+    /* Accion utilizada para llegar al nodo */
+    action a;
+    
 } *nodo;
 
 int cost(state s, action a);

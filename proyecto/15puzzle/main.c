@@ -23,6 +23,9 @@ int main  (int argc, char *argv[]) {
     list res2;
     /*resolucion linea por linea de las instancias suministradas en el
      *archivo de prueba*/
+
+    printf("TAM DE NODO: %d\n", sizeof(struct nodo_struct));
+    printf("TAM DE ESTADO: %d\n", sizeof(struct _state));
     while ( fgets (instance, BUFFER_SIZE, file)) {
         state initial_state = init(instance);
         printf("EMPIEZO A* \n");
@@ -30,7 +33,7 @@ int main  (int argc, char *argv[]) {
         list res2 = (list) astar(initial_state);
         clock_t end2 = clock();
         printf("TERMINO A*\n");
-        printf("Lista 2: ");
+        printf("Lista 2: %d", res2->size);
         box act = res2 -> first;
         int  i;
         for (i=0; i<res2->size; i++) {
