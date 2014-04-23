@@ -88,7 +88,7 @@ int is_goal(state s) {
     int64 q1;
     int64 q2;
     q1.val = 0x00443214C74254BC;
-    q2.val = 0x635CF84553A56D70;
+    q2.val = 0x635CF84653A56D70;
     return (q1.val==s->quad_1)&&(q2.val==s->quad_2);
 }
 
@@ -236,18 +236,22 @@ state moveLR(state s, int d) {
  * d      : Desplazamiento hacia arriba o hacia abajo a realizar
  * RETORNA: Un nuevo estado resultado de aplicar el desplazamiento d desde s
  */
+
 state moveUD(state s, int d) {
 
     int64 save;
+    int64 aux;
     int64 newq1;
     int64 newq2;
     int zero = s->zero;
     state nState = NULL;
-    save.val = 0;
+    save.val  = 0;
+    aux.val   = 0;
     newq1.val = 0;
     newq2.val = 0;
 
-
+    /* El desplazamiento (d) vale 5 o -5 y se cambia de acuerdo al
+       caso, 5 es hacia abajo. -5 es hacia arriba. */
     
     if (zero < 12) {
         // Estamos en el primer cuadrante
@@ -255,72 +259,142 @@ state moveUD(state s, int d) {
         if ((zero > 6) && (d > 0)) {
             // Hay cambio de cuadrante
 
+            // Salvar el valor y ponerlo en posicion para guardar
+            save.val = (s -> quad_2) & masks[(zero+d)%12].val;
+            save.val = save.val >> 35;
+            save.val = save.val & (0x000000001FFFFFFF);
+
+            // Mover el cero
+            newq2.val = (s -> quad_2) & cMasks[(zero+d)%12].val;
+
+            // Copiar el valor salvado
+            newq1.val = (s -> quad_1) | save.val;
+
+            nState = make_state(newq1.val,newq2.val,zero+d);
+
         } else {
+            // El movimiento solamente es en el primer cuadrante
+
+            // Salvar el valor y ponerlo en posicion para guardar
+            save.val = (s -> quad_1) & masks[(zero+d)%12].val;
+
+            
+            if (d > 0) {
+                // Movimiento hacia abajo
+                save.val = save.val << 25;
+                
+            } else {
+                // Movimiento hacia arriba
+                save.val = (save.val >> 25)&(0x0000007FFFFFFFFF);
+            }
+
+            // Mover el 0
+            newq1.val = (s -> quad_1) & cMasks[(zero+d)%12].val;
+
+            newq1.val = newq1.val | save.val;
+            
+            nState = make_state(newq1.val,s -> quad_2,zero+d);
 
         }
 
     } else {
         // Estamos en el segundo cuadrante
+        
+        if ((zero < 17) && (d < 0)) {
+            // Hay cambio de cuadrante
+
+            // Salvar el valor y ponerlo en posicion para guardar
+            save.val = (s -> quad_1) & masks[(zero+d)%12].val;
+            save.val = save.val << 35;
+            
+            // Mover el cero
+            newq1.val = (s -> quad_1) & cMasks[(zero+d)%12].val;
+
+            // Copiar el valor salvado
+            newq2.val = (s -> quad_2) | save.val;
+
+            nState = make_state(newq1.val,newq2.val,zero+d);
+
+
+        } else if (zero == 24) {
+            // Movimiento desde la casilla 24, caso especial
+            
+            // Salvar el valor y ponerlo en posicion para guardar
+            save.val = (s -> quad_2) & masks[(zero+d)%12].val;
+            save.val = (save.val >> 24) & (0x000000FFFFFFFFFF);
+
+            // Guardar los primeros 4 bits
+            aux.val = (save.val >> 1) & (0x7FFFFFFFFFFFFFFF);
+
+            newq1.val = (s -> quad_1) & cMasks[12].val;
+            newq1.val = (newq1.val) | (aux.val);
+
+            // Ahora copiar el ultimo bit de la casilla 24 al segundo cuadrante
+    
+            aux.val = (save.val) & masks[13].val;       
+            newq2.val = (s -> quad_2) & cMasks[13].val;
+            newq2.val = (newq2.val) | (aux.val);
+
+            // Mover el cero
+
+            newq2.val = (newq2.val) & cMasks[(zero+d)%12].val;
+
+            nState = make_state(newq1.val, newq2.val, zero+d);
+
+
+        } else if ((zero == 19) && (d > 0)) {
+            // Movimiento hacia la casilla 24, caso especial
+
+            // Tomar los ultimos 4 bits del primer cuadrante (casilla 24)
+            save.val = (s -> quad_1) & masks[12].val;
+
+            /* Hacer shift hacia la izquierda para posicionar los 4 bits
+               de manera correcta, y hacer espacio para el 5to bit */
+            save.val = (save.val) << 1;
+
+            // Tomar el ultimo bit del segundo cuadrante (casilla 24)
+            save.val = (save.val) | ((s -> quad_2) & masks[13].val);
+            
+            /* En "save" esta el valor de la casilla 24, ahora hay que mover
+               el cero y copiar el valor en la casilla 23 */
+            
+            newq2.val = (s -> quad_2) | ((save.val) << 24);
+
+            /* Mover el cero */
+
+            newq1.val = (s -> quad_1) & cMasks[12].val;
+            newq2.val = newq2.val & cMasks[13].val;
+
+            nState = make_state(newq1.val, newq2.val, zero+d);
+        
+        } else {
+            // Resto de los casos, movimiento en segundo cuadrante.
+
+            // Salvar el valor y ponerlo en posicion para guardar
+            save.val = (s -> quad_2) & masks[(zero+d)%12].val;
+            
+            if (d > 0) {
+                // Movimiento hacia abajo
+                save.val = save.val << 25;
+                
+            } else {
+                // Movimiento hacia arriba
+                save.val = (save.val >> 25)&(0x0000001FFFFFFFFF);
+            }
+
+            // Mover el 0
+            newq2.val = (s -> quad_2) & cMasks[(zero+d)%12].val;
+
+            newq2.val = newq2.val | save.val;
+            
+            nState = make_state(s -> quad_1,newq2.val,zero+d);
+
+        }
 
     }
 
-    switch (caso) {
-        case 0:
-            // Estamos en la primera linea del puzzle
-            save = (s->quad_1)&masks[zero+d].val;
-            save = save << 16;
-            newq1 = (s->quad_1)&cMasks[zero+d].val;
-            newq1 = newq1 | save;
-            nState = make_state(newq1,s->quad_2,zero+d);
-            break;
-        case 1:
-            // Estamos en la segunda linea del puzzle
-            if ( d < 0 ) {
-                // Si el movimiento es arriba
-                save = (s->quad_1)&masks[(zero+d)%8].val;
-                save = save >> 16;
-                save = save&(0x0000FFFF);
-                newq1 = (s->quad_1)&cMasks[(zero+d)%8].val;
-                newq1 = newq1 | save;
-                nState = make_state(newq1, s->quad_2, zero+d);
-            } else {
-                // Si el movimiento es hacia abajo
-                save = (s->quad_2)&masks[(zero+d)%8].val;
-                save = save >> 16;
-                save = save&(0x0000FFFF);
-                newq1 = (s->quad_1) | save;
-                newq2 = (s->quad_2)&cMasks[(zero+d)%8].val;
-                nState = make_state(newq1,newq2,zero+d);
-            }
-            break;
-        case 2:
-            // Estamos en la tercera linea del puzzle
-            if ( d < 0 ) {
-                // Si el movimiento es hacia arriba
-                save = (s->quad_1)&masks[(zero+d)%8].val;
-                save = save << 16;
-                newq1 = (s->quad_1)&cMasks[(zero+d)%8].val;
-                newq2 = (s->quad_2) | save;
-                nState = make_state(newq1,newq2,zero+d);
-            } else {
-                // Si el movimiento es hacia abajo
-                save = (s->quad_2)&masks[(zero+d)%8].val;
-                save = save << 16;
-                newq2 = (s->quad_2)&cMasks[(zero+d)%8].val;
-                newq2 = newq2 | save;
-                nState = make_state(s->quad_1,newq2,zero+d);
-            }
-            break;
-        case 3:
-            // Estamos en la cuarta linea del puzzle
-            save = (s->quad_2)&masks[(zero+d)%8].val;
-            save = save >> 16;
-            save = save&(0x0000FFFF);
-            newq1 = (s->quad_2)&cMasks[(zero+d)%8].val;
-            newq1 = newq1 | save;
-            nState = make_state(s->quad_1,newq1,zero+d);
-            break;
-    }
+    return nState;
+
 }
 
 
@@ -354,20 +428,19 @@ state transition(state s, char a) {
                     nState = moveLR(s,1);
                 }
                 break;
-/*
         case 'd':
                 // Movimiento hacia abajo
-                if (zero+4 < 16) {
-                    nState = moveUD(s,4);
+                if (zero+5 < 25) {
+                    nState = moveUD(s,5);
                 }
                 break;
         case 'u':
                 // Movimiento hacia arriba
-                if (zero-4 >= 0) {
-                    nState = moveUD(s,-4);
+                if (zero-5 >= 0) {
+                    nState = moveUD(s,-5);
                 }
                 break;
-*/
+
     }
     return nState;
 }
@@ -431,48 +504,56 @@ main() {
     state news;
     int64 q1;
     int64 q2;
+
 /*
     q1.val = 0x00443214C74254BC;
-    q2.val = 0x635CF84553A56D70;
+    q2.val = 0x635CF84653A56D70;
 
     s = make_state(q1.val,q2.val,0);
     print_state(s);
 
-    news = transition(s,'r');
+    news = transition(s,'d');
     print_state(news);
-*/
-    /*
+
+    news = transition(news,'u');
+    print_state(news);
+
+
     int i = 0;
     for (i=0; i<7; i++) {
-        news = transition(news,'r');
+        news = transition(news,'d');
         print_state(news);
-    }*/
+    }
+
+*/
 
 /*
     q1.val = 0x58443214C742540C;
-    q2.val = 0x635CF84553A56D70;
+    q2.val = 0x635CF84653A56D70;
 
     s = make_state(q1.val,q2.val,11);
     print_state(s);
 
-    news = transition(s,'r');
+    news = transition(s,'d');
     print_state(news);
 
-    news = transition(news,'l');
-    print_state(news);*/
+    news = transition(news,'u');
+    print_state(news);
+*/
+
 
     printf("Prueba del 24 \n");
 
     q1.val = 0xC0443214C74254B0;
-    q2.val = 0x635CF84553A56D70;
+    q2.val = 0x635CF84653A56D70;
 
     s = make_state(q1.val,q2.val,24);
     print_state(s);
 
-    news = transition(s,'l');
+    news = transition(s,'u');
     print_state(news);
 
-    news = transition(news,'r');
+    news = transition(news,'d');
     print_state(news);
 
 
