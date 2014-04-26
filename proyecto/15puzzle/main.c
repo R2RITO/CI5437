@@ -48,7 +48,7 @@ int main  (int argc, char *argv[]) {
           printf("\n");
         }
         /*------------------ A* -------------------------*/
-        printf("EMPIEZO A* \n");
+      /*  printf("EMPIEZO A* \n");
         
         res2 =NULL;
         start2 = clock();
@@ -64,7 +64,9 @@ int main  (int argc, char *argv[]) {
               act = getNextBox(act);
           }
           printf("\n");
-        }
+        }*/
+        free_state(initial_state);
+        initial_state = NULL;
     }
     /*cierre del archivo de entrada*/
     fclose(file);
