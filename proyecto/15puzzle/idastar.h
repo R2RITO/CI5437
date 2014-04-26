@@ -34,7 +34,7 @@ typedef struct {
 
 plan DFS_acotado(nodo n, int t);
 
-list idastar();
+list idastar(state initial_state);
 
 
 

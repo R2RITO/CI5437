@@ -1,3 +1,6 @@
+#ifndef FILE_ASTAR
+#define FILE_ASTAR
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,4 +36,4 @@ typedef struct {
  */
 list astar(state initial_state);
 
-
+#endif

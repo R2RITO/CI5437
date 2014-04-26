@@ -19,6 +19,7 @@ typedef struct nodo_struct {
     
 } *nodo;
 
+
 int cost(state s, action a);
 
 /* Crear el nodo raiz */
