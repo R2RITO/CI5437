@@ -16,7 +16,8 @@
 #define INFINITO 100
 
 typedef struct {
-    list sol;
+    int sol;
+    int size_res;
     int tp;
 } plan;
 
@@ -32,10 +33,8 @@ typedef struct {
     UT_hash_handle hh;
 } hashval;
 
-plan DFS_acotado(nodo n, int t);
+plan DFS_acotado(int t);
 
 list idastar(state initial_state);
-
-
 
 #endif
