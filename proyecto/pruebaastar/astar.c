@@ -30,6 +30,7 @@ int compare_state(void *sx, void *sy) {
     /* Buscamos en la tabla de hash la informacion asociada al estado sy */
     look_up_key.key.q1 = y->quad_1;
     look_up_key.key.q2 = y->quad_2;
+    HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
     int gy = look_up->g;
     
     int res = (gx + manhattan(x)) - (gy + manhattan(y)); 
@@ -48,7 +49,9 @@ int compare_state(void *sx, void *sy) {
  * RETORNA: Una lista con el mejor camino del estado s al goal
  */
 list astar(state initial_state) {     
-     
+    
+    print_state(initial_state);
+ 
     /* Se crea la cola de prioridades */
     fiboheap q = make_fib_heap(compare_state, free_state);
     /* Se inserta en el heap al estado inicial */
@@ -127,7 +130,13 @@ list astar(state initial_state) {
                 if ((suc->succ[i]) && (manhattan(suc->succ[i]) < INFINITO)) {
                     if (((!look_up->accion)||(look_up->accion!=cAccions[i]))) {
                      // fib_heap_insert(q,suc->succ[i]);
+
+                        /* Buscamos en la tabla de hash dicho estado */
+                        look_up_key.key.q1 = suc->succ[i]->quad_1;
+                        look_up_key.key.q2 = suc->succ[i]->quad_2;
+                        HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);                
                         
+                        if (!look_up) {
                         look_up = malloc(sizeof(hashval));
                         look_up ->key.q1 = suc->succ[i]->quad_1;
                         look_up ->key.q2 = suc->succ[i]->quad_2;
@@ -138,6 +147,7 @@ list astar(state initial_state) {
                         HASH_ADD(hh, closed,key, keylen,look_up);
                                           
                         fib_heap_insert(q,suc->succ[i]);
+                        }
                     }
                 }
                 
@@ -148,7 +158,6 @@ list astar(state initial_state) {
             free(s);
         }
         
-        //free_nodo(n,free_state);
     }
     /* Liberamos el espacio usado por la cola de prioridades */
     fib_heap_free(q);
