@@ -1,4 +1,9 @@
 #include "ucs.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdint.h>
 
 void free_aux(void *a) {
     nodo n = (nodo) a;
@@ -37,6 +42,8 @@ list ucs(state initial_state) {
     successors suc;
 
     printf("Comenzo ucs\n");
+    print_state(initial_state);    
+    printf("JJ\n");
 
     /* Mientras que el heap de fibonacci tenga un elemento */
     while (q->min) {
@@ -71,6 +78,8 @@ list ucs(state initial_state) {
             for (i=0; i<4; i++) {
                 if (suc->succ[i]) {
                     if (((!n->a)||(n->a!=cAccions[i]))) {
+                        print_state(suc->succ[i]);
+                        printf("\n");
                         fib_heap_insert(q,make_node(n,accion[i],suc->succ[i]));
                     }
                 }
@@ -81,8 +90,11 @@ list ucs(state initial_state) {
         }
         //free_nodo(n,free_state);
     }
+
+    printf("Sali del guail\n");
+
     /* Liberamos el espacio usado por la cola de prioridades */
-    fib_heap_free(q);
+    //fib_heap_free(q);
     // Falta liberar HASH
     return NULL;
 }   
@@ -93,8 +105,10 @@ void main() {
     int q1 = 0x01004500;
     int q2 = 0x00000000;
 
-    state s = make_state(q1,q2,0,0);
+    printf("Hola %d\n",q1);
 
+    state s = make_state(q1,q2,0,0);
+    print_state(s);
     list lst = ucs(s);
     
 

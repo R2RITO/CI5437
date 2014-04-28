@@ -49,6 +49,8 @@ state make_state(int q1, int q2, int z, int cost) {
     newState -> quad_2 = q2;
     newState -> zero   = z;
     newState -> cost   = cost;
+    printf("Q1: %d, Q2: %d\n",q1,q2);
+    print_state(newState);
     return newState;
 }
 
@@ -335,7 +337,7 @@ void print_state(state s) {
             printf("\n");
         }
         // Imprimimos el valor haciendo los shift correspondientes
-        printf("%2d  ", ((s->quad_1)&masks[i])>>d);
+        printf("%2d  ", (((s->quad_1)&masks[i])>>d)&(0x0000000F));
         // Se decrementa la cantidad de bits a mover en la siguiente iteracion
         d = d-4;
     }
@@ -349,11 +351,12 @@ void print_state(state s) {
             printf("\n");
         }
         // Imprimimos el valor haciendo los shift correspondientes
-        printf("%2d  ", ((s->quad_2)&masks[i])>>d);
+        printf("%2d  ", (((s->quad_2)&masks[i])>>d)&(0x0000000F));
         // Se decrementa la cantidad de bits a mover en la siguiente iteracion
         d = d-4;
     }
     printf("\n");
+    printf("Q1: %d, Q2: %d\n",s->quad_1,s->quad_2);
 }
 
 /* FUNCION: free_state
