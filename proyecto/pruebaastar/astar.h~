@@ -25,9 +25,11 @@ typedef struct {
 /* Estructura para los valores de la tabla */
 typedef struct {
     hashkey key;
+    int  closed;
     int  dist;   //distancia
     char accion; //accion que genero al estado
     int  g;      //costo
+    int size_res;
     UT_hash_handle hh;
 } hashval;
 
