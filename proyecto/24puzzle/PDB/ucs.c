@@ -53,6 +53,8 @@ list ucs(state initial_state) {
 
         printf("Extract\n");
         print_state(n->estado);
+        printf("Costo\n");
+	printf("%d\n",n->g);
 
         /* Buscamos en la tabla de hash dicho estado */
         look_up_key.key.q1 = (n->estado)->quad_1;
