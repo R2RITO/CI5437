@@ -52,6 +52,7 @@ list ucs(state initial_state) {
         n = fib_heap_extract_min(q);
 
         printf("Extract\n");
+        print_state(n->estado);
 
         /* Buscamos en la tabla de hash dicho estado */
         look_up_key.key.q1 = (n->estado)->quad_1;
@@ -74,8 +75,11 @@ list ucs(state initial_state) {
             /* Obtenemos los sucesores del estado */
             suc = get_succ(n->estado);
 
+            printf("Sucesores\n");
+
             /* Agregamos los sucesores del estado n a la cola de prioridades */
             for (i=0; i<4; i++) {
+                
                 if (suc->succ[i]) {
                     if (((!n->a)||(n->a!=cAccions[i]))) {
                         print_state(suc->succ[i]);
@@ -102,10 +106,11 @@ list ucs(state initial_state) {
 
 void main() {
 
-    int q1 = 0x01004500;
-    int q2 = 0x00000000;
+    int q1 = 0x01664566;
+    int q2 = 0x66666666;
 
-    printf("Hola %d\n",q1);
+    initializeMasks();
+    initializeCompMasks();
 
     state s = make_state(q1,q2,0,0);
     print_state(s);
