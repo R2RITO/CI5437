@@ -12,11 +12,11 @@ unsigned int keylen = sizeof(hashkey);
 
 
 /* FUNCION: compare_state
- * DESC   : Compara dos nodos
- * nx     : Primero nodo a comparar
- * ny     : Segundo nodo a comparar
- * RETORNA: Negativo si nx < ny, Cero si nx = ny, Positivo si nx > ny
- */
+* DESC : Compara dos nodos
+* nx : Primero nodo a comparar
+* ny : Segundo nodo a comparar
+* RETORNA: Negativo si nx < ny, Cero si nx = ny, Positivo si nx > ny
+*/
 int compare_state(void *sx, void *sy) {
     state x = (state) sx;
     state y = (state) sy;
@@ -33,7 +33,7 @@ int compare_state(void *sx, void *sy) {
     HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
     int gy = look_up->g;
     
-    int res = (gx + manhattan(x)) - (gy + manhattan(y)); 
+    int res = (gx + manhattan(x)) - (gy + manhattan(y));
     if (res) {
         return res;
     //caso de empate, el criterio aplica en base a los cosgtos individuales
@@ -44,11 +44,11 @@ int compare_state(void *sx, void *sy) {
 
 
 /* FUNCION: astar
- * s      : Estado inicial s
- * DESC   : Implementacion del algoritmo A*
- * RETORNA: Una lista con el mejor camino del estado s al goal
- */
-list astar(state initial_state) {     
+* s : Estado inicial s
+* DESC : Implementacion del algoritmo A*
+* RETORNA: Una lista con el mejor camino del estado s al goal
+*/
+list astar(state initial_state) {
     
     print_state(initial_state);
  
@@ -60,21 +60,22 @@ list astar(state initial_state) {
     look_up ->key.q1 = initial_state->quad_1;
     look_up ->key.q2 = initial_state->quad_2;
     look_up ->accion = 0;
-    look_up ->dist   = 0;
-    look_up ->g      = 0;
+    look_up ->dist = 0;
+    look_up ->g = 0;
     look_up ->closed = 0;
     HASH_ADD(hh, closed,key, keylen,look_up);
     
     fib_heap_insert(q,initial_state);
    
     /* Acciones */
-    char accion[4]   =  {'l','r','u','d'};
-    char cAccions[4] =  {'r','l','d','u'};
+    char accion[4] = {'l','r','u','d'};
+    char cAccions[4] = {'r','l','d','u'};
+    char a_parent;
 
     /* Para iterar en los sucesores */
     int i, g_parent;
 
-    /* Variable auxiliar para extraer de la cola de prioridades */ 
+    /* Variable auxiliar para extraer de la cola de prioridades */
     state s;
 
     /* Variable para almacenar los sucesores de un estado */
@@ -97,15 +98,16 @@ list astar(state initial_state) {
             look_up->closed = 1;
            /* Si no lo encontro, debemos agregarlo a la tabla de hash */
            /* if (!look_up) {
-                look_up = malloc(sizeof(hashval));
-                look_up ->key.q1 = look_up_key.key.q1;
-                look_up ->key.q2 = look_up_key.key.q2;
-                HASH_ADD(hh, closed,key, keylen,look_up);
-            }*/
+look_up = malloc(sizeof(hashval));
+look_up ->key.q1 = look_up_key.key.q1;
+look_up ->key.q2 = look_up_key.key.q2;
+HASH_ADD(hh, closed,key, keylen,look_up);
+}*/
 
             /* Se actualiza la distancia en la tabla de hash */
             look_up->dist = (look_up->g);
             g_parent = look_up->g;
+            a_parent = look_up->accion;
             /* Si es el estado objetivo, retornamos la solucion */
             if (is_goal(s)) {
             
@@ -128,21 +130,21 @@ list astar(state initial_state) {
             
             for (i=0; i<4; i++) {
                 if ((suc->succ[i]) && (manhattan(suc->succ[i]) < INFINITO)) {
-                    if (((!look_up->accion)||(look_up->accion!=cAccions[i]))) {
+                    if (((!a_parent)||(a_parent!=cAccions[i]))) {
                      // fib_heap_insert(q,suc->succ[i]);
 
                         /* Buscamos en la tabla de hash dicho estado */
                         look_up_key.key.q1 = suc->succ[i]->quad_1;
                         look_up_key.key.q2 = suc->succ[i]->quad_2;
-                        HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);                
+                        HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
                         
                         if (!look_up) {
                         look_up = malloc(sizeof(hashval));
                         look_up ->key.q1 = suc->succ[i]->quad_1;
                         look_up ->key.q2 = suc->succ[i]->quad_2;
                         look_up ->accion = accion[i];
-                        look_up ->dist   = 0;
-                        look_up ->g      = g_parent + 1;
+                        look_up ->dist = 0;
+                        look_up ->g = g_parent + 1;
                         look_up ->closed = 0;
                         HASH_ADD(hh, closed,key, keylen,look_up);
                                           
@@ -163,4 +165,4 @@ list astar(state initial_state) {
     fib_heap_free(q);
     // Falta liberar HASH
     return NULL;
-}   
+} 
