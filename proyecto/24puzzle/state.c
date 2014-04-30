@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include "state.h"
 #include <stdint.h>
-
+#define BUFFER_SIZE 80
 
 /* Estructura para almacenar enteros en 32bits */
 typedef struct _int64 {
@@ -445,6 +445,74 @@ state transition(state s, char a) {
     return nState;
 }
 
+
+/* FUNCION: init
+ * DESC   : Funcion para la inicializacion y creacion del estado raiz
+ * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
+ */
+state init(char* input){
+    /*Inicializacion de las mascaras usadas para computar la representacion
+     * de la cuadricula*/
+    initializeMasks();
+    initializeCompMasks();
+    printf("lainstancia actual es %s",input);
+    
+    int k[25];
+    sscanf(input," %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
+                   &k[0],&k[1],&k[2],&k[3],&k[4],&k[5],&k[6],&k[7],&k[8],
+                   &k[9],&k[10],&k[11],&k[12],&k[13],&k[14],&k[15],&k[16],
+                   &k[17],&k[18],&k[19],&k[20],&k[21],&k[22],&k[23],&k[24]);            
+    
+    int quad_index,quad_2_index;
+    unsigned long long quad_1 = 0l; /*almacenamiento de la primera mitad de la cuadricula*/
+    unsigned long long quad_2 = 0l; /*almacenamiento de la segunda mitad de la cuadricula*/
+    unsigned int pos_zero = 0; /*posicion del 0 en la cuadricula*/
+    for (quad_index=0; quad_index < 12; quad_index++){
+        quad_2_index = quad_index+12;
+       /*se recuerda la posicion del 0 en la cuadricula*/
+       if (k[quad_index]==0) {
+            pos_zero = quad_index;
+       }
+       if (k[quad_2_index]==0) {
+            pos_zero = quad_2_index;
+       }
+       /*desplazamiento de los digitos significativos, permiten alojar el nuevo
+        *numero entrante de 5 bits*/
+       quad_1 = quad_1 << 5;
+       quad_2 = quad_2 << 5;
+       /*se conservan los bits encendidos de la cuadricula, agregando
+        *la representacion binaria del numero entrante en los ultimos 5 bits*/
+       quad_1 = quad_1 | k[quad_index];
+       quad_2 = quad_2 | k[quad_2_index];
+    }
+    /*accedemos al numero restante en la cuadricula*/
+    quad_2_index++;    
+
+    if (k[quad_2_index]==0) {
+         pos_zero = quad_2_index;
+    }
+    /*recuperamos los ultimos 4 bits del ultimo numero en la cuadricula*/
+    unsigned long long last_4_bits_number = k[quad_2_index] >> 1;
+    unsigned long long last_mask = 0xF;
+    
+    unsigned long long last_four_bits = last_4_bits_number & last_mask;
+    
+    /*se incorporan al primer cuadrante del tablero*/
+    quad_1 = quad_1 << 4;
+    quad_1   = quad_1|last_four_bits;
+     /*recuperamos el ultimo bit del ultimo numero en la cuadricula*/
+    unsigned long long last_number_bit    = k[quad_2_index] & masks[13].val; 
+    
+    /*se incorporan al segundo cuadrante del tablero*/
+    quad_2 = quad_2 << 4;
+    quad_2 = quad_2 |last_number_bit;
+    
+//     printf("%2lld\n",quad_2);
+    return make_state(quad_1,quad_2,pos_zero);
+}
+
+
+
 /* FUNCION: print_state
  * DESC   : Imprime en pantalla la representacion de un estado
  * s      : Estado que se va a imprimir
@@ -493,68 +561,29 @@ void print_state(state s) {
     printf("\n");
 }
 
+int main(int argc, char *argv[]) {
 
-main() {
-    printf("Hola\n");
-
-    initializeMasks();
-    initializeCompMasks();
-
-    state s;
-    state news;
-    int64 q1;
-    int64 q2;
-
-/*
-    q1.val = 0x00443214C74254BC;
-    q2.val = 0x635CF84653A56D70;
-
-    s = make_state(q1.val,q2.val,0);
-    print_state(s);
-
-    news = transition(s,'d');
-    print_state(news);
-
-    news = transition(news,'u');
-    print_state(news);
-
-
-    int i = 0;
-    for (i=0; i<7; i++) {
-        news = transition(news,'d');
-        print_state(news);
+    /*La invocacion debe tener exactamente 2 argumentos: el nombre del programa
+     *y el archivo de entrada*/
+    if (argc!=2) {
+        printf("Modo de uso: ./main <nombre_archivo>\n");
+        exit(1);
     }
 
-*/
-
-/*
-    q1.val = 0x58443214C742540C;
-    q2.val = 0x635CF84653A56D70;
-
-    s = make_state(q1.val,q2.val,11);
-    print_state(s);
-
-    news = transition(s,'d');
-    print_state(news);
-
-    news = transition(news,'u');
-    print_state(news);
-*/
-
-
-    printf("Prueba del 24 \n");
-
-    q1.val = 0xC0443214C74254B0;
-    q2.val = 0x635CF84653A56D70;
-
-    s = make_state(q1.val,q2.val,24);
-    print_state(s);
-
-    news = transition(s,'u');
-    print_state(news);
-
-    news = transition(news,'d');
-    print_state(news);
-
-
+    FILE *file;
+    char* file_name = argv[1];
+    char instance[BUFFER_SIZE];
+    /*se hace apertura del archivo de entrada*/
+    file = fopen(file_name,"r"); 
+    if (!file) {
+       perror("Error al abrir el archivo de entrada: ");
+       exit(1);
+    }
+    /*resolucion linea por linea de las instancias suministradas en el
+     *archivo de prueba*/
+    while ( fgets (instance, BUFFER_SIZE, file)) {
+        /*------------------ IDA* -------------------------*/
+        state initial_state = init(instance);
+        print_state(initial_state);
+    }
 }

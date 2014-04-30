@@ -44,6 +44,12 @@ state transition(state s, char a);
  */
 successors get_succ(state s);
 
+/* FUNCION: init
+ * DESC   : Funcion para la inicializacion y creacion del estado raiz
+ * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
+ */
+state init(char* input);
+
 /* FUNCION: print_state
  * DESC   : Imprime en pantalla la representacion de un estado
  * s      : Estado que se va a imprimir
