@@ -20,6 +20,7 @@
 typedef struct {
   int q1;
   int q2;
+  int zero;
 } hashkey;
 
 /* Estructura para los valores de la tabla */
@@ -34,6 +35,6 @@ typedef struct {
  * DESC   : Implementacion del algoritmo A*
  * RETORNA: Una lista con el mejor camino del estado s al goal
  */
-list ucs(state initial_state);
+hashval *ucs(state initial_state);
 
 #endif
