@@ -106,7 +106,7 @@ list ucs(state initial_state) {
 }   
 
 
-int rank1(state s, int v1, int v2, int v3, int v4, int v5) {
+int rank(state s, int v1, int v2, int v3, int v4, int v5) {
 
     if (s == NULL) return;
 
@@ -121,35 +121,30 @@ int rank1(state s, int v1, int v2, int v3, int v4, int v5) {
     // Agregar la posicion del cero
     rep = rep | s -> zero;
 
+    // Agregar el costo del estado
+    rep = rep | ((s -> cost) << 24;
+
     // Busqueda en el primer cuadrante
 
     for (i=0; i < 8; i++) {
         
         val = (((s->quad_1)&masks[i])>>d)&(0x0000000F);
 
-        switch (val) {
-
-            case v1:
-                aux = (pos << 4) & masks[6];
-                rep = rep | aux;
-                break; 
-            case v2:
-                aux = (pos << 8) & masks[5];
-                rep = rep | aux;
-                break; 
-            case v3:
-                aux = (pos << 12) & masks[4];
-                rep = rep | aux;
-                break;            
-            case v4:
-                aux = (pos << 16) & masks[3];
-                rep = rep | aux;
-                break;
-            case v5:
-                aux = (pos << 20) & masks[2];
-                rep = rep | aux;
-                break;
-
+        if (val == v1) {
+            aux = (pos << 4) & masks[6];
+            rep = rep | aux;
+        } else if (val == v2) {
+            aux = (pos << 8) & masks[5];
+            rep = rep | aux;
+        } else if (val == v3) {
+            aux = (pos << 12) & masks[4];
+            rep = rep | aux;
+        } else if (val == v4) {           
+            aux = (pos << 16) & masks[3];
+            rep = rep | aux;
+        } else if (val == v5) {
+            aux = (pos << 20) & masks[2];
+            rep = rep | aux;
         }
 
         pos++;
@@ -165,30 +160,23 @@ int rank1(state s, int v1, int v2, int v3, int v4, int v5) {
         
         val = (((s->quad_2)&masks[i])>>d)&(0x0000000F);
 
-        switch (val) {
-
-            case 1:
-                aux = (pos << 4) & masks[6];
-                rep = rep | aux;
-                break; 
-            case 2:
-                aux = (pos << 8) & masks[5];
-                rep = rep | aux;
-                break; 
-            case 3:
-                aux = (pos << 12) & masks[4];
-                rep = rep | aux;
-                break;            
-            case 4:
-                aux = (pos << 16) & masks[3];
-                rep = rep | aux;
-                break;
-            case 5:
-                aux = (pos << 20) & masks[2];
-                rep = rep | aux;
-                break;
-
+        if (val == v1) {
+            aux = (pos << 4) & masks[6];
+            rep = rep | aux;
+        } else if (val == v2) {
+            aux = (pos << 8) & masks[5];
+            rep = rep | aux;
+        } else if (val == v3) {
+            aux = (pos << 12) & masks[4];
+            rep = rep | aux;
+        } else if (val == v4) {           
+            aux = (pos << 16) & masks[3];
+            rep = rep | aux;
+        } else if (val == v5) {
+            aux = (pos << 20) & masks[2];
+            rep = rep | aux;
         }
+
 
         pos++;
         d = d - 4;
@@ -199,9 +187,20 @@ int rank1(state s, int v1, int v2, int v3, int v4, int v5) {
 
 }
 
+/*
+ * unrank
+ * Funcion que toma un entero que representa un estado y retorna el estado
+ * en cuestion
+ */
+
+state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
+    return NULL;
+
+}
+
 void main() {
 
-    int q1 = 0x61234560;
+    int q1 = 0x61266660;
     int q2 = 0x66666666;
 
     initializeMasks();
@@ -211,7 +210,7 @@ void main() {
     print_state(s);
     //list lst = ucs(s);
 
-    int h = rank1(s,1,2,3,4,5);
+    int h = rank(s,1,2,3,4,5);
 
     printf("\n%d\n",h);  
 
