@@ -88,8 +88,6 @@ hashval *ucs(state initial_state) {
 
     printf("Sali del guail\n");
 
-    printf("Estados guardados: %d\n", contadorsito);
-
     /* Liberamos el espacio usado por la cola de prioridades */
     //fib_heap_free(q);
     // Falta liberar HASH
