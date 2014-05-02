@@ -54,7 +54,7 @@ list ucs(state initial_state) {
         printf("Extract\n");
         print_state(n->estado);
         printf("Costo\n");
-	printf("%d\n",n->g);
+	    printf("%d\n",n->g);
 
         /* Buscamos en la tabla de hash dicho estado */
         look_up_key.key.q1 = (n->estado)->quad_1;
@@ -122,7 +122,7 @@ int rank(state s, int v1, int v2, int v3, int v4, int v5) {
     rep = rep | s -> zero;
 
     // Agregar el costo del estado
-    rep = rep | ((s -> cost) << 24;
+    rep = rep | ((s -> cost) << 24);
 
     // Busqueda en el primer cuadrante
 
@@ -194,6 +194,12 @@ int rank(state s, int v1, int v2, int v3, int v4, int v5) {
  */
 
 state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
+    
+    int q1 = 0;
+    int q2 = 0;
+
+    
+
     return NULL;
 
 }
