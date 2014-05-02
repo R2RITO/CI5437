@@ -88,8 +88,6 @@ hashval *ucs(state initial_state) {
 
     printf("Sali del guail\n");
 
-    printf("Estados guardados: %d\n", contadorsito);
-
     /* Liberamos el espacio usado por la cola de prioridades */
     //fib_heap_free(q);
     // Falta liberar HASH
@@ -188,13 +186,14 @@ void posicionar(int *q1, int *q2, int pos, int val) {
     // Obtener el entero con el que voy a copiar
     int aux = val << ((7 - (pos%8))*4);
 
-    if (pos <= 7) {
+/*    if (pos <= 7) {
 
         *q1 = *q1 | 
     } else {
 
     }
     return;
+*/
 }
 
 /*
