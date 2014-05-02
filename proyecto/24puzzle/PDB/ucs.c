@@ -151,7 +151,6 @@ int rank(state s, int v1, int v2, int v3, int v4, int v5) {
         d = d - 4;
 
     }
-
     d = 28;
     
     // Busqueda en el segundo cuadrante
@@ -183,8 +182,28 @@ int rank(state s, int v1, int v2, int v3, int v4, int v5) {
 
     }
 
+    printf("Pos = %d\n",pos);
     return rep;
 
+}
+
+/* 
+ * posicionar
+ * funcion que toma dos cuadrantes, una posicion y un valor e inserta en
+ * el cuadrante correspondiente el valor en la posicion dada
+ */
+void posicionar(int *q1, int *q2, int pos, int val) {
+
+    // Obtener el entero con el que voy a copiar
+    int aux = val << ((7 - (pos%8))*4);
+
+    if (pos <= 7) {
+
+        *q1 = *q1 | 
+    } else {
+
+    }
+    return;
 }
 
 /*
@@ -197,8 +216,32 @@ state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
     
     int q1 = 0;
     int q2 = 0;
-
+    int zero = 0;
+    int cost = 0;
+    int pos;
+    //Posicionar
+    // Debo tomar el entero v1, que contiene el numero cuya posicion esta en la 1,
+    // agarrar q1 o q2 (posiblemente creando funcion) y luego meter v1 en la posicion extraida de 1    
     
+    // Posicionar el primer elemento 
+    pos = (rep >> 4)&(0x0000000F);
+    posicionar(&q1,&q2,pos,v1);
+    
+    // Posicionar el segundo elemento 
+    pos = (rep >> 8)&(0x0000000F);
+    posicionar(&q1,&q2,pos,v2);
+
+    // Posicionar el tercer elemento 
+    pos = (rep >> 12)&(0x0000000F);
+    posicionar(&q1,&q2,pos,v3);
+
+    // Posicionar el cuarto elemento 
+    pos = (rep >> 16)&(0x0000000F);
+    posicionar(&q1,&q2,pos,v4);
+
+    // Posicionar el quinto elemento 
+    pos = (rep >> 20)&(0x0000000F);
+    posicionar(&q1,&q2,pos,v5);
 
     return NULL;
 
