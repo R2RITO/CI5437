@@ -1,6 +1,12 @@
 #ifndef FILE_STATE_PDB
 #define FILE_STATE_PDB
 
+/* Arreglo con patrones de cuatro unos consecutivos */
+int masks[8];
+
+/* Arreglo con el complemento de cada patron del arreglo anterior*/
+int cMasks[8];
+
 /* Representacion de un estado de un 15-PUZZLE */
 typedef struct _state {
     unsigned int quad_1; /* Representa el cuadrante superior */

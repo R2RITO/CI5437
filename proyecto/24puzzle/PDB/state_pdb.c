@@ -6,12 +6,6 @@
 #include "state_pdb.h"
 //#include "manhattan.h"
 
-/* Arreglo con patrones de cuatro unos consecutivos */
-int masks[8];
-
-/* Arreglo con el complemento de cada patron del arreglo anterior*/
-int cMasks[8];
-
 /* Metodo para inicializar el arreglo de mascaras */
 void initializeMasks() {
     masks[0] = 0xF0000000;

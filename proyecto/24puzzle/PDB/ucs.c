@@ -106,18 +106,115 @@ list ucs(state initial_state) {
 }   
 
 
+int rank1(state s, int v1, int v2, int v3, int v4, int v5) {
+
+    if (s == NULL) return;
+
+    int i,pos,val,aux;
+    int rep = 0;
+    int q1 = s -> quad_1;
+    int q2 = s -> quad_2;
+    int d = 28;
+
+    pos = 0;
+
+    // Agregar la posicion del cero
+    rep = rep | s -> zero;
+
+    // Busqueda en el primer cuadrante
+
+    for (i=0; i < 8; i++) {
+        
+        val = (((s->quad_1)&masks[i])>>d)&(0x0000000F);
+
+        switch (val) {
+
+            case v1:
+                aux = (pos << 4) & masks[6];
+                rep = rep | aux;
+                break; 
+            case v2:
+                aux = (pos << 8) & masks[5];
+                rep = rep | aux;
+                break; 
+            case v3:
+                aux = (pos << 12) & masks[4];
+                rep = rep | aux;
+                break;            
+            case v4:
+                aux = (pos << 16) & masks[3];
+                rep = rep | aux;
+                break;
+            case v5:
+                aux = (pos << 20) & masks[2];
+                rep = rep | aux;
+                break;
+
+        }
+
+        pos++;
+        d = d - 4;
+
+    }
+
+    d = 28;
+    
+    // Busqueda en el segundo cuadrante
+
+    for (i=0; i < 8; i++) {
+        
+        val = (((s->quad_2)&masks[i])>>d)&(0x0000000F);
+
+        switch (val) {
+
+            case 1:
+                aux = (pos << 4) & masks[6];
+                rep = rep | aux;
+                break; 
+            case 2:
+                aux = (pos << 8) & masks[5];
+                rep = rep | aux;
+                break; 
+            case 3:
+                aux = (pos << 12) & masks[4];
+                rep = rep | aux;
+                break;            
+            case 4:
+                aux = (pos << 16) & masks[3];
+                rep = rep | aux;
+                break;
+            case 5:
+                aux = (pos << 20) & masks[2];
+                rep = rep | aux;
+                break;
+
+        }
+
+        pos++;
+        d = d - 4;
+
+    }
+
+    return rep;
+
+}
+
 void main() {
 
-    int q1 = 0x01664566;
+    int q1 = 0x61234560;
     int q2 = 0x66666666;
 
     initializeMasks();
     initializeCompMasks();
 
-    state s = make_state(q1,q2,0,0);
+    state s = make_state(q1,q2,7,0);
     print_state(s);
-    list lst = ucs(s);
-    
+    //list lst = ucs(s);
+
+    int h = rank1(s,1,2,3,4,5);
+
+    printf("\n%d\n",h);  
+
 
 }
 
