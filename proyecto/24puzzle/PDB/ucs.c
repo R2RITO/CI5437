@@ -15,7 +15,7 @@ void free_aux(void *a) {
  * DESC   : Implementacion del algoritmo A*
  * RETORNA: Una lista con el mejor camino del estado s al goal
  */
-list ucs(state initial_state) {
+hashval *ucs(state initial_state) {
 
     /* Se crea la cola de prioridades */
     fiboheap q = make_fib_heap(compare_nodo, free_aux);
@@ -41,24 +41,16 @@ list ucs(state initial_state) {
     /* Variable para almacenar los sucesores de un estado */
     successors suc;
 
-    printf("Comenzo ucs\n");
-    print_state(initial_state);    
-    printf("JJ\n");
-
     /* Mientras que el heap de fibonacci tenga un elemento */
     while (q->min) {
         
         /* Extraemos el minimo del heap de fibonacci */
         n = fib_heap_extract_min(q);
 
-        printf("Extract\n");
-        print_state(n->estado);
-        printf("Costo\n");
-	    printf("%d\n",n->g);
-
         /* Buscamos en la tabla de hash dicho estado */
         look_up_key.key.q1 = (n->estado)->quad_1;
         look_up_key.key.q2 = (n->estado)->quad_2;
+        look_up_key.key.zero = (n->estado)->zero;
         HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
 
         /* Si no lo encuentra o si su distancia es mayor (Reabrirlo) */
@@ -66,8 +58,9 @@ list ucs(state initial_state) {
 
             /* Debemos agregarlo a la tabla de hash */
             look_up = malloc(sizeof(hashval));
-            look_up ->key.q1 = look_up_key.key.q1;
-            look_up ->key.q2 = look_up_key.key.q2;
+            look_up->key.q1   = look_up_key.key.q1;
+            look_up->key.q2   = look_up_key.key.q2;
+            look_up->key.zero = look_up_key.key.zero;
             HASH_ADD(hh, closed,key, keylen,look_up);
             
 
@@ -77,15 +70,11 @@ list ucs(state initial_state) {
             /* Obtenemos los sucesores del estado */
             suc = get_succ(n->estado);
 
-            printf("Sucesores\n");
-
             /* Agregamos los sucesores del estado n a la cola de prioridades */
             for (i=0; i<4; i++) {
                 
                 if (suc->succ[i]) {
                     if (((!n->a)||(n->a!=cAccions[i]))) {
-                        print_state(suc->succ[i]);
-                        printf("\n");
                         fib_heap_insert(q,make_node(n,accion[i],suc->succ[i]));
                     }
                 }
@@ -99,10 +88,12 @@ list ucs(state initial_state) {
 
     printf("Sali del guail\n");
 
+    printf("Estados guardados: %d\n", contadorsito);
+
     /* Liberamos el espacio usado por la cola de prioridades */
     //fib_heap_free(q);
     // Falta liberar HASH
-    return NULL;
+    return closed;
 }   
 
 
@@ -249,15 +240,15 @@ state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
 
 void main() {
 
-    int q1 = 0x61266660;
-    int q2 = 0x66666666;
+    int q1 = 0x01234500;
+    int q2 = 0x00000000;
 
     initializeMasks();
     initializeCompMasks();
 
     state s = make_state(q1,q2,7,0);
     print_state(s);
-    //list lst = ucs(s);
+    ucs(s);
 
     int h = rank(s,1,2,3,4,5);
 
