@@ -17,7 +17,6 @@
 
 typedef struct {
     int sol;
-    int size_res;
     int tp;
 } plan;
 
@@ -35,6 +34,6 @@ typedef struct {
 
 plan DFS_acotado(int t);
 
-list idastar(state initial_state);
+void idastar(state initial_state);
 
 #endif

@@ -12,7 +12,7 @@
 #include "caja.h"
 #include "uthash.h"
 
-#define INFINITO 51
+#define INFINITO 1000
 
 /* Estructuras para la tabla de hash */
 
@@ -25,7 +25,9 @@ typedef struct {
 /* Estructura para los valores de la tabla */
 typedef struct {
     hashkey key;
-    int dist;
+    int  closed;
+    char accion; //accion que genero al estado
+    int  g;      //costo
     UT_hash_handle hh;
 } hashval;
 
@@ -35,5 +37,13 @@ typedef struct {
  * RETORNA: Una lista con el mejor camino del estado s al goal
  */
 list astar(state initial_state);
+
+/* FUNCION: compare_state
+* DESC : Compara dos nodos
+* nx : Primero nodo a comparar
+* ny : Segundo nodo a comparar
+* RETORNA: Negativo si nx < ny, Cero si nx = ny, Positivo si nx > ny
+*/
+int compare_state(void *sx, void *sy) ;
 
 #endif

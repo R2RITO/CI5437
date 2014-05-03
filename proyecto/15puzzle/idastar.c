@@ -13,9 +13,9 @@ clock_t ste = 0;
 state current_state;
 char  current_action;
 int   current_g;
-int   current_size_res;
 
 plan DFS_acotado(int t) {
+
     plan res;
     int hn = manhattan(current_state);
 
@@ -26,7 +26,6 @@ plan DFS_acotado(int t) {
     }
     if (is_goal(current_state)){
         res.sol = 1; //hallado
-        res.size_res = current_size_res;
         res.tp = current_g;
         return res;
     }
@@ -38,7 +37,6 @@ plan DFS_acotado(int t) {
      *del estado global*/
     char save_curr_action   = current_action;
     int  save_curr_g        = current_g;
-    int  save_curr_size_res = current_size_res;
     state save_curr_state   = current_state;
 
     for (i=0; i<4; i++) {
@@ -50,10 +48,9 @@ plan DFS_acotado(int t) {
             current_g = current_g + cost(current_state,current_action);
             current_action = actions[i];
             current_state = succ;
-            current_size_res = current_size_res+1;
             
             res = DFS_acotado(t);
-            if (res.sol) {return res;}
+            if (res.sol) {free(succ); return res;}
             if (res.tp < new_t) {new_t = res.tp;}
         }
         //libera al sucesor procesado
@@ -63,7 +60,6 @@ plan DFS_acotado(int t) {
         current_action = save_curr_action;
         current_g = save_curr_g;
         current_state = save_curr_state;
-        current_size_res = save_curr_size_res;
         
     }
     res.sol = 0;
@@ -71,21 +67,19 @@ plan DFS_acotado(int t) {
     return res;
 }
 
-list idastar(state initial_state) {
+void idastar(state initial_state) {
 
     current_state = make_state(initial_state->quad_1,initial_state->quad_2,initial_state->zero);
     current_action = 0;
     current_g = 0;
-    current_size_res = 0;
 
     int t = manhattan(current_state);
     plan actual;
     while (t < INFINITO) {
         actual = DFS_acotado(t);
-        if (actual.sol) { printf("tam res: %d\n",actual.size_res); free_state(current_state); return NULL; }
+        if (actual.sol) { printf("Final: %d",current_g); return; }
         t = actual.tp;
     }
     free_state(current_state);
-    printf("no sol sorry\n");
-    return NULL;
+    printf(" *No Encontre Solucion* ");
 }
