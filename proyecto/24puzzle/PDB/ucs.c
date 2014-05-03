@@ -16,10 +16,9 @@ void free_aux(void *a) {
 int compare_nodo_rep(void *nx, void *ny) {
     int *x = nx;
     int *y = ny;
-    int p = *x;
-    int q = *y;
-    p = (p >> 24) & (0x000000FF);
-    q = (q >> 24) & (0x000000FF);
+    int p,q;
+    p = (*x >> 24) & (0x000000FF);
+    q = (*y >> 24) & (0x000000FF);
 
     return p-q;
 }
@@ -200,7 +199,7 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
     /* Variable auxiliar para extraer de la cola de prioridades */ 
     int *n;
     state s,sHijo;
-    int rep_hijo;
+    int *rep_hijo;
 
     /* Variable para almacenar los sucesores de un estado */
     successors suc;
@@ -212,6 +211,10 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
         n = fib_heap_extract_min(q);
         s = unrank(*n,v1,v2,v3,v4,v5);
 
+        //printf("************ EXTRAIGO *************\n");            
+        //print_state(s);
+        //printf("***********************************\n"); 
+
         /* Buscamos en la tabla de hash dicho estado */
         look_up_key.key.q1 = s->quad_1;
         look_up_key.key.q2 = s->quad_2;
@@ -222,9 +225,6 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
         if (!look_up) {
 
             contador++;
-            printf("************ EXTRAIGO *************\n");            
-            print_state(s);
-            printf("***********************************\n"); 
             /* Debemos agregarlo a la tabla de hash */
             look_up = malloc(sizeof(hashval));
             look_up->key.q1   = look_up_key.key.q1;
@@ -240,16 +240,17 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
             suc = get_succ(s);
 
             /* Agregamos los sucesores del estado n a la cola de prioridades */
-            printf("************ SUCESORES *************\n");
+            //printf("************ SUCESORES *************\n");
             for (i=0; i<4; i++) {
                 
                 if (suc->succ[i]) {
-                    print_state(suc->succ[i]);                    
-                    rep_hijo = rank(suc->succ[i],v1,v2,v3,v4,v5);
-                    fib_heap_insert(q,&rep_hijo);
+                    //print_state(suc->succ[i]);
+                    rep_hijo = malloc(sizeof(int));                    
+                    *rep_hijo = rank(suc->succ[i],v1,v2,v3,v4,v5);
+                    fib_heap_insert(q,rep_hijo);
                 }
             }
-            printf("************************************\n");            
+            //printf("************************************\n");            
             /* Liberamos el espacio usado para almacenar los sucesores */
             free(suc);
         }
@@ -275,8 +276,8 @@ void main() {
     state s = make_state(q1,q2,0,0);
     print_state(s);
     ucs(s,1,2,3,4,5);
-    //ucs(s,6,7,8,9,10);
-    //ucs(s,11,12,13,14,15);
+    ucs(s,6,7,8,9,10);
+    ucs(s,11,12,13,14,15);
 
     /*int h = rank(s,11,12,13,14,15);
 
