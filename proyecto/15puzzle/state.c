@@ -244,7 +244,7 @@ state init(char* input){
      * de la cuadricula*/
     initializeMasks();
     initializeCompMasks();
-    printf("lainstancia actual es %s",input);
+    printf("%s",input);
     
     int k[16];
     sscanf(input," %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d \n",
