@@ -73,7 +73,6 @@ void idastar(state initial_state) {
     current_g = 0;
 
     int t = pdb(current_state,t1,t2,t3);
-    printf("mi t:%d\n",t);
     plan actual;
     while (t < INFINITO_IDASTAR) {
         actual = DFS_acotado(t);

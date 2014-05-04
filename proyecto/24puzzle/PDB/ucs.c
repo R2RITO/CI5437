@@ -278,8 +278,6 @@ hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
         pdb_free_state(s);
     }
 
-    printf("Sali del guail y agregue a hash %ld nodos\n",contador);
-
     /* Liberamos el espacio usado por la cola de prioridades */
     fib_heap_free(q);
     // Falta liberar HASH

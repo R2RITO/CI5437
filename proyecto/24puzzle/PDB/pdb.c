@@ -108,10 +108,14 @@ int pdb(pdb_state s, hashval *t1, hashval *t2, hashval *t3) {
 void pdb_generate_pattern(){
     pdb_initializeMasks();
     pdb_initializeCompMasks();
+    printf("Generando base de datos de patrones PDB... (0/3)\n");
     pdb_state goal_state = pdb_make_state(0x01234567,0x89ABCDEF,0,0);   
     t1 = ucs(goal_state,1,2,3,4,5);
+    printf("Fase 1 completada... (1/3)\n");
     t2 = ucs(goal_state,6,7,8,9,10);
+    printf("Fase 2 completada... (2/3)\n");
     t3 = ucs(goal_state,11,12,13,14,15);
+    printf("Fase 3 completada. Patrones generados (3/3)\n");
 }
 
 void pdb_erase_pattern(){
