@@ -14,13 +14,10 @@ state current_state;
 char  current_action;
 int   current_g;
 
-hashval *t1, *t2, *_t3 = NULL ;
-
 plan DFS_acotado(int t) {
 
     plan res;
-    int hn = pdb(current_state,t1,t2,_t3);
-
+    int hn = pdb(current_state,t1,t2,t3);
     if ((current_g)+hn > t) {
         res.sol = 0;
         res.tp  = current_g+hn;
@@ -70,16 +67,13 @@ plan DFS_acotado(int t) {
 }
 
 void idastar(state initial_state) {
-    pdb_state pdb_initial_state = pdb_make_state(initial_state->quad_1,initial_state->quad_2,initial_state->zero,0);
-    t1 = ucs(pdb_initial_state,1,2,3,4,5);
-    t2 = ucs(pdb_initial_state,6,7,8,9,10);
-    _t3 = ucs(pdb_initial_state,11,12,13,14,15);  
 
     current_state = make_state(initial_state->quad_1,initial_state->quad_2,initial_state->zero);
     current_action = 0;
     current_g = 0;
 
-    int t = pdb(current_state,t1,t2,_t3);
+    int t = pdb(current_state,t1,t2,t3);
+    printf("mi t:%d\n",t);
     plan actual;
     while (t < INFINITO_IDASTAR) {
         actual = DFS_acotado(t);

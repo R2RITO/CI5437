@@ -184,6 +184,7 @@ void delete_all(hashval *tabla) {
  * RETORNA: Una tabla de hash con los estados posibles (con la PDB)
  */
 hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
+    
 
     /* Se crea la cola de prioridades */
     fiboheap q = make_fib_heap(compare_nodo_rep, free);

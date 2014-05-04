@@ -2,7 +2,6 @@
 #include "idastar.h"
 #define BUFFER_SIZE 80
 
-
 int main  (int argc, char *argv[]) {
 
     /*La invocacion debe tener exactamente 2 argumentos: el nombre del programa
@@ -28,6 +27,7 @@ int main  (int argc, char *argv[]) {
     int num = 1;
     pdb_initializeMasks();
     pdb_initializeCompMasks();
+    pdb_generate_pattern();
     while ( fgets (instance, BUFFER_SIZE, file)) {
 
         printf("%3d : ", num);

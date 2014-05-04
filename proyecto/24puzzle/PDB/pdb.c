@@ -105,3 +105,11 @@ int pdb(pdb_state s, hashval *t1, hashval *t2, hashval *t3) {
     return res;
 }
 
+void pdb_generate_pattern(){
+    pdb_initializeMasks();
+    pdb_initializeCompMasks();
+    pdb_state goal_state = pdb_make_state(0x01234567,0x89ABCDEF,0,0);   
+    t1 = ucs(goal_state,1,2,3,4,5);
+    t2 = ucs(goal_state,6,7,8,9,10);
+    t3 = ucs(goal_state,11,12,13,14,15);
+}

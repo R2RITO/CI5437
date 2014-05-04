@@ -30,6 +30,8 @@ typedef struct {
     UT_hash_handle hh;
 } hashval;
 
+hashval *t1,*t2,*t3;
+
 /* FUNCION: astar
  * s      : Estado inicial s
  * DESC   : Implementacion del algoritmo A*

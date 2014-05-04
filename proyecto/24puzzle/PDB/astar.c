@@ -17,8 +17,6 @@ void delete_all_astar(hashval_astar *tabla) {
   }
 }
 
-hashval *t1, *t2, *t3 = NULL;
-
 /* FUNCION: compare_state
 * DESC : Compara dos nodos
 * nx : Primero nodo a comparar
@@ -58,12 +56,6 @@ int compare_state(void *sx, void *sy) {
 * RETORNA: Una lista con el mejor camino del estado s al goal
 */
 list astar(state initial_state) {
- 
-    pdb_state pdb_initial_state = pdb_make_state(initial_state->quad_1,initial_state->quad_2,initial_state->zero,0);
- 
-    t1 = ucs(pdb_initial_state,1,2,3,4,5);
-    t2 = ucs(pdb_initial_state,6,7,8,9,10);
-    t3 = ucs(pdb_initial_state,11,12,13,14,15);   
 
     /* Se crea la cola de prioridades */
     fiboheap q = make_fib_heap(compare_state, free_state);
