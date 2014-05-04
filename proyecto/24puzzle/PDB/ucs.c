@@ -285,6 +285,7 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
     return closed;
 }   
 
+/*
 void main() {
 
     int q1 = 0x01234567;
@@ -302,18 +303,7 @@ void main() {
     printf("Empece el tercero\n");
     ucs(s,11,12,13,14,15);
 
-    /*int h = rank(s,11,12,13,14,15);
-
-    printf("\n%d\n",h);  
-
-    state p = unrank(h,11,12,13,14,15);
-
-    print_state(p);
-    printf("\n Costo: %d, Zero: %d\n",p->cost,p->zero);
-
-    printf("Comparacion: %d\n",compare_nodo_rep(&h,&h));*/
-    
 }
-
+*/
 
 

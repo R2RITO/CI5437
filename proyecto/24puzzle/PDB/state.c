@@ -3,8 +3,14 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
-#include "state_pdb.h"
-//#include "manhattan.h"
+#include "state.h"
+#include "manhattan.h"
+
+/* Arreglo con patrones de cuatro unos consecutivos */
+int masks[8];
+
+/* Arreglo con el complemento de cada patron del arreglo anterior*/
+int cMasks[8];
 
 /* Metodo para inicializar el arreglo de mascaras */
 void initializeMasks() {
@@ -37,13 +43,25 @@ void initializeCompMasks() {
  * z      : Posicion actual del cero
  * RETORNA: Un nuevo esta con los valores q1 q2 y z
  */
-state make_state(int q1, int q2, int z, int cost) {
+state make_state(int q1, int q2, int z) {
     state newState = malloc(sizeof(struct _state));
     newState -> quad_1 = q1;
     newState -> quad_2 = q2;
     newState -> zero   = z;
-    newState -> cost   = cost;
     return newState;
+}
+
+/* FUNCION: is_goal
+ * DESC   : Verifica si el estado s es un estado final
+ * s      : Es el estado que se va a verificar
+ * RETORNA: Devuelve 1 si es goal. 0 En caso contrario
+ */
+int is_goal(state s) {
+    int q1;
+    int q2;
+    q1 = 0x01234567;
+    q2 = 0x89ABCDEF;
+    return (q1==s->quad_1)&&(q2==s->quad_2);
 }
 
 /* FUNCION: moveLR
@@ -61,16 +79,10 @@ state moveLR(state s, int d) {
     state nState = NULL;
     save = 0;
     newq = 0;
-    int cost;
 
     if (zero < 8) {
         // Si estamos en el primer cuadrante
         save = (s->quad_1)&masks[zero+d];
-
-        // Guardar el valor de la casilla destino para costo
-        cost = save && 1;
-
-
         if ( d < 0 ) {
             // Si el movimiento es a la izquierda
             save = save >> 4;
@@ -81,14 +93,10 @@ state moveLR(state s, int d) {
         }
         newq = (s->quad_1)&cMasks[zero+d];
         newq = newq | save;
-        nState = make_state(newq,s->quad_2, zero+d, cost + s->cost);
+        nState = make_state(newq,s->quad_2, zero+d);
     } else {
         // Si estamos en el segundo cuadrante
         save = (s->quad_2)&masks[(zero+d)%8];
-
-        // Guardar el valor de la casilla destino para costo
-        cost = save && 1;
-
         if ( d < 0 ) {
             // Si el movimiento es a la izquierda
             save = save >> 4;
@@ -99,7 +107,7 @@ state moveLR(state s, int d) {
         }
         newq = (s->quad_2)&cMasks[(zero+d)%8];
         newq = newq | save;
-        nState = make_state(s->quad_1, newq, zero+d, cost + s->cost);
+        nState = make_state(s->quad_1, newq, zero+d);
     }                    
     return nState;
 }
@@ -120,7 +128,6 @@ state moveUD(state s, int d) {
     save = 0;
     newq1 = 0;
     newq2 = 0;
-    int cost;
 
     int caso = zero/4;
     
@@ -128,41 +135,29 @@ state moveUD(state s, int d) {
         case 0:
             // Estamos en la primera linea del puzzle
             save = (s->quad_1)&masks[zero+d];
-
-            // Guardar el valor de la casilla destino para costo
-            cost = save && 1;            
-
             save = save << 16;
             newq1 = (s->quad_1)&cMasks[zero+d];
             newq1 = newq1 | save;
-            nState = make_state(newq1,s->quad_2,zero+d, cost + s->cost);
+            nState = make_state(newq1,s->quad_2,zero+d);
             break;
         case 1:
             // Estamos en la segunda linea del puzzle
             if ( d < 0 ) {
                 // Si el movimiento es arriba
                 save = (s->quad_1)&masks[(zero+d)%8];
-
-                // Guardar el valor de la casilla destino para costo
-                cost = save && 1;
-
                 save = save >> 16;
                 save = save&(0x0000FFFF);
                 newq1 = (s->quad_1)&cMasks[(zero+d)%8];
                 newq1 = newq1 | save;
-                nState = make_state(newq1, s->quad_2, zero+d, cost + s->cost);
+                nState = make_state(newq1, s->quad_2, zero+d);
             } else {
                 // Si el movimiento es hacia abajo
                 save = (s->quad_2)&masks[(zero+d)%8];
-
-                // Guardar el valor de la casilla destino para costo
-                cost = save && 1;
-
                 save = save >> 16;
                 save = save&(0x0000FFFF);
                 newq1 = (s->quad_1) | save;
                 newq2 = (s->quad_2)&cMasks[(zero+d)%8];
-                nState = make_state(newq1,newq2,zero+d, cost + s->cost);
+                nState = make_state(newq1,newq2,zero+d);
             }
             break;
         case 2:
@@ -170,39 +165,27 @@ state moveUD(state s, int d) {
             if ( d < 0 ) {
                 // Si el movimiento es hacia arriba
                 save = (s->quad_1)&masks[(zero+d)%8];
-
-                // Guardar el valor de la casilla destino para costo
-                cost = save && 1;
-
                 save = save << 16;
                 newq1 = (s->quad_1)&cMasks[(zero+d)%8];
                 newq2 = (s->quad_2) | save;
-                nState = make_state(newq1,newq2,zero+d, cost + s->cost);
+                nState = make_state(newq1,newq2,zero+d);
             } else {
                 // Si el movimiento es hacia abajo
                 save = (s->quad_2)&masks[(zero+d)%8];
-
-                // Guardar el valor de la casilla destino para costo
-                cost = save && 1;
-
                 save = save << 16;
                 newq2 = (s->quad_2)&cMasks[(zero+d)%8];
                 newq2 = newq2 | save;
-                nState = make_state(s->quad_1,newq2,zero+d, cost + s->cost);
+                nState = make_state(s->quad_1,newq2,zero+d);
             }
             break;
         case 3:
             // Estamos en la cuarta linea del puzzle
             save = (s->quad_2)&masks[(zero+d)%8];
-
-            // Guardar el valor de la casilla destino para costo
-            cost = save && 1;
-
             save = save >> 16;
             save = save&(0x0000FFFF);
             newq1 = (s->quad_2)&cMasks[(zero+d)%8];
             newq1 = newq1 | save;
-            nState = make_state(s->quad_1,newq1,zero+d, cost + s->cost);
+            nState = make_state(s->quad_1,newq1,zero+d);
             break;
     }
 }
@@ -261,7 +244,7 @@ state init(char* input){
      * de la cuadricula*/
     initializeMasks();
     initializeCompMasks();
-    printf("lainstancia actual es %s",input);
+    printf("%s",input);
     
     int k[16];
     sscanf(input," %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d \n",
@@ -293,7 +276,7 @@ state init(char* input){
        quad_2 = quad_2 | k[quad_2_index];
     }
    
-    return make_state(quad_1,quad_2,pos_zero, 0);
+    return make_state(quad_1,quad_2,pos_zero);
 }
 
 /* FUNCION: get_succ
@@ -328,15 +311,8 @@ void print_state(state s) {
         if (i%4 == 0) {
             printf("\n");
         }
-
-        if (s -> zero == i) {
-            printf(" X  "); 
-        } else {
-
-            // Imprimimos el valor haciendo los shift correspondientes
-            printf("%2d  ", (((s->quad_1)&masks[i])>>d)&(0x0000000F));
-
-        }
+        // Imprimimos el valor haciendo los shift correspondientes
+        printf("%2d  ", ((s->quad_1)&masks[i])>>d);
         // Se decrementa la cantidad de bits a mover en la siguiente iteracion
         d = d-4;
     }
@@ -349,14 +325,8 @@ void print_state(state s) {
         if (i%4 == 0) {
             printf("\n");
         }
-
-        if ((s -> zero - 8) == i) {
-            printf(" X  ");
-        } else {
-            // Imprimimos el valor haciendo los shift correspondientes
-            printf("%2d  ", (((s->quad_2)&masks[i])>>d)&(0x0000000F));
-        }
-
+        // Imprimimos el valor haciendo los shift correspondientes
+        printf("%2d  ", ((s->quad_2)&masks[i])>>d);
         // Se decrementa la cantidad de bits a mover en la siguiente iteracion
         d = d-4;
     }
