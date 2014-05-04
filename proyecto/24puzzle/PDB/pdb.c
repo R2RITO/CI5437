@@ -113,3 +113,9 @@ void pdb_generate_pattern(){
     t2 = ucs(goal_state,6,7,8,9,10);
     t3 = ucs(goal_state,11,12,13,14,15);
 }
+
+void pdb_erase_pattern(){
+    delete_all(t1);
+    delete_all(t2);
+    delete_all(t3);
+}

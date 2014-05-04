@@ -53,5 +53,6 @@ int main  (int argc, char *argv[]) {
         num++;
     }
     /*cierre del archivo de entrada*/
+    pdb_erase_pattern();
     fclose(file);
 }

@@ -116,9 +116,6 @@ list astar(state initial_state) {
                 /* Liberamos el espacio usado por la cola de prioridades */
                 fib_heap_free(q);
                 delete_all_astar(closed);
-                delete_all(t1);
-                delete_all(t2);
-                delete_all(t3);
                 closed = NULL;
                 t1 = NULL;
                 t2 = NULL;
