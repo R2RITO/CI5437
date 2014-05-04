@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <time.h>
 #include "state.h"
-#include "manhattan.h"
 
 /* Arreglo con patrones de cuatro unos consecutivos */
 int masks[8];

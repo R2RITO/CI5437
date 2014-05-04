@@ -30,7 +30,8 @@ int main  (int argc, char *argv[]) {
     while ( fgets (instance, BUFFER_SIZE, file)) {
 
         printf("%3d : ", num);
-
+state initial_state = init(instance);
+clock_t start2,end2;
         /*------------------ IDA* -------------------------*/
 /*        state initial_state = init(instance);
         printf("\tIDA* : ");

@@ -11,9 +11,10 @@
 #include "nodos.h"
 #include "lista.h"
 #include "caja.h"
+#include "ucs.h"
 #include "uthash.h"
 
-#define INFINITO 100
+#define INFINITO_IDASTAR 100
 
 typedef struct {
     int sol;

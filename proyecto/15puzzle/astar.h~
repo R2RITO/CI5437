@@ -24,7 +24,7 @@ typedef struct {
 
 /* Estructura para los valores de la tabla */
 typedef struct {
-    hashkey_astar key;
+    hashkey key;
     int  closed;
     char accion; //accion que genero al estado
     int  g;      //costo

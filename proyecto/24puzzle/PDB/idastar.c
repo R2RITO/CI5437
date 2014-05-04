@@ -14,10 +14,12 @@ state current_state;
 char  current_action;
 int   current_g;
 
+hashval *t1, *t2, *t3 = NULL ;
+
 plan DFS_acotado(int t) {
 
     plan res;
-    int hn = manhattan(current_state);
+    int hn = pdb(current_state,t1,t2,t3);
 
     if ((current_g)+hn > t) {
         res.sol = 0;
@@ -30,7 +32,7 @@ plan DFS_acotado(int t) {
         return res;
     }
 
-    int new_t = INFINITO;
+    int new_t = INFINITO_IDASTAR;
     int i;
 
     /*para la presente llamada recursiva, se guardan los valores
@@ -68,14 +70,18 @@ plan DFS_acotado(int t) {
 }
 
 void idastar(state initial_state) {
+    pdb_state pdb_initial_state = pdb_make_state(initial_state->quad_1,initial_state->quad_2,initial_state->zero,0);
+    t1 = ucs(pdb_initial_state,1,2,3,4,5);
+    t2 = ucs(pdb_initial_state,6,7,8,9,10);
+    t3 = ucs(pdb_initial_state,11,12,13,14,15);  
 
     current_state = make_state(initial_state->quad_1,initial_state->quad_2,initial_state->zero);
     current_action = 0;
     current_g = 0;
 
-    int t = manhattan(current_state);
+    int t = pdb(current_state,t1,t2,t3);
     plan actual;
-    while (t < INFINITO) {
+    while (t < INFINITO_IDASTAR) {
         actual = DFS_acotado(t);
         if (actual.sol) { printf("Final: %d",current_g); return; }
         t = actual.tp;

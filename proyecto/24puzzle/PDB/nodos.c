@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include "lista.h"
 #include "state.h"
-#include "manhattan.h"
 #include "nodos.h"
 
 
@@ -63,20 +62,5 @@ void free_nodo(nodo n, void (*f)(void *a)) {
     free(n);
 }
 
-/* FUNCION: compare_nodo
- * DESC   : Compara dos nodos
- * nx     : Primero nodo a comparar
- * ny     : Segundo nodo a comparar
- * RETORNA: Negativo si nx < ny, Cero si nx = ny, Positivo si nx > ny
- */
-int compare_nodo(void *nx, void *ny) {
-    nodo x = (nodo) nx;
-    nodo y = (nodo) ny;
-    int res = ((x->g) + manhattan(x->estado)) - ((y->g) + manhattan(y->estado)); 
-    if (res) {
-        return res;
-    } else {
-        return ((x->g)-(y->g));
-    }
-}
+
 

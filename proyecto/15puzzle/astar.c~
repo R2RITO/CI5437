@@ -1,6 +1,9 @@
 #include "astar.h"
-#include "ucs.h"
 
+void free_aux(void *a) {
+    nodo n = (nodo) a;
+    free_nodo(a, free_state);
+}
 /* Se declaran variables para el conjunto de nodos cerrados */
 /* Closed es una tabla de hash donde estaran los nodos cerrados */
 /* Los otros dos valores son usados para buscar y agregar en la tabla */
@@ -8,16 +11,14 @@ hashval_astar look_up_key,*look_up,*closed = NULL;
 unsigned int keylen = sizeof(hashkey);
 
 /* Funcion para destruir la tabla de hash */
-void delete_all_astar(hashval_astar *tabla) {
+void delete_all_astar() {
   hashval_astar *c_val, *tmp;
 
-  HASH_ITER(hh, tabla, c_val, tmp) {
-    HASH_DEL(tabla,c_val);
+  HASH_ITER(hh, closed, c_val, tmp) {
+    HASH_DEL(closed,c_val);
     free(c_val);
   }
 }
-
-hashval *t1, *t2, *t3 = NULL;
 
 /* FUNCION: compare_state
 * DESC : Compara dos nodos
@@ -27,8 +28,8 @@ hashval *t1, *t2, *t3 = NULL;
 */
 int compare_state(void *sx, void *sy) {
 
-    pdb_state x = (pdb_state) sx;
-    pdb_state y = (pdb_state) sy;
+    state x = (state) sx;
+    state y = (state) sy;
     
     /* Buscamos en la tabla de hash la informacion asociada al estado sx */
     look_up_key.key.q1 = x->quad_1;
@@ -42,7 +43,7 @@ int compare_state(void *sx, void *sy) {
     HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
     int gy = look_up->g;
     
-    int res = (gx + pdb(x,t1,t2,t3)) - (gy + pdb(y,t1,t2,t3));
+    int res = (gx + manhattan(x)) - (gy + manhattan(y));
     if (res) {
         return res;
     //caso de empate, el criterio aplica en base a los cosgtos individuales
@@ -58,18 +59,12 @@ int compare_state(void *sx, void *sy) {
 * RETORNA: Una lista con el mejor camino del estado s al goal
 */
 list astar(state initial_state) {
- 
-    pdb_state pdb_initial_state = pdb_make_state(initial_state->quad_1,initial_state->quad_2,initial_state->zero,0);
- 
-    t1 = ucs(pdb_initial_state,1,2,3,4,5);
-    t2 = ucs(pdb_initial_state,6,7,8,9,10);
-    t3 = ucs(pdb_initial_state,11,12,13,14,15);   
-
+    
     /* Se crea la cola de prioridades */
     fiboheap q = make_fib_heap(compare_state, free_state);
     /* Se inserta en el heap al estado inicial */
 
-    look_up = malloc(sizeof(hashval_astar));
+    look_up = malloc(sizeof(hashval));
     look_up ->key.q1 = initial_state->quad_1;
     look_up ->key.q2 = initial_state->quad_2;
     look_up ->accion = 0;
@@ -92,7 +87,6 @@ list astar(state initial_state) {
 
     /* Variable para almacenar los sucesores de un estado */
     successors suc;
-
 
     /* Mientras que el heap de fibonacci tenga un elemento */
     while (q->min) {  
@@ -123,14 +117,8 @@ list astar(state initial_state) {
                 //free_nodo(n, free_state);
                 /* Liberamos el espacio usado por la cola de prioridades */
                 fib_heap_free(q);
-                delete_all_astar(closed);
-                delete_all(t1);
-                delete_all(t2);
-                delete_all(t3);
+                delete_all();
                 closed = NULL;
-                t1 = NULL;
-                t2 = NULL;
-                t3 = NULL;
                 look_up = NULL;
                 return res;
             }
@@ -141,7 +129,7 @@ list astar(state initial_state) {
             /* Agregamos los sucesores del estado n a la cola de prioridades */
             
             for (i=0; i<4; i++) {
-                if ((suc->succ[i]) && (pdb(suc->succ[i],t1,t2,t3) < INFINITO)) {
+                if ((suc->succ[i]) && (manhattan(suc->succ[i]) < INFINITO)) {
                     if (((!a_parent)||(a_parent!=cAccions[i]))) {
 
                         /* Buscamos en la tabla de hash dicho estado */
@@ -150,7 +138,7 @@ list astar(state initial_state) {
                         HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
                         
                         if (!look_up) {
-                        look_up = malloc(sizeof(hashval_astar));
+                        look_up = malloc(sizeof(hashval));
                         look_up ->key.q1 = suc->succ[i]->quad_1;
                         look_up ->key.q2 = suc->succ[i]->quad_2;
                         look_up ->accion = accion[i];
@@ -174,13 +162,7 @@ list astar(state initial_state) {
     }
     /* Liberamos el espacio usado por la cola de prioridades */
     fib_heap_free(q);
-    delete_all_astar(closed);
-    delete_all(t1);
-    delete_all(t2);
-    delete_all(t3);
-    t1 = NULL;
-    t2 = NULL;
-    t3 = NULL;
+    delete_all();
     closed = NULL;
     look_up = NULL;
     return NULL;
