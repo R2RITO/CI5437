@@ -6,8 +6,7 @@
 #include <stdint.h>
 
 void free_aux(void *a) {
-    nodo n = (nodo) a;
-    free_nodo(a, free_state);
+    free(a);
 }
 
 /* compare_nodo_rep
@@ -168,6 +167,17 @@ state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
 
 }
 
+/* Funcion para destruir la tabla de hash */
+
+void delete_all(hashval *tabla) {
+  hashval *c_val, *tmp = NULL;
+  HASH_ITER(hh, tabla, c_val, tmp) {
+    HASH_DEL(tabla,c_val);
+    free(c_val);
+  }
+}
+
+
 /* FUNCION: ucs
  * s      : Estado inicial s
  * DESC   : Implementacion del algoritmo UCS para PDB
@@ -176,10 +186,11 @@ state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
 hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
 
     /* Se crea la cola de prioridades */
-    fiboheap q = make_fib_heap(compare_nodo_rep, free_aux);
+    fiboheap q = make_fib_heap(compare_nodo_rep, free);
     /* Se inserta en el heap al estado inicial */
-    int rep_inicial = rank(initial_state,v1,v2,v3,v4,v5);
-    fib_heap_insert(q,&rep_inicial);
+    int *rep_inicial = malloc(sizeof(int));
+    *rep_inicial = rank(initial_state,v1,v2,v3,v4,v5);
+    fib_heap_insert(q,rep_inicial);
 
     /* Se declaran variables para el conjunto de nodos cerrados */
     /* Closed es una tabla de hash donde estaran los nodos cerrados */
@@ -210,7 +221,7 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
         /* Extraemos el minimo del heap de fibonacci */
         n = fib_heap_extract_min(q);
         s = unrank(*n,v1,v2,v3,v4,v5);
-
+        free(n);
         //printf("************ EXTRAIGO *************\n");            
         //print_state(s);
         //printf("***********************************\n"); 
@@ -245,22 +256,31 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
                 
                 if (suc->succ[i]) {
                     //print_state(suc->succ[i]);
-                    rep_hijo = malloc(sizeof(int));                    
-                    *rep_hijo = rank(suc->succ[i],v1,v2,v3,v4,v5);
-                    fib_heap_insert(q,rep_hijo);
+
+                    look_up_key.key.q1 = suc->succ[i]->quad_1;
+                    look_up_key.key.q2 = suc->succ[i]->quad_2;
+                    look_up_key.key.zero = suc->succ[i]->zero;
+                    HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
+
+                    if (!look_up) {                    
+                        rep_hijo = malloc(sizeof(int));                    
+                        *rep_hijo = rank(suc->succ[i],v1,v2,v3,v4,v5);
+                        fib_heap_insert(q,rep_hijo);
+                    }
+                    free_state(suc->succ[i]);
                 }
             }
             //printf("************************************\n");            
             /* Liberamos el espacio usado para almacenar los sucesores */
             free(suc);
         }
-        //free_nodo(n,free_state);
+        free_state(s);
     }
 
     printf("Sali del guail y agregue a hash %ld nodos\n",contador);
 
     /* Liberamos el espacio usado por la cola de prioridades */
-    //fib_heap_free(q);
+    fib_heap_free(q);
     // Falta liberar HASH
     return closed;
 }   
@@ -275,8 +295,11 @@ void main() {
 
     state s = make_state(q1,q2,0,0);
     print_state(s);
+    printf("Empece el primero\n");
     ucs(s,1,2,3,4,5);
+    printf("Empece el segundo\n");
     ucs(s,6,7,8,9,10);
+    printf("Empece el tercero\n");
     ucs(s,11,12,13,14,15);
 
     /*int h = rank(s,11,12,13,14,15);

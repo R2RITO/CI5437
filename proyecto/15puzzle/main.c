@@ -48,7 +48,7 @@ int main  (int argc, char *argv[]) {
         
         printf("Tiempo: %f Segundos.\n", (float)(end2-start2)/CLOCKS_PER_SEC);
 
-        free_state(initial_state);
+        //free_state(initial_state);
         initial_state = NULL;
         num++;
     }

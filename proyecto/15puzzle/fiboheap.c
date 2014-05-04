@@ -335,7 +335,9 @@ void* fib_heap_extract_min(fiboheap f) {
  * f      : Heap a destruir
  */
 void fib_heap_free(fiboheap f) {
-    free_fib_node_cascade(f->min, f->freeFun);
+    if (f->min) {
+        free_fib_node_cascade(f->min, f->freeFun);
+    }
     free(f);
 }
 

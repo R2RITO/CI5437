@@ -89,8 +89,8 @@ list astar(state initial_state) {
     successors suc;
 
     /* Mientras que el heap de fibonacci tenga un elemento */
-    while (q->min) {
-        
+    while (q->min) {  
+
         /* Extraemos el minimo del heap de fibonacci */
         s = (state) fib_heap_extract_min(q);
 
@@ -115,10 +115,11 @@ list astar(state initial_state) {
                 printf("Final: %d ",look_up->g);
                 list res = NULL ;//extract_solution(n);
                 //free_nodo(n, free_state);
-
                 /* Liberamos el espacio usado por la cola de prioridades */
                 fib_heap_free(q);
                 delete_all();
+                closed = NULL;
+                look_up = NULL;
                 return res;
             }
 
@@ -162,5 +163,7 @@ list astar(state initial_state) {
     /* Liberamos el espacio usado por la cola de prioridades */
     fib_heap_free(q);
     delete_all();
+    closed = NULL;
+    look_up = NULL;
     return NULL;
 } 
