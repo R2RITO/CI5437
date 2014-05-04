@@ -1,49 +1,49 @@
 #ifndef FILE_NODOS_PDB
 #define FILE_NODOS_PDB
 
-typedef char action;
+typedef char pdb_action;
 
-typedef struct nodo_struct *nodo;
+typedef struct pdb_nodo_struct *pdb_nodo;
 
-typedef struct nodo_struct {
+typedef struct pdb_nodo_struct {
     /* Padre del nodo */
-    nodo parent;
+    pdb_nodo parent;
     /* Estado representado por el nodo */
-    state estado;
+    pdb_state estado;
     /* Costo para llegar de la raiz al nodo */
     unsigned int g : 8;
     /* Accion utilizada para llegar al nodo */
-    action a;
+    pdb_action a;
     
-} *nodo;
+} *pdb_nodo;
 
 
-int cost(state s, action a);
+int pdb_cost(pdb_state s, pdb_action a);
 
 /* Crear el nodo raiz */
-nodo make_root_node(state s);
+pdb_nodo pdb_make_root_node(pdb_state s);
 
 
 /* Crear un nodo */
-nodo make_node(nodo n, action a, state s);
+pdb_nodo pdb_make_node(pdb_nodo n, pdb_action a, pdb_state s);
 
 
 
-/* FUNCION: free_nodo
+/* FUNCION: pdb_free_nodo
  * DESC   : Funcion que libera un nodo
  * n      : Nodo a ser liberado
  * f      : Funcion para liberar el estado en el nodo
  */ 
-void free_nodo(nodo n, void (*f)(void *a));
+void pdb_free_nodo(pdb_nodo n, void (*f)(void *a));
 
 
-/* FUNCION: compare_nodo 
+/* FUNCION: pdb_compare_nodo 
  * DESC   : Compara dos nodos
  * x      : Primer nodo a comparar
  * y      : Segundo nodo a comparar
  * RETORNA: Positivo si x > y, Cero si x = y, Negativo si x < y
  */
-int compare_nodo(void *nx, void *ny);
+int pdb_compare_nodo(void *nx, void *ny);
 
 
 

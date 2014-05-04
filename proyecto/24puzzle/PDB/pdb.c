@@ -21,7 +21,7 @@
 
 */
 
-state dividir(state s, int a, int b, int c, int d, int e) {
+pdb_state dividir(pdb_state s, int a, int b, int c, int d, int e) {
 
     int res_q1 = 0;
     int res_q2 = 0;
@@ -65,21 +65,21 @@ state dividir(state s, int a, int b, int c, int d, int e) {
         save = save >> 4;
     }
 
-    state res = make_state(res_q1, res_q2, s->zero, 0);
+    pdb_state res = pdb_make_state(res_q1, res_q2, s->zero, 0);
     return res;
 
 }
 
-int pdb(state s, hashval *t1, hashval *t2, hashval *t3) {
+int pdb(pdb_state s, hashval *t1, hashval *t2, hashval *t3) {
 
     int res = 0;
 
     hashval look_up_key,*look_up = NULL;
     unsigned int keylen = sizeof(hashkey); 
 
-    state s1 = dividir(s,1,2,3,4,5);
-    state s2 = dividir(s,6,7,8,9,10);
-    state s3 = dividir(s,11,12,13,14,15);
+    pdb_state s1 = dividir(s,1,2,3,4,5);
+    pdb_state s2 = dividir(s,6,7,8,9,10);
+    pdb_state s3 = dividir(s,11,12,13,14,15);
 
     look_up_key.key.q1 = s1->quad_1;
     look_up_key.key.q2 = s1->quad_2;

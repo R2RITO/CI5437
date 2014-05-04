@@ -22,7 +22,7 @@ int compare_nodo_rep(void *nx, void *ny) {
     return p-q;
 }
 
-int rank(state s, int v1, int v2, int v3, int v4, int v5) {
+int rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
 
     if (s == NULL) return;
 
@@ -44,22 +44,22 @@ int rank(state s, int v1, int v2, int v3, int v4, int v5) {
 
     for (i=0; i < 8; i++) {
         
-        val = (((s->quad_1)&masks[i])>>d)&(0x0000000F);
+        val = (((s->quad_1)&pdb_masks[i])>>d)&(0x0000000F);
 
         if (val == v1) {
-            aux = (pos << 4) & masks[6];
+            aux = (pos << 4) & pdb_masks[6];
             rep = rep | aux;
         } else if (val == v2) {
-            aux = (pos << 8) & masks[5];
+            aux = (pos << 8) & pdb_masks[5];
             rep = rep | aux;
         } else if (val == v3) {
-            aux = (pos << 12) & masks[4];
+            aux = (pos << 12) & pdb_masks[4];
             rep = rep | aux;
         } else if (val == v4) {           
-            aux = (pos << 16) & masks[3];
+            aux = (pos << 16) & pdb_masks[3];
             rep = rep | aux;
         } else if (val == v5) {
-            aux = (pos << 20) & masks[2];
+            aux = (pos << 20) & pdb_masks[2];
             rep = rep | aux;
         }
 
@@ -73,22 +73,22 @@ int rank(state s, int v1, int v2, int v3, int v4, int v5) {
 
     for (i=0; i < 8; i++) {
         
-        val = (((s->quad_2)&masks[i])>>d)&(0x0000000F);
+        val = (((s->quad_2)&pdb_masks[i])>>d)&(0x0000000F);
 
         if (val == v1) {
-            aux = (pos << 4) & masks[6];
+            aux = (pos << 4) & pdb_masks[6];
             rep = rep | aux;
         } else if (val == v2) {
-            aux = (pos << 8) & masks[5];
+            aux = (pos << 8) & pdb_masks[5];
             rep = rep | aux;
         } else if (val == v3) {
-            aux = (pos << 12) & masks[4];
+            aux = (pos << 12) & pdb_masks[4];
             rep = rep | aux;
         } else if (val == v4) {           
-            aux = (pos << 16) & masks[3];
+            aux = (pos << 16) & pdb_masks[3];
             rep = rep | aux;
         } else if (val == v5) {
-            aux = (pos << 20) & masks[2];
+            aux = (pos << 20) & pdb_masks[2];
             rep = rep | aux;
         }
 
@@ -111,7 +111,7 @@ void posicionar(int *q1, int *q2, int pos, int val) {
 
     // Obtener el entero con el que voy a copiar
     int aux = val << ((7 - (pos%8))*4);
-    aux = aux & masks[(pos%8)];
+    aux = aux & pdb_masks[(pos%8)];
 
     if (pos <= 7) {
         *q1 = *q1 | aux;
@@ -129,7 +129,7 @@ void posicionar(int *q1, int *q2, int pos, int val) {
  * en cuestion
  */
 
-state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
+pdb_state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
     
     int q1 = 0;
     int q2 = 0;
@@ -138,7 +138,7 @@ state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
     int pos;
     
     // Guardar la posicion del cero
-    zero = rep & masks[7];
+    zero = rep & pdb_masks[7];
 
     // Guardar el costo del estado
     cost = (rep >> 24) & (0x000000FF);
@@ -163,7 +163,7 @@ state unrank(int rep, int v1, int v2, int v3, int v4, int v5) {
     pos = (rep >> 20)&(0x0000000F);
     posicionar(&q1,&q2,pos,v5);
 
-    return make_state(q1,q2,zero,cost);
+    return pdb_make_state(q1,q2,zero,cost);
 
 }
 
@@ -183,7 +183,7 @@ void delete_all(hashval *tabla) {
  * DESC   : Implementacion del algoritmo UCS para PDB
  * RETORNA: Una tabla de hash con los estados posibles (con la PDB)
  */
-hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
+hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
 
     /* Se crea la cola de prioridades */
     fiboheap q = make_fib_heap(compare_nodo_rep, free);
@@ -209,11 +209,11 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
 
     /* Variable auxiliar para extraer de la cola de prioridades */ 
     int *n;
-    state s,sHijo;
+    pdb_state s,sHijo;
     int *rep_hijo;
 
     /* Variable para almacenar los sucesores de un estado */
-    successors suc;
+    pdb_successors suc;
 
     /* Mientras que el heap de fibonacci tenga un elemento */
     while (q->min) {
@@ -248,7 +248,7 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
             look_up->dist = (s->cost);
 
             /* Obtenemos los sucesores del estado */
-            suc = get_succ(s);
+            suc = pdb_get_succ(s);
 
             /* Agregamos los sucesores del estado n a la cola de prioridades */
             //printf("************ SUCESORES *************\n");
@@ -274,7 +274,7 @@ hashval *ucs(state initial_state, int v1, int v2, int v3, int v4, int v5) {
             /* Liberamos el espacio usado para almacenar los sucesores */
             free(suc);
         }
-        free_state(s);
+        pdb_free_state(s);
     }
 
     printf("Sali del guail y agregue a hash %ld nodos\n",contador);

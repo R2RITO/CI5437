@@ -5,9 +5,9 @@
 #include "nodo_pdb.h"
 
 /* Crear el nodo raiz */
-nodo make_root_node(state s) {
+pdb_nodo pdb_make_root_node(pdb_state s) {
 
-    nodo n = malloc(sizeof(struct nodo_struct));
+    pdb_nodo n = malloc(sizeof(struct pdb_nodo_struct));
     (*n).estado = s;
     (*n).parent = NULL;
     (*n).a      = 0;
@@ -16,9 +16,9 @@ nodo make_root_node(state s) {
 }
 
 /* Crear un nodo */
-nodo make_node(nodo n, action a, state s) {
+pdb_nodo pdb_make_node(pdb_nodo n, pdb_action a, pdb_state s) {
 
-    nodo nuevo_n = malloc(sizeof(struct nodo_struct));
+    pdb_nodo nuevo_n = malloc(sizeof(struct pdb_nodo_struct));
     (*nuevo_n).estado  = s;
     (*nuevo_n).parent  = n;
     (*nuevo_n).a       = a;
@@ -27,25 +27,25 @@ nodo make_node(nodo n, action a, state s) {
 
 }
 
-/* FUNCION: free_nodo
+/* FUNCION: pdb_free_nodo
  * DESC   : Funcion que libera un nodo
  * n      : Nodo a ser liberado
  * f      : Funcion para liberar el estado en el nodo
  */ 
-void free_nodo(nodo n, void (*f)(void *a)) {
+void pdb_free_nodo(pdb_nodo n, void (*f)(void *a)) {
     f(n->estado);
     free(n);
 }
 
-/* FUNCION: compare_nodo
+/* FUNCION: pdb_compare_nodo
  * DESC   : Compara dos nodos
  * nx     : Primero nodo a comparar
  * ny     : Segundo nodo a comparar
  * RETORNA: Negativo si nx < ny, Cero si nx = ny, Positivo si nx > ny
  */
-int compare_nodo(void *nx, void *ny) {
-    nodo x = (nodo) nx;
-    nodo y = (nodo) ny;
+int pdb_compare_nodo(void *nx, void *ny) {
+    pdb_nodo x = (pdb_nodo) nx;
+    pdb_nodo y = (pdb_nodo) ny;
     int res = (x->g) - (y->g) ; 
     if (res) {
         return res;
