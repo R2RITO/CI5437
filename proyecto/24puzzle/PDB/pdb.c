@@ -76,10 +76,10 @@ int pdb(pdb_state s, hashval *t1, hashval *t2, hashval *t3) {
 
     hashval look_up_key,*look_up = NULL;
     unsigned int keylen = sizeof(hashkey); 
-
-    pdb_state s1 = dividir(s,1,2,3,4,5);
-    pdb_state s2 = dividir(s,6,7,8,9,10);
-    pdb_state s3 = dividir(s,11,12,13,14,15);
+//1 2 4 5 8, 3 6 7 A B, 9 12 13 14 15
+    pdb_state s1 = dividir(s,1,2,4,5,8);
+    pdb_state s2 = dividir(s,3,6,7,10,11);
+    pdb_state s3 = dividir(s,9,12,13,14,15);
 
     look_up_key.key.q1 = s1->quad_1;
     look_up_key.key.q2 = s1->quad_2;
@@ -104,17 +104,17 @@ int pdb(pdb_state s, hashval *t1, hashval *t2, hashval *t3) {
 
     return res;
 }
-
+//1 2 4 5 8, 3 6 7 A B, 9 12 13 14 15
 void pdb_generate_pattern(){
     pdb_initializeMasks();
     pdb_initializeCompMasks();
     printf("Generando base de datos de patrones PDB... (0/3)\n");
     pdb_state goal_state = pdb_make_state(0x01234567,0x89ABCDEF,0,0);   
-    t1 = ucs(goal_state,1,2,3,4,5);
+    t1 = ucs(goal_state,1,2,4,5,8);
     printf("Fase 1 completada... (1/3)\n");
-    t2 = ucs(goal_state,6,7,8,9,10);
+    t2 = ucs(goal_state,3,6,7,10,11);
     printf("Fase 2 completada... (2/3)\n");
-    t3 = ucs(goal_state,11,12,13,14,15);
+    t3 = ucs(goal_state,9,12,13,14,15);
     printf("Fase 3 completada. Patrones generados (3/3)\n");
 }
 

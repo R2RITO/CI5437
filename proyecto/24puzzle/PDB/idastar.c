@@ -18,6 +18,7 @@ plan DFS_acotado(int t) {
 
     plan res;
     int hn = pdb(current_state,t1,t2,t3);
+
     if ((current_g)+hn > t) {
         res.sol = 0;
         res.tp  = current_g+hn;
@@ -47,7 +48,6 @@ plan DFS_acotado(int t) {
             current_g = current_g + cost(current_state,current_action);
             current_action = actions[i];
             current_state = succ;
-            
             res = DFS_acotado(t);
             if (res.sol) {free(succ); return res;}
             if (res.tp < new_t) {new_t = res.tp;}
@@ -73,6 +73,7 @@ void idastar(state initial_state) {
     current_g = 0;
 
     int t = pdb(current_state,t1,t2,t3);
+
     plan actual;
     while (t < INFINITO_IDASTAR) {
         actual = DFS_acotado(t);
