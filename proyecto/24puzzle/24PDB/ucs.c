@@ -27,11 +27,12 @@ int compare_nodo_rep(void *nx, void *ny) {
  * funcion que toma dos cuadrantes, una posicion y un valor e inserta en
  * el cuadrante correspondiente el valor en la posicion dada
  */
-void posicionar(int64 *q1, int64 *q2, int pos, int val) {
+void posicionar(int64 *q1, int64 *q2, int pos, int value) {
 
     // Obtener el entero con el que voy a copiar
     
     int64 aux,m1,m2;
+    unsigned long long val = value;
 
     if (pos == 24) {
         
@@ -75,29 +76,36 @@ pdb_state unrank(unsigned long long rep, int v1, int v2, int v3, int v4, int v5)
     
     // Guardar la posicion del cero
     zero = rep & (0x000000000000001F);
+    printf("Zero: %d\n",zero);
 
     // Guardar el costo del estado
     cost = (rep >> 30) & (0x00000000FFFFFFFF);
-        
+    printf("Costo: %d\n",cost);    
+    
     // Posicionar el primer elemento 
     pos = (rep >> 5)&(0x000000000000001F);
     posicionar(&q1,&q2,pos,v1);
+    printf("Pos1: %lld, v1: %d\n",q1.val,v1);
     
     // Posicionar el segundo elemento 
     pos = (rep >> 10)&(0x000000000000001F);
     posicionar(&q1,&q2,pos,v2);
+    printf("Pos2: %lld, v2: %d\n",q1.val,v2);
 
     // Posicionar el tercer elemento 
     pos = (rep >> 15)&(0x000000000000001F);
     posicionar(&q1,&q2,pos,v3);
+    printf("Pos3: %d, v3: %d\n",pos,v3);
 
     // Posicionar el cuarto elemento 
     pos = (rep >> 20)&(0x000000000000001F);
     posicionar(&q1,&q2,pos,v4);
+    printf("Pos4: %d, v4: %d\n",pos,v4);
 
     // Posicionar el quinto elemento 
     pos = (rep >> 25)&(0x000000000000001F);
     posicionar(&q1,&q2,pos,v5);
+    printf("Pos1: %d, v1: %d\n",pos,v1);
 
     return pdb_make_state(q1.val,q2.val,zero,cost);
 
@@ -230,6 +238,28 @@ void delete_all(hashval *tabla) {
 
 
 void main() {
+
+    int64 q1;
+    int64 q2;
+    q1.val = 0x00443214C74254BC;
+    q2.val = 0x635CF84653A56D70;
+
+    pdb_initializeMasks();
+    pdb_initializeCompMasks();
+
+    pdb_state s = pdb_make_state(q1.val,q2.val,0,0);
+
+    pdb_print_state(s);
+
+    long long rep = rank(s,1,2,3,4,5);
+
+    printf("Rep: %lld\n",rep);
+    
+    rep = 0x000000010A418823;
+
+    s = unrank(rep,6,7,8,9,10);
+
+    pdb_print_state(s);
 
     printf("Recuerda inicializar las mascaras\n");
 
