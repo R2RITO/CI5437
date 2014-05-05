@@ -178,12 +178,20 @@ void delete_all(hashval *tabla) {
 }
 
 
+void delete_all_z(hashval_z *tabla) {
+  hashval_z *c_val, *tmp = NULL;
+  HASH_ITER(hh, tabla, c_val, tmp) {
+    HASH_DEL(tabla,c_val);
+    free(c_val);
+  }
+}
+
 /* FUNCION: ucs
  * s      : Estado inicial s
  * DESC   : Implementacion del algoritmo UCS para PDB
  * RETORNA: Una tabla de hash con los estados posibles (con la PDB)
  */
-hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
+hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
     
 
     /* Se crea la cola de prioridades */
@@ -198,6 +206,9 @@ hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
     /* Los otros dos valores son usados para buscar y agregar en la tabla */
     hashval look_up_key,*look_up,*closed = NULL;
     unsigned int keylen = sizeof(hashkey);
+
+    hashval_z zLook_up_key, *zLook_up, *res = NULL;
+    unsigned int zkeylen = sizeof(hashkey_z);
    
     /* Acciones */
     char accion[4] = {'l','r','u','d'};
@@ -215,6 +226,8 @@ hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
 
     /* Variable para almacenar los sucesores de un estado */
     pdb_successors suc;
+
+    int agregados = 0;
 
     /* Mientras que el heap de fibonacci tenga un elemento */
     while (q->min) {
@@ -244,6 +257,22 @@ hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
             look_up->key.zero = look_up_key.key.zero;
             HASH_ADD(hh, closed,key, keylen,look_up);
             
+            zLook_up_key.key.q1 = look_up_key.key.q1;
+            zLook_up_key.key.q2 = look_up_key.key.q2;
+            HASH_FIND(hh,res,&zLook_up_key.key,zkeylen,zLook_up);
+            
+            if (zLook_up) {
+                if (zLook_up -> dist > s -> cost) {
+                    zLook_up -> dist = s -> cost;
+                }
+            } else {
+                zLook_up = malloc(sizeof(hashval_z));
+                zLook_up->key.q1 = look_up_key.key.q1;
+                zLook_up->key.q2 = look_up_key.key.q2;
+                zLook_up->dist = s->cost;
+                HASH_ADD(hh,res,key,zkeylen,zLook_up);
+                agregados++;
+            }
 
             /* Obtener el costo del nuevo estado y guardarlo */
             look_up->dist = (s->cost);
@@ -277,11 +306,11 @@ hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
         }
         pdb_free_state(s);
     }
-
+    printf("AGREGADOS: %d\n",agregados);
     /* Liberamos el espacio usado por la cola de prioridades */
     fib_heap_free(q);
-    // Falta liberar HASH
-    return closed;
+    delete_all(closed);
+    return res;
 }   
 
 /*
