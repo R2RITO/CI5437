@@ -88,6 +88,8 @@ list astar(state initial_state) {
     /* Variable para almacenar los sucesores de un estado */
     successors suc;
 
+    int numSucc = 1;
+
     /* Mientras que el heap de fibonacci tenga un elemento */
     while (q->min) {  
 
@@ -104,7 +106,6 @@ list astar(state initial_state) {
 
             look_up->closed = 1;
            /* Si no lo encontro, debemos agregarlo a la tabla de hash */
-
             /* Se actualiza la distancia en la tabla de hash */
             g_parent = look_up->g;
             a_parent = look_up->accion;
@@ -112,7 +113,7 @@ list astar(state initial_state) {
             if (is_goal(s)) {
             
                 //int res = look_up->g;
-                printf("Final: %d ",look_up->g);
+                printf("Final: %d Nodos: %d ",look_up->g, numSucc);
                 list res = NULL ;//extract_solution(n);
                 //free_nodo(n, free_state);
                 /* Liberamos el espacio usado por la cola de prioridades */
@@ -121,6 +122,18 @@ list astar(state initial_state) {
                 closed = NULL;
                 look_up = NULL;
                 return res;
+            }
+
+            if (numSucc >= 20000000) {
+                printf("Final: No encontre solucion ");
+                list res = NULL ;//extract_solution(n);
+                //free_nodo(n, free_state);
+                /* Liberamos el espacio usado por la cola de prioridades */
+                fib_heap_free(q);
+                delete_all();
+                closed = NULL;
+                look_up = NULL;
+                return res;    
             }
 
             /* Obtenemos los sucesores del estado */
@@ -136,7 +149,7 @@ list astar(state initial_state) {
                         look_up_key.key.q1 = suc->succ[i]->quad_1;
                         look_up_key.key.q2 = suc->succ[i]->quad_2;
                         HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
-                        
+                        numSucc++;                
                         if (!look_up) {
                         look_up = malloc(sizeof(hashval));
                         look_up ->key.q1 = suc->succ[i]->quad_1;
@@ -145,7 +158,6 @@ list astar(state initial_state) {
                         look_up ->g = g_parent + 1;
                         look_up ->closed = 0;
                         HASH_ADD(hh, closed,key, keylen,look_up);
-                                          
                         fib_heap_insert(q,suc->succ[i]);
                         } else {
                             free_state(suc->succ[i]);
