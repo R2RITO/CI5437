@@ -20,7 +20,7 @@
 typedef struct {
   int q1;
   int q2;
-} hashkeyz;
+} hashkey;
 
 /* Estructura para los valores de la tabla */
 typedef struct {

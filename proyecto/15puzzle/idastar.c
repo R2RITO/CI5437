@@ -14,6 +14,8 @@ state current_state;
 char  current_action;
 int   current_g;
 
+int numSucc = 0;
+
 plan DFS_acotado(int t) {
 
     plan res;
@@ -48,7 +50,7 @@ plan DFS_acotado(int t) {
             current_g = current_g + cost(current_state,current_action);
             current_action = actions[i];
             current_state = succ;
-            
+            numSucc++;            
             res = DFS_acotado(t);
             if (res.sol) {free(succ); return res;}
             if (res.tp < new_t) {new_t = res.tp;}
@@ -73,11 +75,13 @@ void idastar(state initial_state) {
     current_action = 0;
     current_g = 0;
 
+    numSucc = 1;
+
     int t = manhattan(current_state);
     plan actual;
     while (t < INFINITO) {
         actual = DFS_acotado(t);
-        if (actual.sol) { printf("Final: %d",current_g); return; }
+        if (actual.sol) { printf("Final: %d Nodos: %d",current_g, numSucc); return; }
         t = actual.tp;
     }
     free_state(current_state);
