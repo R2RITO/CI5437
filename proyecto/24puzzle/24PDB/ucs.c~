@@ -6,117 +6,238 @@
 #include <stdint.h>
 
 void free_aux(void *a) {
-    nodo n = (nodo) a;
-    free_nodo(a, free_state);
+    free(a);
 }
 
-/* FUNCION: astar
- * s      : Estado inicial s
- * DESC   : Implementacion del algoritmo A*
- * RETORNA: Una lista con el mejor camino del estado s al goal
+/* compare_nodo_rep.val
+ * Funcion que compara dos estados representados por enteros
  */
-list ucs(state initial_state) {
+int compare_nodo_rep(void *nx, void *ny) {
+    int64 *x = nx;
+    int64 *y = ny;
+    int64 p,q;
+    p.val = ((*x).val >> 30) & (0x00000000FFFFFFFF);
+    q.val = ((*y).val >> 30) & (0x00000000FFFFFFFF);
 
-    /* Se crea la cola de prioridades */
-    fiboheap q = make_fib_heap(compare_nodo, free_aux);
-    /* Se inserta en el heap al estado inicial */
-    fib_heap_insert(q,make_root_node(initial_state));
+    return p.val-q.val;
+}
 
-    /* Se declaran variables para el conjunto de nodos cerrados */
-    /* Closed es una tabla de hash donde estaran los nodos cerrados */
-    /* Los otros dos valores son usados para buscar y agregar en la tabla */
-    hashval look_up_key,*look_up,*closed = NULL;
-    unsigned int keylen = sizeof(hashkey);
-   
-    /* Acciones */
-    char accion[4] = {'l','r','u','d'};
-    char cAccions[4] = {'r','l','d','u'};
+/* 
+ * posicionar
+ * funcion que toma dos cuadrantes, una posicion y un valor e inserta en
+ * el cuadrante correspondiente el valor en la posicion dada
+ */
+void posicionar(int64 *q1, int64 *q2, int pos, int val) {
 
-    /* Para iterar en los sucesores */
-    int i;
+    // Obtener el entero con el que voy a copiar
+    
+    int64 aux,m1,m2;
 
-    /* Variable auxiliar para extraer de la cola de prioridades */ 
-    nodo n;
-
-    /* Variable para almacenar los sucesores de un estado */
-    successors suc;
-
-    printf("Comenzo ucs\n");
-    print_state(initial_state);    
-    printf("JJ\n");
-
-    /* Mientras que el heap de fibonacci tenga un elemento */
-    while (q->min) {
+    if (pos == 24) {
         
-        /* Extraemos el minimo del heap de fibonacci */
-        n = fib_heap_extract_min(q);
-
-        printf("Extract\n");
-        print_state(n->estado);
-
-        /* Buscamos en la tabla de hash dicho estado */
-        look_up_key.key.q1 = (n->estado)->quad_1;
-        look_up_key.key.q2 = (n->estado)->quad_2;
-        HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
-
-        /* Si no lo encuentra o si su distancia es mayor (Reabrirlo) */
-        if (!look_up) {
-
-            /* Debemos agregarlo a la tabla de hash */
-            look_up = malloc(sizeof(hashval));
-            look_up ->key.q1 = look_up_key.key.q1;
-            look_up ->key.q2 = look_up_key.key.q2;
-            HASH_ADD(hh, closed,key, keylen,look_up);
-            
-
-            /* Obtener el costo del nuevo estado y guardarlo */
-            look_up->dist = (n->g);
-
-            /* Obtenemos los sucesores del estado */
-            suc = get_succ(n->estado);
-
-            printf("Sucesores\n");
-
-            /* Agregamos los sucesores del estado n a la cola de prioridades */
-            for (i=0; i<4; i++) {
-                
-                if (suc->succ[i]) {
-                    if (((!n->a)||(n->a!=cAccions[i]))) {
-                        print_state(suc->succ[i]);
-                        printf("\n");
-                        fib_heap_insert(q,make_node(n,accion[i],suc->succ[i]));
-                    }
-                }
-            }
-            
-            /* Liberamos el espacio usado para almacenar los sucesores */
-            free(suc);
-        }
-        //free_nodo(n,free_state);
+        //Dividir a val en los 2 trozos.
+        m1.val = (val >> 1) & (0x000000000000000F);
+        m2.val = val & (0x0000000000000001);
+        
+    } else {
+        aux.val = val << (((11 - (pos%12))*5)+4);
+        aux.val = aux.val & pdb_masks[(pos%12)].val;
     }
 
-    printf("Sali del guail\n");
+    if (pos <= 11) {
+        (*q1).val = (*q1).val | aux.val;
+    } else if (pos <= 23) {
+        (*q2).val = (*q2).val | aux.val;
+    } else {
+        (*q1).val = (*q1).val | m1.val;
+        (*q2).val = (*q2).val | m2.val;
+    }
 
-    /* Liberamos el espacio usado por la cola de prioridades */
-    //fib_heap_free(q);
-    // Falta liberar HASH
-    return NULL;
-}   
+    return;
+
+}
+
+/*
+ * unrank
+ * Funcion que toma un entero que representa un estado y retorna el estado
+ * en cuestion
+ */
+
+pdb_state unrank(unsigned long long rep, int v1, int v2, int v3, int v4, int v5) {
+    
+    int64 q1;
+    int64 q2;
+    q1.val = 0;
+    q2.val = 0;
+    int zero = 0;
+    int cost = 0;
+    int pos;
+    
+    // Guardar la posicion del cero
+    zero = rep & (0x000000000000001F);
+
+    // Guardar el costo del estado
+    cost = (rep >> 30) & (0x00000000FFFFFFFF);
+        
+    // Posicionar el primer elemento 
+    pos = (rep >> 5)&(0x000000000000001F);
+    posicionar(&q1,&q2,pos,v1);
+    
+    // Posicionar el segundo elemento 
+    pos = (rep >> 10)&(0x000000000000001F);
+    posicionar(&q1,&q2,pos,v2);
+
+    // Posicionar el tercer elemento 
+    pos = (rep >> 15)&(0x000000000000001F);
+    posicionar(&q1,&q2,pos,v3);
+
+    // Posicionar el cuarto elemento 
+    pos = (rep >> 20)&(0x000000000000001F);
+    posicionar(&q1,&q2,pos,v4);
+
+    // Posicionar el quinto elemento 
+    pos = (rep >> 25)&(0x000000000000001F);
+    posicionar(&q1,&q2,pos,v5);
+
+    return pdb_make_state(q1.val,q2.val,zero,cost);
+
+}
+
+unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
+
+    if (!s) return;
+     
+    int i,d;
+    int64 rep,q1,q2;
+    rep.val = 0;
+    q1.val = s -> quad_1;
+    q2.val = s -> quad_2;
+    d = 59; //11*5+4
+    //pos va del 0 hasta el 25. si coincide con alguno de los vi valores
+    //se coloca el valor de pos en la rep, en la posicion de bits adecuada
+
+    int64 val,pos,aux;
+    pos.val = 0;
+    // Agregar la posicion del cero
+    rep.val = rep.val | s -> zero;
+
+    // Agregar el costo del estado
+    rep.val = rep.val | ((s -> cost) << 30);
+    printf("costo:%lu, mi rep es:%lu\n",s->cost,rep.val);
+    // Busqueda en el primer cuadrante
+
+    for (i=0; i < 12; i++) {
+        
+        //se recoge el numero iesimo de la representacion, y se posiciona
+        //al inicio de val.
+        val.val = (((s->quad_1)&pdb_masks[i].val)>>d)&(0x00000000000000FF);
+    
+        if (val.val == v1) {
+            aux.val = (pos.val << 5);
+            rep.val = rep.val | aux.val;
+        } else if (val.val == v2) {
+            aux.val = (pos.val << 10);
+            rep.val = rep.val | aux.val;
+        } else if (val.val == v3) {
+            aux.val = (pos.val << 15);
+            rep.val = rep.val | aux.val;
+        } else if (val.val == v4) {           
+            aux.val = (pos.val << 20);
+            rep.val = rep.val | aux.val;
+        } else if (val.val == v5) {
+            aux.val = (pos.val << 25);
+            rep.val = rep.val | aux.val;
+        } 
+
+        pos.val++;
+        d = d - 5;
+
+    }
+    d = 59;
+    
+    // Busqueda en el segundo cuadrante
+
+    for (i=0; i < 12; i++) {
+        
+        val.val = (((s->quad_2)&pdb_masks[i].val)>>d)&(0x00000000000000FF);
+        if (val.val == v1) {
+            aux.val = (pos.val << 5);
+            rep.val = rep.val | aux.val;
+        } else if (val.val == v2) {
+            aux.val = (pos.val << 10);
+            rep.val = rep.val | aux.val;
+        } else if (val.val == v3) {
+            aux.val = (pos.val << 15);
+            rep.val = rep.val | aux.val;
+        } else if (val.val == v4) {           
+            aux.val = (pos.val << 20);
+            rep.val = rep.val | aux.val;
+        } else if (val.val == v5) {
+            aux.val = (pos.val << 25);
+            rep.val = rep.val | aux.val;
+        }
+
+        pos.val++;
+        d = d - 5;
+
+    }
+  
+                printf("mi res es: %lu\n",rep.val);
+    
+    /*se recupera el ultimo numero de la representacion 24-P */
+    
+    /*se recuperan los ultimos 4 bits del primer cuadrante*/
+    int last_five_bits = ((s->quad_1)&(0x000000000000000F));
+    /*se reserva espacio para el ultimo bit restante*/
+    last_five_bits = last_five_bits << 1;
+    /*se recupera el ultimo bit del segundo cuadrante*/
+    int last_bit = ((s->quad_2)&(0x0000000000000001));
+    last_five_bits = last_five_bits | last_bit;
+    
+    val.val = last_five_bits;
+    if (val.val == v1) {
+        aux.val = (pos.val << 5);
+        rep.val = rep.val | aux.val;
+    } else if (val.val == v2) {
+        aux.val = (pos.val << 10);
+        rep.val = rep.val | aux.val;
+    } else if (val.val == v3) {
+        aux.val = (pos.val << 15);
+        rep.val = rep.val | aux.val;
+    } else if (val.val == v4) {           
+        aux.val = (pos.val << 20);
+        rep.val = rep.val | aux.val;
+    } else if (val.val == v5) {
+        aux.val = (pos.val << 25);
+        rep.val = rep.val | aux.val;
+    }
+
+    return rep.val;
+
+}
+
+/* Funcion para destruir la tabla de hash */
+
+void delete_all(hashval *tabla) {
+  hashval *c_val, *tmp = NULL;
+  HASH_ITER(hh, tabla, c_val, tmp) {
+    HASH_DEL(tabla,c_val);
+    free(c_val);
+  }
+}  
 
 
 void main() {
+    pdb_initializeMasks();
+    pdb_initializeCompMasks();
+    pdb_state estate = pdb_make_state(0x00443214C74254BC,0x635CF84653A56D70,0,5);
+    pdb_print_state(estate);
+    unsigned long long int ranki = rank(estate,1,2,3,4,24);    
+    printf("mi long: %lu\n",ranki);
 
-    int q1 = 0x01004500;
-    int q2 = 0x00000000;
-
-    initializeMasks();
-    initializeCompMasks();
-
-    state s = make_state(q1,q2,0,0);
-    print_state(s);
-    list lst = ucs(s);
-    
-
+//00000  00101    00100   00011  00010 11001  000006
+//11000 00100 00011 00010 00001   00000
+//1 11000 00100 00011 00010 00001 00000
 }
 
 

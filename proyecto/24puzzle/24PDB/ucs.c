@@ -108,11 +108,9 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
     if (!s) return;
      
     int i,d;
-    int64 rep;
+    int64 rep,q1,q2;
     rep.val = 0;
-    int64 q1;
     q1.val = s -> quad_1;
-    int64 q2;
     q2.val = s -> quad_2;
     d = 59; //11*5+4
     //pos va del 0 hasta el 25. si coincide con alguno de los vi valores
@@ -125,7 +123,7 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
 
     // Agregar el costo del estado
     rep.val = rep.val | ((s -> cost) << 30);
-
+    printf("costo:%lu, mi rep es:%lu\n",s->cost,rep.val);
     // Busqueda en el primer cuadrante
 
     for (i=0; i < 12; i++) {
@@ -133,7 +131,7 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
         //se recoge el numero iesimo de la representacion, y se posiciona
         //al inicio de val.
         val.val = (((s->quad_1)&pdb_masks[i].val)>>d)&(0x00000000000000FF);
-
+    
         if (val.val == v1) {
             aux.val = (pos.val << 5);
             rep.val = rep.val | aux.val;
@@ -162,7 +160,6 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
     for (i=0; i < 12; i++) {
         
         val.val = (((s->quad_2)&pdb_masks[i].val)>>d)&(0x00000000000000FF);
-
         if (val.val == v1) {
             aux.val = (pos.val << 5);
             rep.val = rep.val | aux.val;
@@ -185,6 +182,7 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
 
     }
   
+                printf("mi res es: %lu\n",rep.val);
     
     /*se recupera el ultimo numero de la representacion 24-P */
     
@@ -194,7 +192,7 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
     last_five_bits = last_five_bits << 1;
     /*se recupera el ultimo bit del segundo cuadrante*/
     int last_bit = ((s->quad_2)&(0x0000000000000001));
-    last_five_bits = last_five_bits || last_bit;
+    last_five_bits = last_five_bits | last_bit;
     
     val.val = last_five_bits;
     if (val.val == v1) {
@@ -230,9 +228,16 @@ void delete_all(hashval *tabla) {
 
 
 void main() {
+    pdb_initializeMasks();
+    pdb_initializeCompMasks();
+    pdb_state estate = pdb_make_state(0x00443214C74254BC,0x635CF84653A56D70,0,5);
+    pdb_print_state(estate);
+    unsigned long long int ranki = rank(estate,1,2,3,4,24);    
+    printf("mi long: %lu\n",ranki);
 
-    printf("Recuerda inicializar las mascaras\n");
-
+//00000  00101    00100   00011  00010 11001  000006
+//11000 00100 00011 00010 00001   00000
+//1 11000 00100 00011 00010 00001 00000
 }
 
 
