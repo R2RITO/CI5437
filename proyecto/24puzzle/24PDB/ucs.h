@@ -18,8 +18,8 @@
 
 /* Estructura para la clave de la tabla*/
 typedef struct {
-  int q1;
-  int q2;
+  long long q1;
+  long long q2;
   int zero;
 } hashkey;
 
@@ -32,8 +32,8 @@ typedef struct {
 
 /* Estructura para la clave de la tabla*/
 typedef struct {
-  int q1;
-  int q2;
+  long q1;
+  long q2;
 } hashkey_z;
 
 /* Estructura para los valores de la tabla */
