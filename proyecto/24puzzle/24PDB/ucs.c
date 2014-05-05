@@ -108,7 +108,7 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
     if (!s) return;
      
     int i,d;
-    int64 rep,q1,q2;
+    int64 rep,q1,q2,costo;
     rep.val = 0;
     q1.val = s -> quad_1;
     q2.val = s -> quad_2;
@@ -118,11 +118,12 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
 
     int64 val,pos,aux;
     pos.val = 0;
+    costo.val = s->cost;
     // Agregar la posicion del cero
     rep.val = rep.val | s -> zero;
 
     // Agregar el costo del estado
-    rep.val = rep.val | ((s -> cost) << 30);
+    rep.val = rep.val | (costo.val << 30);
     printf("costo:%lu, mi rep es:%lu\n",s->cost,rep.val);
     // Busqueda en el primer cuadrante
 
