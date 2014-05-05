@@ -124,7 +124,7 @@ list astar(state initial_state) {
                 return res;
             }
 
-            if (numSucc >= 20000000) {
+            if (numSucc >= 30000000) { // Para limitar la ejecucion de A*
                 printf("Final: No encontre solucion ");
                 list res = NULL ;//extract_solution(n);
                 //free_nodo(n, free_state);
