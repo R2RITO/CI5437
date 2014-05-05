@@ -1,6 +1,12 @@
 #ifndef FILE_STATE_PDB
 #define FILE_STATE_PDB
 
+/* Arreglo con patrones de cinco unos consecutivos para el primer cuadrante*/
+int64 pdb_masks[14];
+
+/* Arreglo con el complemento de cada patron del arreglo anterior*/
+int64 pdb_cMasks[14];
+
 /* Representacion de un estado de un 24-PUZZLE */
 typedef struct _pdb_state {
     unsigned long long quad_1 : 64; /* Representa el primer cuadrante   */

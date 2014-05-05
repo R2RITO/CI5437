@@ -11,11 +11,6 @@ typedef struct _int64 {
     long long val : 64;
 } int64;
 
-/* Arreglo con patrones de cinco unos consecutivos para el primer cuadrante*/
-int64 pdb_masks[14];
-
-/* Arreglo con el complemento de cada patron del arreglo anterior*/
-int64 pdb_cMasks[14];
 
 /* Metodo para inicializar el arreglo de mascaras */
 void pdb_initializeMasks() {
