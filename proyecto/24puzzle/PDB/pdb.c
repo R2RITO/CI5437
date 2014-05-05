@@ -70,12 +70,12 @@ pdb_state dividir(pdb_state s, int a, int b, int c, int d, int e) {
 
 }
 
-int pdb(pdb_state s, hashval *t1, hashval *t2, hashval *t3) {
+int pdb(pdb_state s, hashval_z *t1, hashval_z *t2, hashval_z *t3) {
 
     int res = 0;
 
-    hashval look_up_key,*look_up = NULL;
-    unsigned int keylen = sizeof(hashkey); 
+    hashval_z look_up_key,*look_up = NULL;
+    unsigned int keylen = sizeof(hashkey_z); 
 //1 2 4 5 8, 3 6 7 A B, 9 12 13 14 15
     pdb_state s1 = dividir(s,1,2,4,5,8);
     pdb_state s2 = dividir(s,3,6,7,10,11);
@@ -83,21 +83,18 @@ int pdb(pdb_state s, hashval *t1, hashval *t2, hashval *t3) {
 
     look_up_key.key.q1 = s1->quad_1;
     look_up_key.key.q2 = s1->quad_2;
-    look_up_key.key.zero = s1->zero;
     HASH_FIND(hh,t1,&look_up_key.key,keylen,look_up);
 
     res += look_up -> dist;
 
     look_up_key.key.q1 = s2->quad_1;
     look_up_key.key.q2 = s2->quad_2;
-    look_up_key.key.zero = s2->zero;
     HASH_FIND(hh,t2,&look_up_key.key,keylen,look_up);
 
     res += look_up -> dist;
 
     look_up_key.key.q1 = s3->quad_1;
     look_up_key.key.q2 = s3->quad_2;
-    look_up_key.key.zero = s3->zero;
     HASH_FIND(hh,t3,&look_up_key.key,keylen,look_up);
 
     res += look_up -> dist;
@@ -119,7 +116,7 @@ void pdb_generate_pattern(){
 }
 
 void pdb_erase_pattern(){
-    delete_all(t1);
-    delete_all(t2);
-    delete_all(t3);
+    delete_all_z(t1);
+    delete_all_z(t2);
+    delete_all_z(t3);
 }
