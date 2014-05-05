@@ -604,3 +604,12 @@ void pdb_print_state(pdb_state s) {
 
     printf("\n");
 }
+
+/* FUNCION: pdb_free_state
+ * DESC   : Libera el espacio reservado por un estado
+ * s      : Estado a ser liberado
+ */
+void pdb_free_state(void *sp) {
+    pdb_state s = (pdb_state) sp;
+    free(s);
+}
