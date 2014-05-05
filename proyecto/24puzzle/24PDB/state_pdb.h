@@ -1,6 +1,11 @@
 #ifndef FILE_STATE_PDB
 #define FILE_STATE_PDB
 
+/* Estructura para almacenar enteros en 32bits */
+typedef struct _int64 {
+    long long val : 64;
+} int64;
+
 /* Arreglo con patrones de cinco unos consecutivos para el primer cuadrante*/
 int64 pdb_masks[14];
 
@@ -12,6 +17,7 @@ typedef struct _pdb_state {
     unsigned long long quad_1 : 64; /* Representa el primer cuadrante   */
     unsigned long long quad_2 : 64; /* Representa el segundo cuadrante  */
     unsigned int zero   :  5; /* Representa la posicion del cero  */
+    unsigned int cost;
 } *pdb_state;
 
 /* Arreglos de sucesores */
@@ -26,7 +32,7 @@ typedef struct _pdb_successors {
  * z      : Posicion actual del cero
  * RETORNA: Un nuevo esta con los valores q1 q2 y z
  */
-pdb_state pdb_make_state(long long q1, long long q2, int z);
+pdb_state pdb_make_state(long long q1, long long q2, int z, int cost);
 
 /* FUNCION: is_goal
  * DESC   : Verifica si el estado s es un estado final

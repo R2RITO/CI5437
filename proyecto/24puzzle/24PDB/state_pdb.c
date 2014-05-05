@@ -6,12 +6,6 @@
 #include <stdint.h>
 #define BUFFER_SIZE 80
 
-/* Estructura para almacenar enteros en 32bits */
-typedef struct _int64 {
-    long long val : 64;
-} int64;
-
-
 /* Metodo para inicializar el arreglo de mascaras */
 void pdb_initializeMasks() {
 
@@ -66,11 +60,12 @@ void pdb_initializeCompMasks() {
  * RETORNA: Un nuevo esta con los valores q1 q2 y z
  */
  
-pdb_state pdb_make_state(long long q1, long long q2, int z) {
+pdb_state pdb_make_state(long long q1, long long q2, int z, int cost) {
     pdb_state newState = malloc(sizeof(struct _pdb_state));
     newState -> quad_1 = q1;
     newState -> quad_2 = q2;
     newState -> zero   = z;
+    newState -> cost   = cost;
     return newState;
 }
 
@@ -102,6 +97,7 @@ pdb_state pdb_moveLR(pdb_state s, int d) {
     int64 newq2;
     int64 aux;    
     int zero = s->zero;
+    int cost;
     pdb_state nState = NULL;
     save.val = 0;
     newq1.val = 0;
@@ -119,10 +115,13 @@ pdb_state pdb_moveLR(pdb_state s, int d) {
             save.val = (save.val) >> 55;
             save.val = (save.val) & (0x00000000000001FF);
         
+            // Salvar el costo
+            cost = save.val && 1;
+
             newq1.val = (s -> quad_1) | (save.val);
             newq2.val = (s -> quad_2) & pdb_cMasks[(zero+d)%12].val;
 
-            nState = pdb_make_state(newq1.val,newq2.val,zero+d);          
+            nState = pdb_make_state(newq1.val,newq2.val,zero+d,cost+s->cost);          
 
         } else {
             save.val = (s->quad_1)&pdb_masks[zero+d].val;
@@ -134,9 +133,13 @@ pdb_state pdb_moveLR(pdb_state s, int d) {
                 // Si el movimiento es a la derecha
                 save.val = save.val << 5;
             }
+
+            // Salvar el costo
+            cost = save.val && 1;
+
             newq1.val = (s->quad_1) & pdb_cMasks[zero+d].val;
             newq1.val = (newq1.val) | (save.val);
-            nState = pdb_make_state(newq1.val,s -> quad_2, zero+d);
+            nState = pdb_make_state(newq1.val,s -> quad_2, zero+d, cost+s->cost);
         }
 
     } else {
@@ -147,16 +150,22 @@ pdb_state pdb_moveLR(pdb_state s, int d) {
             save.val = (s -> quad_1) & pdb_masks[(zero+d)%12].val;
             save.val = (save.val) << 55;
 
+            // Salvar el costo
+            cost = save.val && 1;
+
             newq1.val = (s -> quad_1) & pdb_cMasks[(zero+d)%12].val;
             newq2.val = (s -> quad_2) | save.val;
 
-            nState = pdb_make_state(newq1.val, newq2.val, zero+d);
+            nState = pdb_make_state(newq1.val, newq2.val, zero+d, cost+s->cost);
 
         } else if ( zero == 24 ) {
 
             save.val = (s -> quad_2) & pdb_masks[(zero+d)%12].val;
             save.val = (save.val) >> 4;
             save.val = (save.val) & (0x0FFFFFFFFFFFFFFF);
+
+            // Salvar el costo
+            cost = save.val && 1;
 
             // Copiar los 4 bits de la casilla 24 al primer cuadrante
             aux.val = save.val >> 1;
@@ -174,7 +183,7 @@ pdb_state pdb_moveLR(pdb_state s, int d) {
 
             newq2.val = (newq2.val) & pdb_cMasks[(zero+d)%12].val;
 
-            nState = pdb_make_state(newq1.val, newq2.val, zero+d);
+            nState = pdb_make_state(newq1.val, newq2.val, zero+d, s->cost+cost);
         
         } else if ((zero == 23) && (d > 0)) {
 
@@ -191,6 +200,9 @@ pdb_state pdb_moveLR(pdb_state s, int d) {
             
             /* En "save" esta el valor de la casilla 24, ahora hay que mover
                el cero y copiar el valor en la casilla 23 */
+
+            // Salvar el costo
+            cost = save.val && 1;
             
             newq2.val = (s -> quad_2) | ((save.val) << 4);
 
@@ -199,7 +211,7 @@ pdb_state pdb_moveLR(pdb_state s, int d) {
             newq1.val = (s -> quad_1) & pdb_cMasks[12].val;
             newq2.val = newq2.val & pdb_cMasks[13].val;
 
-            nState = pdb_make_state(newq1.val, newq2.val, zero+d);
+            nState = pdb_make_state(newq1.val, newq2.val, zero+d, cost+s->cost);
 
 
         } else {
@@ -214,9 +226,13 @@ pdb_state pdb_moveLR(pdb_state s, int d) {
                 // Si el movimiento es a la derecha
                 save.val = save.val << 5;
             }
+
+            // Salvar el costo
+            cost = save.val && 1;
+
             newq2.val = (s -> quad_2) & pdb_cMasks[(zero+d)%12].val;
             newq2.val = (newq2.val) | save.val;
-            nState = pdb_make_state(s -> quad_1, newq2.val, zero+d);
+            nState = pdb_make_state(s -> quad_1, newq2.val, zero+d, cost+s->cost);
 
         }
 
@@ -239,6 +255,7 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
     int64 newq1;
     int64 newq2;
     int zero = s->zero;
+    int cost;
     pdb_state nState = NULL;
     save.val  = 0;
     aux.val   = 0;
@@ -262,10 +279,13 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
             // Mover el cero
             newq2.val = (s -> quad_2) & pdb_cMasks[(zero+d)%12].val;
 
+            // Salvar el costo
+            cost = save.val && 1;
+
             // Copiar el valor salvado
             newq1.val = (s -> quad_1) | save.val;
 
-            nState = pdb_make_state(newq1.val,newq2.val,zero+d);
+            nState = pdb_make_state(newq1.val,newq2.val,zero+d, cost+s->cost);
 
         } else {
             // El movimiento solamente es en el primer cuadrante
@@ -283,12 +303,15 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
                 save.val = (save.val >> 25)&(0x0000007FFFFFFFFF);
             }
 
+            // Salvar el costo
+            cost = save.val && 1;
+
             // Mover el 0
             newq1.val = (s -> quad_1) & pdb_cMasks[(zero+d)%12].val;
 
             newq1.val = newq1.val | save.val;
             
-            nState = pdb_make_state(newq1.val,s -> quad_2,zero+d);
+            nState = pdb_make_state(newq1.val,s -> quad_2,zero+d,cost+s->cost);
 
         }
 
@@ -305,10 +328,13 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
             // Mover el cero
             newq1.val = (s -> quad_1) & pdb_cMasks[(zero+d)%12].val;
 
+            // Salvar el costo
+            cost = save.val && 1;
+
             // Copiar el valor salvado
             newq2.val = (s -> quad_2) | save.val;
 
-            nState = pdb_make_state(newq1.val,newq2.val,zero+d);
+            nState = pdb_make_state(newq1.val,newq2.val,zero+d,cost+s->cost);
 
 
         } else if (zero == 24) {
@@ -317,6 +343,9 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
             // Salvar el valor y ponerlo en posicion para guardar
             save.val = (s -> quad_2) & pdb_masks[(zero+d)%12].val;
             save.val = (save.val >> 24) & (0x000000FFFFFFFFFF);
+
+            // Salvar el costo
+            cost = save.val && 1;
 
             // Guardar los primeros 4 bits
             aux.val = (save.val >> 1) & (0x7FFFFFFFFFFFFFFF);
@@ -334,7 +363,7 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
 
             newq2.val = (newq2.val) & pdb_cMasks[(zero+d)%12].val;
 
-            nState = pdb_make_state(newq1.val, newq2.val, zero+d);
+            nState = pdb_make_state(newq1.val, newq2.val, zero+d, cost+s->cost);
 
 
         } else if ((zero == 19) && (d > 0)) {
@@ -352,6 +381,9 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
             
             /* En "save" esta el valor de la casilla 24, ahora hay que mover
                el cero y copiar el valor en la casilla 23 */
+
+            // Salvar el costo
+            cost = save.val && 1;
             
             newq2.val = (s -> quad_2) | ((save.val) << 24);
 
@@ -360,7 +392,7 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
             newq1.val = (s -> quad_1) & pdb_cMasks[12].val;
             newq2.val = newq2.val & pdb_cMasks[13].val;
 
-            nState = pdb_make_state(newq1.val, newq2.val, zero+d);
+            nState = pdb_make_state(newq1.val, newq2.val, zero+d, cost+s->cost);
         
         } else {
             // Resto de los casos, movimiento en segundo cuadrante.
@@ -377,12 +409,15 @@ pdb_state pdb_moveUD(pdb_state s, int d) {
                 save.val = (save.val >> 25)&(0x0000001FFFFFFFFF);
             }
 
+            // Salvar el costo
+            cost = save.val && 1;
+
             // Mover el 0
             newq2.val = (s -> quad_2) & pdb_cMasks[(zero+d)%12].val;
 
             newq2.val = newq2.val | save.val;
             
-            nState = pdb_make_state(s -> quad_1,newq2.val,zero+d);
+            nState = pdb_make_state(s -> quad_1,newq2.val,zero+d, cost+s->cost);
 
         }
 
@@ -414,7 +449,7 @@ pdb_successors pdb_get_succ(pdb_state s) {
  * a      : Accion a realizar: 'l', 'r', 'd', 'u' (En ingles)
  * RETORNA: Un nuevo estado resultado de aplicar el movimiento a en s\
  */
-pdb_state transition(pdb_state s, char a) {
+pdb_state pdb_transition(pdb_state s, char a) {
 
     int64 save;
     int64 newq;
@@ -517,7 +552,7 @@ pdb_state pdb_init(char* input){
     quad_2 = quad_2 |last_number_bit;
     
 //     printf("%2lld\n",quad_2);
-    return pdb_make_state(quad_1,quad_2,pos_zero);
+    return pdb_make_state(quad_1,quad_2,pos_zero,0);
 }
 
 
@@ -568,31 +603,4 @@ void pdb_print_state(pdb_state s) {
     printf("%2lld  ", aux.val);
 
     printf("\n");
-}
-
-int main(int argc, char *argv[]) {
-
-    /*La invocacion debe tener exactamente 2 argumentos: el nombre del programa
-     *y el archivo de entrada*/
-    if (argc!=2) {
-        printf("Modo de uso: ./main <nombre_archivo>\n");
-        exit(1);
-    }
-
-    FILE *file;
-    char* file_name = argv[1];
-    char instance[BUFFER_SIZE];
-    /*se hace apertura del archivo de entrada*/
-    file = fopen(file_name,"r"); 
-    if (!file) {
-       perror("Error al abrir el archivo de entrada: ");
-       exit(1);
-    }
-    /*resolucion linea por linea de las instancias suministradas en el
-     *archivo de prueba*/
-    while ( fgets (instance, BUFFER_SIZE, file)) {
-        /*------------------ IDA* -------------------------*/
-        pdb_state initial_state = pdb_init(instance);
-        pdb_print_state(initial_state);
-    }
 }
