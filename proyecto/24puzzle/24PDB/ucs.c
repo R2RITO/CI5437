@@ -129,7 +129,6 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
 
     // Agregar el costo del estado
     rep.val = rep.val | (costo.val << 30);
-    printf("costo:%lu, mi rep es:%lu\n",s->cost,rep.val);
     // Busqueda en el primer cuadrante
 
     for (i=0; i < 12; i++) {
@@ -150,7 +149,7 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
         } else if (val.val == v4) {           
             aux.val = (pos.val << 20);
             rep.val = rep.val | aux.val;
-        } else if (val.val == v5) {
+        } else if ((val.val == v5) && (v5 != -1)) {
             aux.val = (pos.val << 25);
             rep.val = rep.val | aux.val;
         } 
@@ -178,7 +177,7 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
         } else if (val.val == v4) {           
             aux.val = (pos.val << 20);
             rep.val = rep.val | aux.val;
-        } else if (val.val == v5) {
+        } else if ((val.val == v5) && (v5 != -1)) {
             aux.val = (pos.val << 25);
             rep.val = rep.val | aux.val;
         }
@@ -187,8 +186,6 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
         d = d - 5;
 
     }
-  
-                printf("mi res es: %lu\n",rep.val);
     
     /*se recupera el ultimo numero de la representacion 24-P */
     
@@ -213,7 +210,7 @@ unsigned long long rank(pdb_state s, int v1, int v2, int v3, int v4, int v5) {
     } else if (val.val == v4) {           
         aux.val = (pos.val << 20);
         rep.val = rep.val | aux.val;
-    } else if (val.val == v5) {
+    } else if ((val.val == v5) && (v5 != -1)) {
         aux.val = (pos.val << 25);
         rep.val = rep.val | aux.val;
     }
