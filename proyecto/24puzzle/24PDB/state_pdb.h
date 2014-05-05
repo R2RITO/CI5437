@@ -68,4 +68,10 @@ pdb_state pdb_init(char* input);
  */
 void pdb_print_state(pdb_state s);
 
+/* FUNCION: pdb_init
+ * DESC   : Funcion para la inicializacion y creacion del estado raiz
+ * RETORNA: Un nuevo estado asociado a la configuracion inicial suministrada
+ */
+pdb_state pdb_init(char* input);
+
 #endif

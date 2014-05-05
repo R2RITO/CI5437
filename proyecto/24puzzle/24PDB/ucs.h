@@ -18,8 +18,8 @@
 
 /* Estructura para la clave de la tabla*/
 typedef struct {
-  unsigned long long q1;
-  unsigned long long q2;
+  int q1;
+  int q2;
   int zero;
 } hashkey;
 
@@ -30,13 +30,28 @@ typedef struct {
     UT_hash_handle hh;
 } hashval;
 
-hashval *t1,*t2,*t3;
+/* Estructura para la clave de la tabla*/
+typedef struct {
+  int q1;
+  int q2;
+} hashkey_z;
+
+/* Estructura para los valores de la tabla */
+typedef struct {
+    hashkey key;
+    int dist;
+    UT_hash_handle hh;
+} hashval_z;
+
+
+
+hashval_z *t1,*t2,*t3,*t4,*t5;
 
 /* FUNCION: astar
  * s      : Estado inicial s
  * DESC   : Implementacion del algoritmo A*
  * RETORNA: Una lista con el mejor camino del estado s al goal
  */
-hashval *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5);
+hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5);
 
 #endif
