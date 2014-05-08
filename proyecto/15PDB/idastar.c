@@ -14,7 +14,11 @@ state current_state;
 char  current_action;
 int   current_g;
 
+long long numSucc;
+
 plan DFS_acotado(int t) {
+
+    numSucc++;
 
     plan res;
     int hn = pdb(current_state,t1,t2,t3);
@@ -74,10 +78,12 @@ void idastar(state initial_state) {
 
     int t = pdb(current_state,t1,t2,t3);
 
+    numSucc = 0;
+
     plan actual;
     while (t < INFINITO_IDASTAR) {
         actual = DFS_acotado(t);
-        if (actual.sol) { printf("Final: %d",current_g); return; }
+        if (actual.sol) { printf("Final: %d Nodos: %d",current_g, numSucc); return; }
         t = actual.tp;
     }
     free_state(current_state);

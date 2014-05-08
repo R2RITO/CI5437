@@ -85,6 +85,7 @@ list astar(state initial_state) {
     /* Variable para almacenar los sucesores de un estado */
     successors suc;
 
+    long long numSucc = 0;
 
     /* Mientras que el heap de fibonacci tenga un elemento */
     while (q->min) {  
@@ -100,6 +101,8 @@ list astar(state initial_state) {
         /* Si no lo encuentra o si su distancia es mayor (Reabrirlo) */
         if (!look_up->closed) {
 
+            numSucc++;
+
             look_up->closed = 1;
            /* Si no lo encontro, debemos agregarlo a la tabla de hash */
 
@@ -110,7 +113,7 @@ list astar(state initial_state) {
             if (is_goal(s)) {
             
                 //int res = look_up->g;
-                printf("Final: %d ",look_up->g);
+                printf("Final: %d Nodos: %d ",look_up->g, numSucc);
                 list res = NULL ;//extract_solution(n);
                 //free_nodo(n, free_state);
                 /* Liberamos el espacio usado por la cola de prioridades */
