@@ -106,12 +106,15 @@ void pdb_generate_pattern(){
     pdb_initializeMasks();
     pdb_initializeCompMasks();
     printf("Generando base de datos de patrones PDB... (0/3)\n");
-    pdb_state goal_state = pdb_make_state(0x01234567,0x89ABCDEF,0,0);   
-    t1 = ucs(goal_state,1,2,4,5,8);
+    pdb_state goal_state = pdb_make_state(0x01234567,0x89ABCDEF,0,0);
+    ucs(goal_state,1,2,4,5,8,"12458.txt");
+    ucs(goal_state,3,6,7,10,11,"367AB.txt");
+    ucs(goal_state,9,12,13,14,15,"9CDEF.txt"); 
+    t1 = generar("12458.txt");
     printf("Fase 1 completada... (1/3)\n");
-    t2 = ucs(goal_state,3,6,7,10,11);
+    t2 = generar("367AB.txt");
     printf("Fase 2 completada... (2/3)\n");
-    t3 = ucs(goal_state,9,12,13,14,15);
+    t3 = generar("9CDEF.txt");
     printf("Fase 3 completada. Patrones generados (3/3)\n");
 }
 

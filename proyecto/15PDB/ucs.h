@@ -52,6 +52,6 @@ hashval_z *t1,*t2,*t3;
  * DESC   : Implementacion del algoritmo A*
  * RETORNA: Una lista con el mejor camino del estado s al goal
  */
-hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5);
+hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5, char *fname);
 
 #endif

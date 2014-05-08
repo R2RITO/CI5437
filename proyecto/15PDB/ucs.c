@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <stdint.h>
 
+#define BUFFER_SIZE 80
+
 void free_aux(void *a) {
     free(a);
 }
@@ -186,12 +188,53 @@ void delete_all_z(hashval_z *tabla) {
   }
 }
 
+void copiar_a_archivo(hashval_z *tabla, FILE *f) {
+  hashval_z *c_val, *tmp = NULL;
+  HASH_ITER(hh, tabla, c_val, tmp) {
+    fprintf(f,"%llu %llu %d\n",c_val->key.q1, c_val->key.q2, c_val->dist);
+  }
+}
+
+hashval_z *generar(char* nombreArch) {
+
+    FILE *file;
+    char instance[BUFFER_SIZE];
+    unsigned long long q1,q2;
+    int cost;
+
+    // Variables de la tabla de hash
+
+    hashval_z zLook_up_key,*zLook_up,*tabla = NULL;
+
+    unsigned int zkeylen = sizeof(hashkey_z);
+
+    /*se hace apertura del archivo de entrada*/
+    file = fopen(nombreArch,"r"); 
+
+    if (!file) {
+       perror("Error al abrir el archivo\n");
+       exit(1);
+    }
+
+    char *linea;
+
+    while ( fgets (instance, BUFFER_SIZE, file)) {
+        sscanf(instance,"%llu %llu %d",q1,q2,cost,linea);
+        zLook_up->key.q1 = q1;
+        zLook_up->key.q2 = q2;
+        zLook_up->dist = cost;   
+        HASH_ADD(hh,tabla,key,zkeylen,zLook_up);     
+    }
+    fclose(file);
+    return tabla;
+}
+
 /* FUNCION: ucs
  * s      : Estado inicial s
  * DESC   : Implementacion del algoritmo UCS para PDB
  * RETORNA: Una tabla de hash con los estados posibles (con la PDB)
  */
-hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) {
+hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5, char *fname) {
     
 
     /* Se crea la cola de prioridades */
@@ -229,6 +272,11 @@ hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) 
 
     int agregados = 0;
 
+    FILE * pattern_record_file;
+
+    //antes del while
+    pattern_record_file = fopen(fname,"w");
+
     /* Mientras que el heap de fibonacci tenga un elemento */
     while (q->min) {
         
@@ -236,15 +284,13 @@ hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) 
         n = fib_heap_extract_min(q);
         s = unrank(*n,v1,v2,v3,v4,v5);
         free(n);
-        //printf("************ EXTRAIGO *************\n");            
-        //print_state(s);
-        //printf("***********************************\n"); 
 
         /* Buscamos en la tabla de hash dicho estado */
         look_up_key.key.q1 = s->quad_1;
         look_up_key.key.q2 = s->quad_2;
         look_up_key.key.zero = s->zero;
         HASH_FIND(hh,closed,&look_up_key.key,keylen,look_up);
+
 
         /* Si no lo encuentra o si su distancia es mayor (Reabrirlo) */
         if (!look_up) {
@@ -310,6 +356,7 @@ hashval_z *ucs(pdb_state initial_state, int v1, int v2, int v3, int v4, int v5) 
     /* Liberamos el espacio usado por la cola de prioridades */
     fib_heap_free(q);
     delete_all(closed);
+    copiar_a_archivo(res, pattern_record_file);
     return res;
 }   
 
