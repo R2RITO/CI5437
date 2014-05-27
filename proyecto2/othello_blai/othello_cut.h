@@ -18,6 +18,9 @@
  *
  */
 
+#ifndef FILE_OTHELLO_CUT
+#define FILE_OTHELLO_CUT
+
 #include <cassert>
 #include <iostream>
 #include <vector>
@@ -175,7 +178,7 @@ inline bool state_t::outflank(bool color, int pos) const {
     const int *p = 0;
 
     // Find if some stones are outflanked
-
+    int i;
     // Check rows
     const int *x = rows[pos - 4];
     while( *x != pos ) ++x;
@@ -361,3 +364,4 @@ inline std::ostream& operator<<(std::ostream &os, const state_t &state) {
     return os;
 }
 
+#endif

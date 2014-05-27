@@ -19,6 +19,9 @@
  */
 
 #include "othello_cut.h" // won't work correctly until .h is fixed!
+#include "MinMax.h"
+#include "Negamax.h"
+#include "AlphaBeta.h"
 #include <iostream>
 
 using namespace std;
