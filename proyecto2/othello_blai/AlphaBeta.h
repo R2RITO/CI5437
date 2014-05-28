@@ -4,6 +4,8 @@
 
 class AlphaBeta_ {
 
+public:
+
     int AlphaBeta(state_t state, int depth, int alpha, int beta, bool player) {
 
         if (depth == 0 || state.terminal()) {
@@ -29,7 +31,7 @@ class AlphaBeta_ {
                     children = state.move(player,pos);
                     partial_result = AlphaBeta(children, depth-1, alpha, beta, !player);
                     beta = (beta <= partial_result) ? beta : partial_result;
-                    if (alpha <= beta) break;
+                    if (alpha >= beta) break;
                 }
             }
             return beta;

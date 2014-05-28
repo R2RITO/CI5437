@@ -22,6 +22,7 @@
 #include "MinMax.h"
 #include "Negamax.h"
 #include "AlphaBeta.h"
+#include "Scout.h"
 #include <iostream>
 
 using namespace std;
@@ -29,19 +30,29 @@ using namespace std;
 int main(int argc, const char **argv) {
     state_t state;
     cout << "Principal variation:" << endl;
+    MinMax_ meh;
+
     for( int i = 0; PV[i] != -1; ++i ) {
         bool player = i % 2 == 0; // black moves first!
         int pos = PV[i];
+        
         cout << state;
         cout << (player ? "Black" : "White")
              << " moves at pos = " << pos << (pos == 36 ? " (pass)" : "")
              << endl;
         state = state.move(player, pos);
         cout << "Board after " << i+1 << (i == 0 ? " ply:" : " plies:") << endl;
+        if (i == 30) break;
     }
+
+    cout << "Valor de MinMax: " << meh.MinMax(state,0) << "\n" << state << endl;
+    //cout << "Valor AlphaBeta: " << meh.AlphaBeta(state,3,-99999, 99999, true) << endl;
+    
     cout << state;
     cout << "Value of the game = " << state.value() << endl;
     cout << "#bits per state = " << sizeof(state) * 8 << endl;
+
+    
 
     if( argc > 1 ) {
         int n = atoi(argv[1]);
