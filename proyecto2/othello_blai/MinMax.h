@@ -6,7 +6,7 @@ class MinMax_ {
 
 public:
 
-    int MinMax(state_t state, int depth) {
+    int MinMax(state_t state, int depth, bool player) {
 
         if (state.terminal() || depth == 0) {
             return state.value();
@@ -17,16 +17,16 @@ public:
         int res_maxmin = 0;
 
         for( int pos = 0; pos < DIM; ++pos ) {
-            if(state.is_black_move(pos)) {
-                children = state.move(true,pos);
-                res_maxmin = MaxMin(children,depth-1);
+            if(player && state.is_black_move(pos) || !player && state.is_white_move(pos)) {
+                children = state.move(player,pos);
+                res_maxmin = MaxMin(children,depth-1,!player);
                 value = (value <= res_maxmin) ? value : res_maxmin;
             }
         }
         return value;
     }
 
-    int MaxMin(state_t state, int depth) {
+    int MaxMin(state_t state, int depth, bool player) {
 
         if (state.terminal() || depth == 0) {
             return state.value();
@@ -37,9 +37,9 @@ public:
         int res_minmax = 0;
 
         for( int pos = 0; pos < DIM; ++pos ) {
-            if(state.is_white_move(pos)) {
-                children = state.move(false,pos);
-                res_minmax = MinMax(children,depth-1);
+            if(player && state.is_black_move(pos) || !player && state.is_white_move(pos)) {
+                children = state.move(player,pos);
+                res_minmax = MinMax(children,depth-1,!player);
                 value = (value >= res_minmax) ? value : res_minmax;
             }
         }

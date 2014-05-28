@@ -42,10 +42,10 @@ int main(int argc, const char **argv) {
              << endl;
         state = state.move(player, pos);
         cout << "Board after " << i+1 << (i == 0 ? " ply:" : " plies:") << endl;
-        if (i == 30) break;
+        if (i == 29) break;
     }
 
-    cout << "Valor de MinMax: " << meh.MinMax(state,0) << "\n" << state << endl;
+    cout << "Valor de MinMax: " << meh.MinMax(state,2,false) << "\n" << state << endl;
     //cout << "Valor AlphaBeta: " << meh.AlphaBeta(state,3,-99999, 99999, true) << endl;
     
     cout << state;
