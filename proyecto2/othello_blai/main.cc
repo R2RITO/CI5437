@@ -23,7 +23,11 @@
 #include "Negamax.h"
 #include "AlphaBeta.h"
 #include "Scout.h"
+<<<<<<< HEAD
 #include "NegaScout.h"
+=======
+#include "NegaMaxAB.h"
+>>>>>>> 773401d2d89c4c7c6961186df5b166fd9e55f3ea
 #include <iostream>
 #include <climits>
 
@@ -37,6 +41,7 @@ int main(int argc, const char **argv) {
     AlphaBeta_ beh;
     Scout_ peh;
     NegaScout_ qeh;
+    NegaMaxAB_ ph;
 
     for( int i = 0; PV[i] != -1; ++i ) {
         
@@ -53,8 +58,17 @@ int main(int argc, const char **argv) {
         }
 
         if (i > 18 ) {
+            
             cout << "Valor de Negamax: " << neh.Negamax(state,33-i,player) << endl;
 
+        }
+
+	    if (i > 18 ) {
+            if (player) {
+            cout << "Valor de NegaMaxAB: " << ph.NegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << endl;
+            } else {
+            cout << "Valor de NegaMaxAB: " << (-1)*ph.NegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << endl;
+            }
         }
 
         if (i > 18) {
