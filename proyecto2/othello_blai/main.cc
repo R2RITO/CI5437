@@ -23,6 +23,7 @@
 #include "Negamax.h"
 #include "AlphaBeta.h"
 #include "Scout.h"
+#include "NegaScout.h"
 #include <iostream>
 #include <climits>
 
@@ -35,13 +36,14 @@ int main(int argc, const char **argv) {
     Negamax_ neh;
     AlphaBeta_ beh;
     Scout_ peh;
+    NegaScout_ qeh;
 
     for( int i = 0; PV[i] != -1; ++i ) {
         
         bool player = i % 2 == 0; // black moves first!
         int pos = PV[i];
         cout << "***********************************************\n";
-        if (i > 20) {
+        if (i > 18) {
             
             if (player) {
                 cout << "Valor de MaxMin: " << meh.MaxMin(state,33-i,player) << endl;
@@ -50,18 +52,23 @@ int main(int argc, const char **argv) {
             }
         }
 
-        if (i > 20 ) {
+        if (i > 18 ) {
             cout << "Valor de Negamax: " << neh.Negamax(state,33-i,player) << endl;
 
         }
 
-        if (i > 20) {
+        if (i > 18) {
             cout << "Valor de AlphaBeta: " << beh.AlphaBeta(state, 33-i, INT_MIN, INT_MAX, player) << endl;
         }
 
-        if (i > 20) {
+        if (i > 18) {
             cout << "Valor de Scout: " << peh.scout(state, 33-i, player) << endl;
         }
+
+        if (i > 18) {
+            cout << "Valor de NegaScout: " << qeh.NegaScout(state, 33-i, INT_MIN, INT_MAX, player) << endl;
+        }
+
         cout << "***********************************************\n";
         cout << state;
         cout << (player ? "Black" : "White")

@@ -7,8 +7,7 @@ class Scout_ {
 public: 
     bool TEST_MAYOR(state_t state, int depth, int value, bool player) {
 
-        
-        if ( depth == 0 || state.terminal()) return state.value() > value;
+        if ( depth == 0 || state.terminal()) return (state.value() > value);
 
         state_t children;   
         bool tmp = false;
@@ -22,17 +21,16 @@ public:
             }        
         }
 
-        /*if (!tmp) {
-            return TEST_MENOR(state,depth-1,value,!player);
-        } */
+        if (!tmp) {
+            return TEST_MAYOR(state,depth-1,value,!player);
+        }
 
         return !player;
     }
 
     bool TEST_MENOR(state_t state, int depth, int value, bool player) {
 
-        
-        if ( depth == 0 || state.terminal()) return state.value() < value;
+        if ( depth == 0 || state.terminal()) return (state.value() < value);
 
         state_t children;   
         bool tmp = false;
@@ -45,15 +43,14 @@ public:
             }        
         }
 
-        /*if (!tmp) {
-            return TEST_MAYOR(state,depth-1,value,!player);
-        }*/
+        if (!tmp) {
+            return TEST_MENOR(state,depth-1,value,!player);
+        }
 
         return player;
     }
 
     int scout(state_t state, int depth, bool player) {
-
 
         if ( depth == 0 || state.terminal()) return state.value();
 
@@ -61,6 +58,9 @@ public:
         int value =0;
         state_t children;
         bool tmp = false;
+        int partial = 0;
+
+        
 
         for (pos = 0; pos < DIM; ++pos) {
             if((player && state.is_black_move(pos))||(!player && state.is_white_move(pos))) {
@@ -74,10 +74,12 @@ public:
         for (pos; pos < DIM; ++pos) {
             if((player && state.is_black_move(pos))||(!player && state.is_white_move(pos))) {
                 children = state.move(player,pos);
-                if (player && TEST_MAYOR(children, depth-1, value, !player)) { // ahi va ese player? Ver cuaderno, que es > ???
-                    value = scout(children, depth-1, !player); // Es not player?
+                if (player && TEST_MAYOR(children, depth-1, value, !player)) {
+                    partial = scout(children, depth-1, !player); 
+                    value = (partial > value) ? partial : value;
                 } else if (!player && TEST_MENOR(children, depth-1, value, !player)) {
-                    value = scout(children,depth-1, !player);
+                    partial = scout(children,depth-1, !player);
+                    value = (partial < value) ? partial : value;
                 }
             }
         }                        
