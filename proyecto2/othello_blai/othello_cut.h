@@ -121,6 +121,7 @@ class state_t {
 
     int value() const;
     bool terminal() const;
+    bool terminal_player(bool player) const;
     bool outflank(bool color, int pos) const;
     bool is_black_move(int pos) const { return (pos == DIM) || outflank(true, pos); }
     bool is_white_move(int pos) const { return (pos == DIM) || outflank(false, pos); }
@@ -169,6 +170,13 @@ inline bool state_t::terminal() const {
     if( is_full() ) return true;
     for( unsigned b = 0; b < DIM; ++b )
         if( is_black_move(b) || is_white_move(b) ) return false;
+    return true;
+}
+
+inline bool state_t::terminal_player(bool player) const {
+    if( is_full() ) return true;
+    for( unsigned b = 0; b < DIM; ++b )
+        if( (player && is_black_move(b)) || (!player && is_white_move(b)) ) return false;
     return true;
 }
 
