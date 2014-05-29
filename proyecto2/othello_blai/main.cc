@@ -39,44 +39,33 @@ int main(int argc, const char **argv) {
     Scout_ peh;
     NegaScout_ qeh;
     NegaMaxAB_ ph;
+    int cota = 15;
 
     for( int i = 0; PV[i] != -1; ++i ) {
         
         bool player = i % 2 == 0; // black moves first!
         int pos = PV[i];
         cout << "***********************************************\n";
-        if (i > 18) {
+        if (i > cota) {
             
             if (player) {
                 cout << "Valor de MaxMin: " << meh.MaxMin(state,33-i,player) << endl;
             } else {
                 cout << "Valor de MinMax: " << meh.MinMax(state,33-i,player) << endl;
             }
-        }
-
-        if (i > 18 ) {
             
             cout << "Valor de Negamax: " << neh.Negamax(state,33-i,player) << endl;
 
-        }
-
-	    if (i > 18 ) {
             if (player) {
             cout << "Valor de NegaMaxAB: " << ph.NegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << endl;
             } else {
             cout << "Valor de NegaMaxAB: " << (-1)*ph.NegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << endl;
             }
-        }
 
-        if (i > 18) {
             cout << "Valor de AlphaBeta: " << beh.AlphaBeta(state, 33-i, INT_MIN, INT_MAX, player) << endl;
-        }
 
-        if (i > 18) {
             cout << "Valor de Scout: " << peh.scout(state, 33-i, player) << endl;
-        }
 
-        if (i > 18) {
             cout << "Valor de NegaScout: " << qeh.NegaScout(state, 33-i, INT_MIN, INT_MAX, player) << endl;
         }
 
