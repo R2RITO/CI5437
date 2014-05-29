@@ -23,11 +23,8 @@
 #include "Negamax.h"
 #include "AlphaBeta.h"
 #include "Scout.h"
-<<<<<<< HEAD
 #include "NegaScout.h"
-=======
 #include "NegaMaxAB.h"
->>>>>>> 773401d2d89c4c7c6961186df5b166fd9e55f3ea
 #include <iostream>
 #include <climits>
 
