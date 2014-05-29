@@ -53,12 +53,17 @@ int main(int argc, const char **argv) {
         }
 
         if (i > 20 ) {
+            
             cout << "Valor de Negamax: " << neh.Negamax(state,33-i,player) << endl;
 
         }
 
 	if (i > 20 ) {
-            cout << "Valor de NegamaxAB: " << ph.NegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << endl;
+	     if (player) {
+           cout << "Valor de NegaMaxAB: " << ph.NegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << endl;
+         } else {
+           cout << "Valor de NegaMaxAB: " << (-1)*ph.NegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << endl;
+         }
 
         }
 
