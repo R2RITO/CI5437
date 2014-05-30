@@ -20,7 +20,6 @@
 
 #include "othello_cut.h" // won't work correctly until .h is fixed!
 #include "MinMax.h"
-#include "MinMaxAB.h"
 #include "Negamax.h"
 #include "AlphaBeta.h"
 #include "Scout.h"
@@ -60,7 +59,7 @@ int main(int argc, const char **argv) {
             cout << "Valor de NegaMaxAB: " << ph.useNegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << " NodosGenerados: " << ph.nodosGenerados << endl;
             } else {
             cout << "Valor de NegaMaxAB: " << (-1)*ph.useNegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << " NodosGenerados: " << ph.nodosGenerados << endl;
-            }a
+            }
 
             cout << "Valor de AlphaBeta: " << beh.AlphaBeta(state, 33-i, INT_MIN, INT_MAX, player) << endl;
 
