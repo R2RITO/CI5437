@@ -70,7 +70,7 @@ public:
 
     int useMaxMin(state_t state, int depth, bool player) {
         nodosGenerados = 0;
-        return MaxMin(state,depth,player);
+        return MinMax(state,depth,player);
     }
 
 };

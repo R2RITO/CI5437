@@ -60,7 +60,7 @@ int main(int argc, const char **argv) {
             cout << "Valor de NegaMaxAB: " << ph.useNegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << " NodosGenerados: " << ph.nodosGenerados << endl;
             } else {
             cout << "Valor de NegaMaxAB: " << (-1)*ph.useNegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << " NodosGenerados: " << ph.nodosGenerados << endl;
-            }a
+            }
 
             cout << "Valor de AlphaBeta: " << beh.AlphaBeta(state, 33-i, INT_MIN, INT_MAX, player) << endl;
 
