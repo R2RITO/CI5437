@@ -6,7 +6,11 @@ class MinMax_ {
 
 public:
 
+    long nodosGenerados;
+
     int MinMax(state_t state, int depth, bool player) {
+
+        nodosGenerados++;
 
         if (state.terminal() || depth == 0) {
             return state.value();
@@ -32,7 +36,14 @@ public:
         return value;
     }
 
+    int useMinMax(state_t state, int depth, bool player) {
+        nodosGenerados = 0;
+        return MinMax(state,depth,player);
+    }
+
     int MaxMin(state_t state, int depth, bool player) {
+
+        nodosGenerados++;
 
         if (state.terminal() || depth == 0) {
             return state.value();
@@ -55,6 +66,11 @@ public:
         }
 
         return value;
+    }
+
+    int useMaxMin(state_t state, int depth, bool player) {
+        nodosGenerados = 0;
+        return MinMax(state,depth,player);
     }
 
 };
