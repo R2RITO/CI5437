@@ -23,6 +23,7 @@
 #include "Negamax.h"
 #include "AlphaBeta.h"
 #include "Scout.h"
+#include "Negamaxv2.h"
 #include "NegaScout.h"
 #include "NegaMaxAB.h"
 #include <iostream>
@@ -39,6 +40,7 @@ int main(int argc, const char **argv) {
     Scout_ peh;
     NegaScout_ qeh;
     NegaMaxAB_ ph;
+    Negamaxv2_ opt;
     int cota = 18;
 
     for( int i = 0; PV[i] != -1; ++i ) {
@@ -47,8 +49,7 @@ int main(int argc, const char **argv) {
         int pos = PV[i];
         cout << "***********************************************\n";
         if (i > cota) {
-            break;
-            if (player) {
+            /*if (player) {
                 cout << "Valor de MaxMin: " << meh.MaxMin(state,33-i,player) << endl;
             } else {
                 cout << "Valor de MinMax: " << meh.MinMax(state,33-i,player) << endl;
@@ -61,12 +62,17 @@ int main(int argc, const char **argv) {
             } else {
             cout << "Valor de NegaMaxAB: " << (-1)*ph.NegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << endl;
             }
-
-            cout << "Valor de AlphaBeta: " << beh.AlphaBeta(state, 33-i, INT_MIN, INT_MAX, player) << endl;
-
+*/
+            cout << "Valor de AlphaBeta: " << beh.useAlphaBeta(state, 33-i, INT_MIN, INT_MAX, player) << endl;
+            cout << "Nodos generados: " << beh.nodosGenerados << endl;
+/*
             cout << "Valor de Scout: " << peh.scout(state, 33-i, player) << endl;
 
             cout << "Valor de NegaScout: " << qeh.NegaScout(state, 33-i, INT_MIN, INT_MAX, player) << endl;
+         */
+    //        cout << "Valor de Negamax: " << opt.Negamaxv2(state,33-i,player) << endl;
+            
+
         }
 
         cout << "***********************************************\n";
@@ -75,9 +81,10 @@ int main(int argc, const char **argv) {
              << " moves at pos = " << pos << (pos == 36 ? " (pass)" : "")
              << endl;
         state = state.move(player, pos);
-        cout << "Board after " << i+1 << (i == 0 ? " ply:" : " plies:") << endl;
-        
+        cout << "Board after " << i+1 << (i == 0 ? " ply:" : " plies:") << endl;        
+
     }
+
 
 
     //cout << "Valor de AlphaBeta: " << beh.AlphaBeta(state, 0, INT_MIN, INT_MAX, true) << "\n" << endl;
@@ -86,6 +93,7 @@ int main(int argc, const char **argv) {
     cout << state;
     cout << "Value of the game = " << state.value() << endl;
     cout << "#bits per state = " << sizeof(state) * 8 << endl;
+    cout << "Nodos Generados :" << beh.nodosGenerados << endl;
 
     if( argc > 1 ) {
         int n = atoi(argv[1]);
