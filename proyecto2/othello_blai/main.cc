@@ -20,7 +20,6 @@
 
 #include "othello_cut.h" // won't work correctly until .h is fixed!
 #include "MinMax.h"
-#include "MinMaxAB.h"
 #include "Negamax.h"
 #include "AlphaBeta.h"
 #include "Scout.h"
@@ -28,6 +27,7 @@
 #include "NegaMaxAB.h"
 #include <iostream>
 #include <climits>
+#include <ctime>
 
 using namespace std;
 
@@ -40,15 +40,18 @@ int main(int argc, const char **argv) {
     Scout_ peh;
     NegaScout_ qeh;
     NegaMaxAB_ ph;
-    int cota = 20;
+    int cota = 15;
+
+    clock_t begin;
+    clock_t end;
 
     for( int i = 0; PV[i] != -1; ++i ) {
         
         bool player = i % 2 == 0; // black moves first!
         int pos = PV[i];
-        cout << "***********************************************\n";
+        cout << "***********************************************\nProfundidad: "<< 33-i << endl;
         if (i > cota) {
-            if (player) {
+            /*if (player) {
                 cout << "Valor de MaxMin: " << meh.useMaxMin(state,33-i,player) << "NodosGenerados: " << meh.nodosGenerados << endl;
             } else {
                 cout << "Valor de MinMax: " << meh.useMinMax(state,33-i,player) << " NodosGenerados: " << meh.nodosGenerados << endl;
@@ -63,10 +66,12 @@ int main(int argc, const char **argv) {
             }
 
             cout << "Valor de AlphaBeta: " << beh.AlphaBeta(state, 33-i, INT_MIN, INT_MAX, player) << endl;
-
-            cout << "Valor de Scout: " << peh.useScout(state, 33-i, player) << " NodosGenerados: " << peh.nodosGenerados << endl;
-
+*/          begin = clock();
+            cout << "Valor de Scout: " << peh.useScout(state, 33-i, player) << " NodosGenerados: " << peh.nodosGenerados  << endl;
+            cout << (double) (clock() - begin)/CLOCKS_PER_SEC << endl; 
+            begin = clock();
             cout << "Valor de NegaScout: " << qeh.useNegaScout(state, 33-i, INT_MIN, INT_MAX, player) << " NodosGenerados: " << qeh.nodosGenerados << endl;
+            cout << (double) (clock() - begin)/CLOCKS_PER_SEC << endl; 
         }
 
         cout << "***********************************************\n";

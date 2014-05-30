@@ -33,6 +33,7 @@ public:
                     }
                 }
                 if (player && m >= beta) return m;
+                //if (!player && m <= alpha) return m;
                 n = (alpha>m?alpha:m)+1;
             }
         }
