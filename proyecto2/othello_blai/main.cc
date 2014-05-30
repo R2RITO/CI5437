@@ -39,7 +39,7 @@ int main(int argc, const char **argv) {
     Scout_ peh;
     NegaScout_ qeh;
     NegaMaxAB_ ph;
-    int cota = 15;
+    int cota = 18;
 
     for( int i = 0; PV[i] != -1; ++i ) {
         
@@ -47,7 +47,7 @@ int main(int argc, const char **argv) {
         int pos = PV[i];
         cout << "***********************************************\n";
         if (i > cota) {
-            
+            break;
             if (player) {
                 cout << "Valor de MaxMin: " << meh.MaxMin(state,33-i,player) << endl;
             } else {
@@ -86,7 +86,6 @@ int main(int argc, const char **argv) {
     cout << state;
     cout << "Value of the game = " << state.value() << endl;
     cout << "#bits per state = " << sizeof(state) * 8 << endl;
-
 
     if( argc > 1 ) {
         int n = atoi(argv[1]);

@@ -25,6 +25,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+#include <algorithm>
 
 #define MAX(s,t)      ((s)>(t)?(s):(t))
 #define MIN(s,t)      ((s)<(t)?(s):(t))
@@ -155,6 +156,26 @@ class state_t {
 
     void print(std::ostream &os, int depth = 0) const;
     void print_bits(std::ostream &os) const;
+
+    static bool compare_MAX(state_t a, state_t b) {
+        return (a.value() > b.value());
+    }
+
+    static bool compare_MIN(state_t a, state_t b) {
+        return (a.value() < b.value());
+    }
+
+    std::vector<state_t> get_children(state_t state, bool player) {
+        std::vector<state_t> res;
+        for( int pos = 0; pos < DIM; ++pos ) {
+            if( (player && is_black_move(pos)) || (!player && is_white_move(pos)) ) {
+                res.push_back(state.move(player,pos));
+            }
+        }
+
+        std::sort(res.begin(),res.end(), player?compare_MAX:compare_MIN);
+        return res;
+    }
 };
 
 inline int state_t::value() const {
@@ -371,5 +392,6 @@ inline std::ostream& operator<<(std::ostream &os, const state_t &state) {
     state.print(os);
     return os;
 }
+
 
 #endif
