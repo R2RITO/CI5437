@@ -6,7 +6,7 @@ class Scout_ {
 
 public: 
 
-    long nodosGenerados;
+    unsigned long long nodosGenerados;
 
     bool TEST_MAYOR(state_t state, int depth, int value, bool player) {
 

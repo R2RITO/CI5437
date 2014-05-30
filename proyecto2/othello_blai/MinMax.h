@@ -6,7 +6,7 @@ class MinMax_ {
 
 public:
 
-    long nodosGenerados;
+    unsigned long long nodosGenerados;
 
     int MinMax(state_t state, int depth, bool player) {
 

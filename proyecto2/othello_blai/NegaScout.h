@@ -6,7 +6,7 @@ class NegaScout_ {
 
 public:
 
-    long nodosGenerados;
+    unsigned long long nodosGenerados;
 
     int NegaScout(state_t state, int depth, int alpha, int beta, bool player) {
         
