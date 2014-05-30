@@ -2,56 +2,53 @@
 #include <iostream>
 #include <climits>
 
-class MinMax_ {
+class MinMaxAB_ {
 
 public:
 
-    int MinMax(state_t state, int depth, bool player) {
+    int MinMax(state_t state, int depth, bool player, int alpha, int beta) {
 
         if (state.terminal() || depth == 0) {
             return state.value();
         }
 
         int value = INT_MAX;
-        state_t children;
         int res_maxmin = 0;
 
-        for( int pos = 0; pos < DIM; ++pos ) {
-          
-            if((player && state.is_black_move(pos)) || (!player && state.is_white_move(pos))) {
-                children = state.move(player,pos);
-                res_maxmin = MaxMin(children,depth-1,!player);
-                value = (value <= res_maxmin) ? value : res_maxmin;
-            }
+        std::vector<state_t> children = state.get_children(state, player);
+
+        for( int pos = 0; pos < children.size(); ++pos ) {
+            res_maxmin = MaxMin(children[pos],depth-1,!player, beta, value);
+            if (res_maxmin < value) value = res_maxmin;
+            if (value >= beta) return value;
         }
         
-        if (value == INT_MAX) {
-            value = MinMax(state, depth-1, !player);
+        if (children.empty()) {
+            value = MinMax(state, depth-1, !player, alpha, beta);
         }
 
         return value;
     }
 
-    int MaxMin(state_t state, int depth, bool player) {
+    int MaxMin(state_t state, int depth, bool player, int alpha, int beta) {
 
         if (state.terminal() || depth == 0) {
             return state.value();
         }
 
         int value = INT_MIN;
-        state_t children;
         int res_minmax = 0;
 
-        for( int pos = 0; pos < DIM; ++pos ) {
-            if((player && state.is_black_move(pos)) || (!player && state.is_white_move(pos))) {
-                children = state.move(player,pos);
-                res_minmax = MinMax(children,depth-1,!player);
-                value = (value >= res_minmax) ? value : res_minmax;
-            }
+        std::vector<state_t> children = state.get_children(state, player);
+
+        for( int pos = 0; pos < children.size(); ++pos ) {
+            res_minmax = MinMax(children[pos],depth-1,!player, value, alpha);
+            if (res_minmax > value) value = res_minmax;
+            if (value <= alpha) return value;
         }
 
-        if (value == INT_MIN) {
-            value = MinMax(state, depth-1, !player);
+        if (children.empty()) {
+            value = MinMax(state, depth-1, !player, alpha, beta);
         }
 
         return value;

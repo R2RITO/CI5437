@@ -61,12 +61,12 @@ public:
                     tmp = true;
                 }
                 alpha = (alpha > score)?alpha:score;
-                if ( alpha >= beta) break;
+                if (player && alpha >= beta) break;
             }
         }
 
         if (!tmp) {
-            return NegaScoutWiki(state,depth-1,alpha,beta,!player);
+            return (-1)*NegaScoutWiki(state,depth-1,alpha,beta,!player);
         }
 
         return alpha;

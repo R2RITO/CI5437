@@ -20,6 +20,7 @@
 
 #include "othello_cut.h" // won't work correctly until .h is fixed!
 #include "MinMax.h"
+#include "MinMaxAB.h"
 #include "Negamax.h"
 #include "AlphaBeta.h"
 #include "Scout.h"
@@ -47,11 +48,10 @@ int main(int argc, const char **argv) {
         int pos = PV[i];
         cout << "***********************************************\n";
         if (i > cota) {
-            break;
             if (player) {
-                cout << "Valor de MaxMin: " << meh.MaxMin(state,33-i,player) << endl;
+                cout << "Valor de MaxMin: " << meh.useMaxMin(state,33-i,player) << "NodosGenerados: " << meh.nodosGenerados << endl;
             } else {
-                cout << "Valor de MinMax: " << meh.MinMax(state,33-i,player) << endl;
+                cout << "Valor de MinMax: " << meh.useMinMax(state,33-i,player) << "NodosGenerados: " << meh.nodosGenerados << endl;
             }
             
             cout << "Valor de Negamax: " << neh.Negamax(state,33-i,player) << endl;

@@ -5,6 +5,9 @@
 class Scout_ {
 
 public: 
+
+    long nodosGenerados;
+
     bool TEST_MAYOR(state_t state, int depth, int value, bool player) {
 
         if ( depth == 0 || state.terminal()) return (state.value() > value);
@@ -51,6 +54,8 @@ public:
     }
 
     int scout(state_t state, int depth, bool player) {
+
+        nodosGenerados++;
 
         if ( depth == 0 || state.terminal()) return state.value();
 
