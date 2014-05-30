@@ -40,7 +40,12 @@ int main(int argc, const char **argv) {
     Scout_ peh;
     NegaScout_ qeh;
     NegaMaxAB_ ph;
-    int cota = 18;
+    int cota = 20;
+    clock_t ini;
+    clock_t fin;
+    float resT;
+
+    cout.precision(5);
 
     for( int i = 0; PV[i] != -1; ++i ) {
         
@@ -48,25 +53,62 @@ int main(int argc, const char **argv) {
         int pos = PV[i];
         cout << "***********************************************\n";
         if (i > cota) {
+
+
             if (player) {
-                cout << "Valor de MaxMin: " << meh.useMaxMin(state,33-i,player) << " NodosGenerados: " << meh.nodosGenerados << endl;
+                ini = clock();
+                cout << "Valor de MaxMin: " << meh.useMaxMin(state,33-i,player) << " NodosGenerados: " << meh.nodosGenerados << " a nivel: " << i << endl;
+                fin = clock();
+                resT = (double)(fin-ini)/(CLOCKS_PER_SEC/1000);
+                cout << " Tiempo: " << fixed << resT << " Milisegundos." << endl;
             } else {
+                ini = clock();
                 cout << "Valor de MinMax: " << meh.useMinMax(state,33-i,player) << " NodosGenerados: " << meh.nodosGenerados << endl;
+                fin = clock();
+                resT = (double)(fin-ini)/(CLOCKS_PER_SEC/1000);
+                cout << " Tiempo: " << fixed << resT << " Milisegundos." << endl;            
+
             }
             
-            cout << "Valor de Negamax: " << neh.useNegamax(state,33-i,player) << " NodosGenerados: " << neh.nodosGenerados << endl;
+/*            ini = clock();
+            cout << "Valor de Negamax: " << neh.useNegamax(state,33-i,player) << " NodosGenerados: " << neh.nodosGenerados << " a nivel: " << i << endl;
+            fin = clock();
+            resT = (double)(fin-ini)/(CLOCKS_PER_SEC/1000);
+            cout << " Tiempo: " << fixed << resT << " Milisegundos." << endl;
 
             if (player) {
-            cout << "Valor de NegaMaxAB: " << ph.useNegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << " NodosGenerados: " << ph.nodosGenerados << endl;
+                ini = clock();
+                cout << "Valor de NegaMaxAB: " << ph.useNegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << " NodosGenerados: " << ph.nodosGenerados << endl;
+                fin = clock();
+                resT = (double)(fin-ini)/(CLOCKS_PER_SEC/1000);
+                cout << " Tiempo: " << fixed << resT << " Milisegundos." << endl;
+
             } else {
-            cout << "Valor de NegaMaxAB: " << (-1)*ph.useNegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << " NodosGenerados: " << ph.nodosGenerados << endl;
+                ini = clock();
+                cout << "Valor de NegaMaxAB: " << (-1)*ph.useNegaMaxAB(state,33-i,player,INT_MIN,INT_MAX) << " NodosGenerados: " << ph.nodosGenerados << endl;
+                fin = clock();
+                resT = (double)(fin-ini)/(CLOCKS_PER_SEC/1000);
+                cout << " Tiempo: " << fixed << resT << " Milisegundos." << endl;
             }
-
+*/
+            ini = clock();
             cout << "Valor de AlphaBeta: " << beh.useAlphaBeta(state, 33-i, INT_MIN, INT_MAX, player) << " NodosGenerados: " << beh.nodosGenerados << endl;
+            fin = clock();
+            resT = (double)(fin-ini)/(CLOCKS_PER_SEC/1000);
+            cout << " Tiempo: " << fixed << resT << " Milisegundos." << endl;
 
+            ini = clock();
             cout << "Valor de Scout: " << peh.useScout(state, 33-i, player) << " NodosGenerados: " << peh.nodosGenerados << endl;
+            fin = clock();
+            resT = (double)(fin-ini)/(CLOCKS_PER_SEC/1000);
+            cout << " Tiempo: " << fixed << resT << " Milisegundos." << endl;
 
+            ini = clock();
             cout << "Valor de NegaScout: " << qeh.useNegaScout(state, 33-i, INT_MIN, INT_MAX, player) << " NodosGenerados: " << qeh.nodosGenerados << endl;
+            fin = clock();
+            resT = (double)(fin-ini)/(CLOCKS_PER_SEC/1000);
+            cout << " Tiempo: " << fixed << resT << " Milisegundos." << endl;
+
         }
 
         cout << "***********************************************\n";
@@ -87,7 +129,6 @@ int main(int argc, const char **argv) {
     cout << state;
     cout << "Value of the game = " << state.value() << endl;
     cout << "#bits per state = " << sizeof(state) * 8 << endl;
-    cout << "Nodos Generados :" << beh.nodosGenerados << endl;
 
     if( argc > 1 ) {
         int n = atoi(argv[1]);
