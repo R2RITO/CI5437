@@ -6,7 +6,17 @@ class AlphaBeta_ {
 
 public:
 
+    unsigned long long nodosGenerados;
+
+    int useAlphaBeta(state_t state, int depth, int alpha, int beta, bool player) {
+        nodosGenerados = 0;
+        return AlphaBeta(state,depth,alpha,beta,player);
+    }
+
+
     int AlphaBeta(state_t state, int depth, int alpha, int beta, bool player) {
+
+        nodosGenerados++;
 
         if (depth == 0 || state.terminal()) {
             return state.value();

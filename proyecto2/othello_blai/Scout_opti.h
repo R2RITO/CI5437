@@ -5,9 +5,6 @@
 class Scout_ {
 
 public: 
-
-    unsigned long long nodosGenerados;
-
     bool TEST_MAYOR(state_t state, int depth, int value, bool player) {
 
         if ( depth == 0 || state.terminal()) return (state.value() > value);
@@ -19,7 +16,6 @@ public:
             if((player && state.is_black_move(pos))||(!player && state.is_white_move(pos))) {
                 tmp = true;
                 children = state.move(player,pos);
-                nodosGenerados++;
                 if (player && TEST_MAYOR(children, depth-1, value, !player)) return true;
                 if (!player && !TEST_MAYOR(children, depth-1, value, !player)) return false;
             }        
@@ -42,7 +38,6 @@ public:
             if((player && state.is_black_move(pos))||(!player && state.is_white_move(pos))) {
                 tmp = true;
                 children = state.move(player,pos);
-                nodosGenerados++;
                 if (player && !TEST_MENOR(children, depth-1, value, !player)) return false;
                 if (!player && TEST_MENOR(children, depth-1, value, !player)) return true;
             }        
@@ -70,7 +65,6 @@ public:
         for (pos = 0; pos < DIM; ++pos) {
             if((player && state.is_black_move(pos))||(!player && state.is_white_move(pos))) {
                 children = state.move(player,pos);
-                nodosGenerados++;
                 value = scout(children,depth-1,!player);
                 tmp = true;
                 break;
@@ -80,7 +74,6 @@ public:
         for (pos; pos < DIM; ++pos) {
             if((player && state.is_black_move(pos))||(!player && state.is_white_move(pos))) {
                 children = state.move(player,pos);
-                nodosGenerados++;
                 if (player && TEST_MAYOR(children, depth-1, value, !player)) {
                     partial = scout(children, depth-1, !player); 
                     value = (partial > value) ? partial : value;
@@ -96,11 +89,6 @@ public:
         }
 
         return value;
-    }
-
-    int useScout(state_t state, int depth, bool player) {
-        nodosGenerados = 1;
-        return scout(state,depth,player);
     }
 
 };

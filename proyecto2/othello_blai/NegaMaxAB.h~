@@ -6,11 +6,9 @@ class NegaMaxAB_ {
 
 public:
 
-    unsigned long long nodosGenerados;
+    long nodosGenerados;
     
     int NegaMaxAB(state_t state, int depth, bool color,int alpha,int beta) {
-        
-        nodosGenerados++; 
          
         if (state.terminal() || depth == 0) {
             //std::cout << "ee es" << state.value();

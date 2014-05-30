@@ -6,12 +6,10 @@ class Negamax_ {
 
 public:
 
-    unsigned long long nodosGenerados;
+    long nodosGenerados;
 
     int Negamax(state_t state, int depth, bool color) {
-        
-        nodosGenerados++;
-        
+
         if (state.terminal() || depth == 0) {
             return (color ? 1 : -1) * state.value();
         }
