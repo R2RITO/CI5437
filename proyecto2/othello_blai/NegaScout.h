@@ -5,8 +5,12 @@
 class NegaScout_ {
 
 public:
+
+    long nodosGenerados;
+
     int NegaScout(state_t state, int depth, int alpha, int beta, bool player) {
         
+        nodosGenerados++;
 
         if ( depth == 0 || state.terminal()) { return (player?1:-1)*(state.value()); }
 
@@ -40,37 +44,10 @@ public:
         return m;
     }
 
-    int NegaScoutWiki(state_t state, int depth, int alpha, int beta, bool player) {
-
-        if ( depth == 0 || state.terminal()) { return (player?1:-1)*(state.value()); }
-
-        state_t children;
-        bool tmp = false;
-        int score;
-
-        for( int pos = 0; pos < DIM; ++pos ) {
-            if((player && state.is_black_move(pos))||(!player && state.is_white_move(pos))) {
-                children = state.move(player,pos);
-                if (tmp) {
-                    score = (-1) * NegaScoutWiki(children, depth-1, (-1)*alpha-1, (-1)*alpha, !player);
-                    if (alpha < score && score < beta) {
-                        score = (-1) * NegaScoutWiki(children, depth-1, (-1)*beta, (-1)*score, !player);
-                    }
-                } else {
-                    score = (-1) * NegaScoutWiki(children,depth-1,(-1)*beta,(-1)*alpha,!player);
-                    tmp = true;
-                }
-                alpha = (alpha > score)?alpha:score;
-                if (player && alpha >= beta) break;
-            }
-        }
-
-        if (!tmp) {
-            return (-1)*NegaScoutWiki(state,depth-1,alpha,beta,!player);
-        }
-
-        return alpha;
-
+    int useNegaScout(state_t state, int depth, int alpha, int beta, bool player) {
+        nodosGenerados = 0;
+        return NegaScout(state, depth, alpha, beta, player);
     }
+
 
 };
