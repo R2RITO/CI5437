@@ -1,0 +1,333 @@
+Principal variation:
++------+
+|......|
+|......|
+|..O&..|
+|..&O..|
+|......|
+|......|
++------+
+Black moves at pos = 12
+Board after 1 ply:
++------+
+|......|
+|..&...|
+|..&&..|
+|..&O..|
+|......|
+|......|
++------+
+White moves at pos = 21
+Board after 2 plies:
++------+
+|......|
+|..&...|
+|..&&..|
+|.OOO..|
+|......|
+|......|
++------+
+Black moves at pos = 26
+Board after 3 plies:
++------+
+|......|
+|..&...|
+|..&&..|
+|.O&O..|
+|..&...|
+|......|
++------+
+White moves at pos = 13
+Board after 4 plies:
++------+
+|......|
+|..&O..|
+|..OO..|
+|.O&O..|
+|..&...|
+|......|
++------+
+Black moves at pos = 22
+Board after 5 plies:
++------+
+|......|
+|..&O..|
+|..O&..|
+|.O&&&.|
+|..&...|
+|......|
++------+
+White moves at pos = 18
+Board after 6 plies:
++------+
+|......|
+|..&O..|
+|..OOO.|
+|.O&&&.|
+|..&...|
+|......|
++------+
+Black moves at pos = 7
+Board after 7 plies:
++------+
+|...&..|
+|..&&..|
+|..O&O.|
+|.O&&&.|
+|..&...|
+|......|
++------+
+White moves at pos = 6
+Board after 8 plies:
++------+
+|..O&..|
+|..OO..|
+|..O&O.|
+|.O&&&.|
+|..&...|
+|......|
++------+
+Black moves at pos = 5
+Board after 9 plies:
++------+
+|.&&&..|
+|..&O..|
+|..O&O.|
+|.O&&&.|
+|..&...|
+|......|
++------+
+White moves at pos = 27
+Board after 10 plies:
++------+
+|.&&&..|
+|..&O..|
+|..OOO.|
+|.O&O&.|
+|..&O..|
+|......|
++------+
+Black moves at pos = 33
+Board after 11 plies:
++------+
+|.&&&..|
+|..&&..|
+|..O&O.|
+|.O&&&.|
+|..&&..|
+|...&..|
++------+
+White moves at pos = 23
+Board after 12 plies:
++------+
+|.&&&..|
+|..&&..|
+|..O&O.|
+|.OOOOO|
+|..&&..|
+|...&..|
++------+
+Black moves at pos = 17
+Board after 13 plies:
++------+
+|.&&&..|
+|..&&..|
+|.&&&O.|
+|.O&OOO|
+|..&&..|
+|...&..|
++------+
+White moves at pos = 11
+Board after 14 plies:
++------+
+|.&&&..|
+|.O&&..|
+|.OO&O.|
+|.O&OOO|
+|..&&..|
+|...&..|
++------+
+Black moves at pos = 19
+Board after 15 plies:
++------+
+|.&&&..|
+|.O&&..|
+|.OO&&&|
+|.O&O&O|
+|..&&..|
+|...&..|
++------+
+White moves at pos = 15
+Board after 16 plies:
++------+
+|.&&&..|
+|.O&&.O|
+|.OO&OO|
+|.O&O&O|
+|..&&..|
+|...&..|
++------+
+Black moves at pos = 14
+Board after 17 plies:
++------+
+|.&&&..|
+|.O&&&O|
+|.OO&&O|
+|.O&O&O|
+|..&&..|
+|...&..|
++------+
+White moves at pos = 31
+Board after 18 plies:
++------+
+|.&&&..|
+|.O&&&O|
+|.OO&&O|
+|.O&O&O|
+|..O&..|
+|.O.&..|
++------+
+Black moves at pos = 20
+Board after 19 plies:
++------+
+|.&&&..|
+|.O&&&O|
+|.&O&&O|
+|&&&O&O|
+|..O&..|
+|.O.&..|
++------+
+White moves at pos = 32
+Board after 20 plies:
++------+
+|.&&&..|
+|.O&&&O|
+|.&O&&O|
+|&&&OOO|
+|..OO..|
+|.OO&..|
++------+
+Black moves at pos = 30
+Board after 21 plies:
++------+
+|.&&&..|
+|.O&&&O|
+|.&O&&O|
+|&&&OOO|
+|..OO..|
+|&&&&..|
++------+
+White moves at pos = 10
+Board after 22 plies:
++------+
+|.&&&..|
+|OO&&&O|
+|.OO&&O|
+|&&OOOO|
+|..OO..|
+|&&&&..|
++------+
+Black moves at pos = 25
+Board after 23 plies:
++------+
+|.&&&..|
+|OO&&&O|
+|.OO&&O|
+|&&&OOO|
+|.&OO..|
+|&&&&..|
++------+
+White moves at pos = 24
+Board after 24 plies:
++------+
+|.&&&..|
+|OO&&&O|
+|.OO&&O|
+|&O&OOO|
+|OOOO..|
+|&&&&..|
++------+
+Black moves at pos = 34
+Board after 25 plies:
++------+
+|.&&&..|
+|OO&&&O|
+|.OO&&O|
+|&O&OOO|
+|OOO&..|
+|&&&&&.|
++------+
+White moves at pos = 28
+Board after 26 plies:
++------+
+|.&&&..|
+|OO&&&O|
+|.OO&&O|
+|&O&OOO|
+|OOOOO.|
+|&&&&&.|
++------+
+Black moves at pos = 16
+Board after 27 plies:
++------+
+|.&&&..|
+|O&&&&O|
+|&&&&&O|
+|&&&OOO|
+|OO&OO.|
+|&&&&&.|
++------+
+White moves at pos = 4
+Board after 28 plies:
++------+
+|O&&&..|
+|OO&&&O|
+|&&O&&O|
+|&&&OOO|
+|OO&OO.|
+|&&&&&.|
++------+
+Black moves at pos = 29
+Board after 29 plies:
++------+
+|O&&&..|
+|OO&&&O|
+|&&O&&O|
+|&&&O&O|
+|OO&&&&|
+|&&&&&.|
++------+
+White moves at pos = 35
+Board after 30 plies:
++------+
+|O&&&..|
+|OO&&&O|
+|&&O&&O|
+|&&&O&O|
+|OO&&OO|
+|&&&&&O|
++------+
+Black moves at pos = 36 (pass)
+Board after 31 plies:
++------+
+|O&&&..|
+|OO&&&O|
+|&&O&&O|
+|&&&O&O|
+|OO&&OO|
+|&&&&&O|
++------+
+White moves at pos = 8
+Board after 32 plies:
++------+
+|OOOOO.|
+|OO&OOO|
+|&&O&OO|
+|&&&OOO|
+|OO&&OO|
+|&&&&&O|
++------+
+Black moves at pos = 9
+Board after 33 plies:
+***********************************************
+Profundidad: 14
