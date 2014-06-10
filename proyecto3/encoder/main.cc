@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <list>
 
-#define NUM_CLAUSULAS_TEORIA_BASE 7290
+#define NUM_CLAUSULAS_TEORIA_BASE 7371
 #define NUM_VARIABLES 729
 
 using namespace std;
@@ -19,7 +19,7 @@ int main (int argc, char* argv[]) {
     return 0;
   }
 
-  ifstream teoria ("teoria_general");
+  ifstream teoria ("teoria_general_2");
   ifstream myfile (argv[1]);
 
   int cont = 1;
@@ -30,7 +30,7 @@ int main (int argc, char* argv[]) {
     while ( getline (myfile,line) ) {
 
       /* Se abre un archivo en donde escribir la instancia en formato CNF*/
-      filename << "sudoku_" << cont << ".txt";
+      filename << "sudoku_" << cont << ".cnf";
       outfile.open(filename.str().c_str());
 
       /* Se obtienen los literales de la instancia */
