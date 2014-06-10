@@ -29,6 +29,8 @@ int main (int argc, char* argv[]) {
   if (myfile.is_open())  {
     while ( getline (myfile,line) ) {
 
+      ifstream teoria ("teoria_general_2");
+
       /* Se abre un archivo en donde escribir la instancia en formato CNF*/
       filename << "sudoku_" << cont << ".cnf";
       outfile.open(filename.str().c_str());
@@ -57,6 +59,7 @@ int main (int argc, char* argv[]) {
       }
 
       /* Se prepara para el siguiente archivo */
+      teoria.close();
       outfile.close();
       filename.str(string());
       cont++;
