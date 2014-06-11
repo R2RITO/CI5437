@@ -33,6 +33,7 @@ g++ decoder/decoder.cc -o decoder_exe
 
 numero_caso=1
 input_file=$1
+total_time=0
 while read -r line
 do
   echo -n "   - Analizando Sudoku # $numero_caso ..."
@@ -49,15 +50,16 @@ do
   $((./zchaff_solver sudoku.cnf) > sudoku.out)
   rm -r sudoku.cnf
   
-  $(echo $(./decoder_exe sudoku.out) > $2)
+  $(echo $(./decoder_exe sudoku.out) >> $2)
   end=$(date +%s%3N)
-  total_time=$(($end - $start))
-  echo "- Completado en $total_time milisegundo(s)"
+  sudoku_time=$(($end - $start))
+  echo "- Completado en $sudoku_time milisegundo(s)"
+  total_time=$(($total_time + $sudoku_time))
   rm -r sudoku.out
   numero_caso=$(($numero_caso + 1))
 done < $input_file
 
-echo "* Analisis completado*"
+echo "* Analisis completado - Tiempo Total: $total_time milisegundo(s)*"
 
 #se remueven los archivos generados
 rm -r encoder_exe
