@@ -14,18 +14,10 @@ echo "    Output File: $2"
 
 echo "* Traduciendo instancias de Sudoku a CNF *"
 
-# Creamos un directorio temporal en donde almacenar las instancias en CNF
-mkdir "sudoku_cnf_tmp"
 
 # Generamos las instancias en CNF
-g++ encoder/main.cc
-cp a.out "sudoku_cnf_tmp"
-rm a.out
-cp encoder/teoria_general_2 "sudoku_cnf_tmp"
-cp $1 "sudoku_cnf_tmp"
-cd "sudoku_cnf_tmp"
-$(./a.out $1)
-cd ..
+g++ encoder/main.cc -o encoder_exe
+cp  encoder/teoria_general_2 teoria_general_2
 
 # Pasamos las instancias en CNF por el SAT solver
 echo "* Compilando Zchaff *"
@@ -37,18 +29,38 @@ cd ..
 
 echo "* Resolviendo instancias en CNF*"
 cp zchaff/zchaff ./zchaff_solver
-g++ decoder/decoder.cc
-mkdir "sudoku_cnf_soluciones_tmp"
-numero_casos=$(ls "sudoku_cnf_tmp" | wc -l)
-for i in $(seq 1 $numero_casos)
+g++ decoder/decoder.cc -o decoder_exe
+
+numero_caso=1
+input_file=$1
+while read -r line
 do
-  $(echo $(./zchaff_solver "sudoku_cnf_tmp/sudoku_$i.cnf") > "sudoku_cnf_soluciones_tmp/sudoku_$i.out")
-  $(echo $(./a.out "sudoku_cnf_soluciones_tmp/sudoku_$i.out") > $2)
-done
+  echo -n "   - Analizando Sudoku # $numero_caso ..."
+  
+  echo $line > sudoku_actual.txt 
+  #tiempo de partida
+  start=$(date +%s%3N)
+   
+  #generacion del archivo .cnf
+  $((./encoder_exe sudoku_actual.txt) > sudoku.cnf)
+  rm -r sudoku_actual.txt
+  
+  #generacion del input para el decoder
+  $((./zchaff_solver sudoku.cnf) > sudoku.out)
+  rm -r sudoku.cnf
+  
+  $(echo $(./decoder_exe sudoku.out) > $2)
+  end=$(date +%s%3N)
+  total_time=$(($end - $start))
+  echo "- Completado en $total_time milisegundo(s)"
+  rm -r sudoku.out
+  numero_caso=$(($numero_caso + 1))
+done < $input_file
 
-rm zchaff_solver
-rm a.out
+echo "* Analisis completado*"
 
-# Eliminamos el directorio temporal con instancias en CNF
-#rm -r "sudoku_cnf_soluciones_tmp"
-#rm -r "sudoku_cnf_tmp"
+#se remueven los archivos generados
+rm -r encoder_exe
+rm -r decoder_exe
+rm -r zchaff_solver
+rm -r teoria_general_2

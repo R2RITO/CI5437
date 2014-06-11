@@ -28,6 +28,7 @@ int main (int argc, char* argv[]) {
   if (myfile.is_open())  {
     while ( getline (myfile,line) ) {
 
+      std::cout << "ley linea " << line << std::endl;
       ifstream teoria ("teoria_general_2");
 
       /* Se abre un archivo en donde escribir la instancia en formato CNF*/
