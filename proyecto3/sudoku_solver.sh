@@ -30,39 +30,41 @@ cd ..
 echo "* Resolviendo instancias en CNF*"
 cp zchaff/zchaff ./zchaff_solver
 g++ decoder/decoder.cc -o decoder_exe
-
+g++ encoder/total_time.cc -o timer_exe
 numero_caso=1
 input_file=$1
 total_time=0
 while read -r line
 do
-  echo -n "   - Analizando Sudoku # $numero_caso ..."
-  
+  echo -n "   - Analizando Sudoku # $numero_caso ... "
+  echo $line
   echo $line > sudoku_actual.txt 
-  #tiempo de partida
-  start=$(date +%s%3N)
    
   #generacion del archivo .cnf
-  $((./encoder_exe sudoku_actual.txt) > sudoku.cnf)
-  rm -r sudoku_actual.txt
+  $(./encoder_exe sudoku_actual.txt)
+  #rm -r sudoku_actual.txt
   
   #generacion del input para el decoder
   $((./zchaff_solver sudoku.cnf) > sudoku.out)
-  rm -r sudoku.cnf
+  #rm -r sudoku.cnf
   
-  $(echo $(./decoder_exe sudoku.out) >> $2)
-  end=$(date +%s%3N)
-  sudoku_time=$(($end - $start))
-  echo "- Completado en $sudoku_time milisegundo(s)"
-  total_time=$(($total_time + $sudoku_time))
-  rm -r sudoku.out
+  #obtenemos el tiempo que demoro el solucionador zchaff en operar
+  sudoku_time=$(tail -2 sudoku.out | head -1 | awk '{print $4}')
+  echo "- Completado en $sudoku_time segundo(s)"
+  
+  $(echo $(./decoder_exe sudoku.out) >> $2)    
+ # rm -r sudoku.out  
+  
+  total_time=$( (./timer_exe $total_time $sudoku_time) |  awk '{print $1}')
+
   numero_caso=$(($numero_caso + 1))
 done < $input_file
 
-echo "* Analisis completado - Tiempo Total: $total_time milisegundo(s)*"
+echo "* Analisis completado - Tiempo Total: $total_time segundo(s)*"
 
 #se remueven los archivos generados
 rm -r encoder_exe
 rm -r decoder_exe
+rm -r timer_exe
 rm -r zchaff_solver
 rm -r teoria_general_2
