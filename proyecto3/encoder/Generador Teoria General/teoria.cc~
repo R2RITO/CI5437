@@ -17,6 +17,7 @@ int main (int argc, char* argv[]) {
      64 65 66 67 68 69 70 71 72
      73 74 75 76 77 78 79 80 81
   */
+  /* Clausulas de Arturo */
   for (int i = 1; i <= 81; i++) {
     for (int j = i; j <= 729; j=j+81) {
         cout << j << " ";

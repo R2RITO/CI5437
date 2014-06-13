@@ -37,23 +37,22 @@ total_time=0
 while read -r line
 do
   echo -n "   - Analizando Sudoku # $numero_caso ... "
-  echo $line
   echo $line > sudoku_actual.txt 
    
   #generacion del archivo .cnf
   $(./encoder_exe sudoku_actual.txt)
-  #rm -r sudoku_actual.txt
+  rm -r sudoku_actual.txt
   
   #generacion del input para el decoder
   $((./zchaff_solver sudoku.cnf) > sudoku.out)
-  #rm -r sudoku.cnf
+  rm -r sudoku.cnf
   
   #obtenemos el tiempo que demoro el solucionador zchaff en operar
   sudoku_time=$(tail -2 sudoku.out | head -1 | awk '{print $4}')
   echo "- Completado en $sudoku_time segundo(s)"
   
   $(echo $(./decoder_exe sudoku.out) >> $2)    
- # rm -r sudoku.out  
+  rm -r sudoku.out  
   
   total_time=$( (./timer_exe $total_time $sudoku_time) |  awk '{print $1}')
 
